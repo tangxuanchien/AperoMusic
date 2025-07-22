@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             ChientxAperoTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Kotlin",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
