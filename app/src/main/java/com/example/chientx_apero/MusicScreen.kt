@@ -23,8 +23,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -74,7 +77,13 @@ val songs = mutableListOf<Song>(
 )
 
 @Composable
-fun SongItemColumn(song: Song, onOpenMenu: () -> Unit) {
+fun SongItemColumn(
+    song: Song,
+    onOpenMenu: () -> Unit,
+    onClick: () -> Unit,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,17 +134,29 @@ fun SongItemColumn(song: Song, onOpenMenu: () -> Unit) {
                     tint = Color.White,
                     modifier = Modifier
                         .size(20.dp)
-                        .clickable{
+                        .clickable {
                             onOpenMenu()
                         }
                 )
             }
+            DropdownItemApp(
+                expanded = expanded,
+                onClick = onClick,
+                onDismissRequest = onDismissRequest,
+                modifier = Modifier.align(Alignment.CenterEnd)
+            )
         }
     }
 }
 
 @Composable
-fun SongItemGrid(song: Song, onOpenMenu: () -> Unit) {
+fun SongItemGrid(
+    song: Song,
+    onOpenMenu: () -> Unit,
+    onClick: () -> Unit,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit
+) {
     Column(
         modifier = Modifier
             .background(Color.Black)
@@ -209,62 +230,78 @@ fun SongItemGrid(song: Song, onOpenMenu: () -> Unit) {
                     )
                 }
             }
+            DropdownItemApp(
+                expanded = expanded,
+                onClick = onClick,
+                onDismissRequest = onDismissRequest,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 30.dp)
+            )
         }
     }
 }
 
 @Composable
-fun OptionSong(modifier: Modifier = Modifier, onRemove: () -> Unit) {
-    Column(
+fun DropdownItemApp(
+    expanded: Boolean,
+    onClick: () -> Unit,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier
+) {
+    Box(
         modifier = modifier
-            .background(Color.Black.copy(alpha = 0.84f), shape = RoundedCornerShape(10.dp))
+            .padding(16.dp)
+            .fillMaxWidth()
+            .background(Color.Black.copy(0.8f), shape = RoundedCornerShape(15.dp))
     ) {
-        Row(
+        DropdownMenu(
             modifier = Modifier
-                .padding(start = 12.dp, top = 14.dp, end = 12.dp, bottom = 6.dp)
-                .clickable{
-                    onRemove()
+                .background(Color.Black.copy(0.8f))
+                .padding(horizontal = 10.dp),
+            expanded = expanded,
+            onDismissRequest = { onDismissRequest() }
+        ) {
+            DropdownMenuItem(
+                leadingIcon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.remove),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                },
+                text = {
+                    Text(
+                        text = "Remove from playlist",
+                        color = Color.White
+                    )
+                },
+                onClick = {
+                    onClick()
                 }
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.remove),
-                contentDescription = null,
-                tint = Color.White,
+            )
+            HorizontalDivider(
+                thickness = 1.dp,
+                color = Color.White.copy(alpha = 0.1f),
                 modifier = Modifier
-                    .size(16.dp)
+                    .width(200.dp)
+                    .padding(start = 50.dp)
             )
-            Text(
-                text = "Remove from playlist",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 10.dp)
-            )
-        }
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = Color.White.copy(alpha = 0.1f),
-            modifier = Modifier
-                .width(160.dp)
-                .padding(start = 40.dp)
-        )
-        Row(
-            modifier = Modifier
-                .padding(10.dp)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.share),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(16.dp)
-            )
-            Text(
-                text = "Share (comming soon)",
-                color = Color.White.copy(alpha = 0.5f),
-                fontWeight = FontWeight.Bold,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 10.dp)
+            DropdownMenuItem(
+                leadingIcon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.share),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                },
+                text = {
+                    Text(
+                        text = "Share (comming soon)",
+                        color = Color.White.copy(0.5f)
+                    )
+                },
+                onClick = {}
             )
         }
     }
@@ -272,10 +309,14 @@ fun OptionSong(modifier: Modifier = Modifier, onRemove: () -> Unit) {
 
 @Composable
 fun HomeScreen(songs: List<Song>) {
-    var stateGridView by remember { mutableStateOf(true) }
-    var openMenu by remember { mutableStateOf(false) }
+//    default gridview true sortview false
+    var stateGridView by remember { mutableStateOf(false) }
     var selectedSong by remember { mutableStateOf<Song?>(null) }
     val songList = remember { mutableStateListOf<Song>().apply { addAll(songs) } }
+    var stateSortView by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+
+
     Column(
         modifier = Modifier
             .background(Color.Black)
@@ -285,8 +326,25 @@ fun HomeScreen(songs: List<Song>) {
         Box(
             modifier = Modifier.padding(bottom = 10.dp)
         ) {
+            if (stateSortView) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.cancel),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            stateSortView = false
+                        }
+                )
+            }
             Text(
-                text = "My playlist",
+                text = if (!stateSortView) {
+                    "My playlist"
+                } else {
+                    "Sorting"
+                },
                 color = Color.White,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
@@ -318,13 +376,29 @@ fun HomeScreen(songs: List<Song>) {
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.sort),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(26.dp)
-                )
+                if (stateSortView) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.done),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {
+                                stateSortView = false
+                            }
+                    )
+                } else {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.sort),
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(26.dp)
+                            .clickable {
+                                stateSortView = true
+                            }
+                    )
+                }
             }
         }
         if (stateGridView) {
@@ -332,33 +406,32 @@ fun HomeScreen(songs: List<Song>) {
                 columns = GridCells.Fixed(2)
             ) {
                 items(songList) { song ->
+                    var isExpanded = expanded && selectedSong == song
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         SongItemGrid(
                             song = song,
+                            expanded = isExpanded,
                             onOpenMenu = {
-                                if(!openMenu){
-                                    openMenu = true
+                                if (selectedSong == song && expanded) {
+                                    expanded = false
+                                    selectedSong = null
                                 } else {
-                                    openMenu = false
+                                    expanded = true
+                                    selectedSong = song
                                 }
-                                selectedSong = song
+                            },
+                            onDismissRequest = {
+                                expanded = false
+                                selectedSong = null
+                            },
+                            onClick = {
+                                songList.remove(song)
+                                selectedSong = null
+                                expanded = false
                             }
                         )
-                        if (openMenu == true && selectedSong == song) {
-                            OptionSong(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(top = 60.dp, end = 40.dp)
-                                    .zIndex(1f),
-                                onRemove = {
-                                    songList.remove(song)
-                                    openMenu = false
-                                    selectedSong = null
-                                }
-                            )
-                        }
                     }
                 }
             }
@@ -366,33 +439,32 @@ fun HomeScreen(songs: List<Song>) {
         } else {
             LazyColumn {
                 items(songList) { song ->
+                    var isExpanded = expanded && selectedSong == song
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         SongItemColumn(
                             song = song,
+                            expanded = isExpanded,
                             onOpenMenu = {
-                                if(!openMenu){
-                                    openMenu = true
+                                if (selectedSong == song && expanded) {
+                                    expanded = false
+                                    selectedSong = null
                                 } else {
-                                    openMenu = false
+                                    expanded = true
+                                    selectedSong = song
                                 }
-                                selectedSong = song
+                            },
+                            onDismissRequest = {
+                                expanded = false
+                                selectedSong = null
+                            },
+                            onClick = {
+                                songList.remove(song)
+                                selectedSong = null
+                                expanded = false
                             }
                         )
-                        if (openMenu == true && selectedSong == song) {
-                            OptionSong(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(top = 60.dp, end = 40.dp)
-                                    .zIndex(1f),
-                                onRemove = {
-                                    songList.remove(song)
-                                    openMenu = false
-                                    selectedSong = null
-                                }
-                            )
-                        }
                     }
                 }
             }
@@ -406,21 +478,21 @@ fun HomeScreen(songs: List<Song>) {
 //    SongItemGrid(Song("Let Go", "Central Cee", "04:30", R.drawable.central_cee1))
 //}
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMusic() {
-    HomeScreen(songs = songs)
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewItemColumn() {
-    SongItemColumn(Song("Let Go", "Central Cee", "04:30", R.drawable.central_cee1), onOpenMenu={})
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewMusic() {
+//    HomeScreen(songs = songs)
+//}
 
 //@Preview(showBackground = true)
 //@Composable
+//fun PreviewItemColumn() {
+//    SongItemColumn(Song("Let Go", "Central Cee", "04:30", R.drawable.central_cee1), onOpenMenu = {})
+//}
+//
+//@Preview(showBackground = true)
+//@Composable
 //fun PreviewOptionList() {
-//    OptionSong()
+//    DropdownItem()
 //}
 
