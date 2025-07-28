@@ -1,4 +1,4 @@
-package com.example.chientx_apero.music_screen
+package com.example.chientx_apero.playlist_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

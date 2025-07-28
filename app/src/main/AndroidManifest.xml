@@ -23,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".login_screen.SignUpActivity" />
+        <activity android:name=".login_screen.LogInActivity" />
     </application>
 
 </manifest>

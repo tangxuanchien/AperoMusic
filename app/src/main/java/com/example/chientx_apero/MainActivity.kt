@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.chientx_apero.information_screen.ScreenDefault
+import com.example.chientx_apero.navigation.Navigation
 import com.example.chientx_apero.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppTheme {
-                ScreenDefault()
+                Navigation(
+//                    onClickBack = {}
+                )
             }
         }
     }

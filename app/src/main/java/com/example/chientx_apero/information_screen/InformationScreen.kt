@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,7 +42,9 @@ import com.example.chientx_apero.ui.theme.darkTheme
 import com.example.chientx_apero.ui.theme.lightTheme
 
 @Composable
-fun ScreenDefault() {
+fun InformationScreen(
+    onClickBack: () -> Unit
+) {
     val focusManager = LocalFocusManager.current
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -60,7 +63,7 @@ fun ScreenDefault() {
         enabledStatus = true
     }
 
-    var currentTheme by remember { mutableStateOf(lightTheme) }
+    var currentTheme by remember { mutableStateOf(darkTheme) }
 
     MaterialTheme(
         colorScheme = currentTheme.color,
@@ -73,12 +76,12 @@ fun ScreenDefault() {
         ) {
             Column(
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .padding(15.dp)
                     .clickable() { focusManager.clearFocus() },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
-                    modifier = Modifier.padding(20.dp)
+                    modifier = Modifier.padding(10.dp)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(
@@ -151,6 +154,7 @@ fun ScreenDefault() {
                         enabledStatus = enabledStatus,
                         keyboardType = KeyboardType.Text
                     )
+                    Spacer(modifier = Modifier.padding(10.dp))
                     Input(
                         text = "Phone Number",
                         placeholder = "Your phone number...",
@@ -251,6 +255,8 @@ fun ScreenDefault() {
 @Composable
 fun PreviewScreen() {
     AppTheme {
-        ScreenDefault()
+        InformationScreen(
+            onClickBack = {}
+        )
     }
 }
