@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -18,11 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chientx_apero.R
 import com.example.chientx_apero.home_screen.NavigationBar
+import com.example.chientx_apero.ui.theme.darkTheme
 
 data class Song(val name: String, val artist: String, val duration: String, val image: Int)
 
@@ -47,94 +48,101 @@ fun PlaylistScreen(
     val songList = remember { mutableStateListOf<Song>().apply { addAll(songs) } }
     var stateSortView by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
+    var currentTheme by remember { mutableStateOf(darkTheme) }
 
-    Box() {
-        Column(
-            modifier = Modifier
-                .background(Color.Black)
-                .padding(18.dp)
-                .fillMaxSize()
+    MaterialTheme(
+        colorScheme = currentTheme.color,
+        typography = currentTheme.typography
+    ) {
+        Box(
         ) {
-            HeaderPlaylist(
-                stateSortView = stateSortView,
-                onToggleSortView = { stateSortView = !stateSortView },
-                stateGridView = stateGridView,
-                onToggleGridView = { stateGridView = !stateGridView }
-            )
-
-            Box(
-                modifier = Modifier.weight(1f)
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(vertical = 18.dp, horizontal = 10.dp)
+                    .fillMaxSize()
             ) {
-                if (stateGridView) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2)
-                    ) {
-                        items(songList) { song ->
-                            var isExpanded = expanded && selectedSong == song
-                            SongItemGrid(
-                                song = song,
-                                expanded = isExpanded,
-                                onOpenMenu = {
-                                    if (selectedSong == song && expanded) {
-                                        expanded = false
-                                        selectedSong = null
-                                    } else {
-                                        expanded = true
-                                        selectedSong = song
-                                    }
-                                },
-                                onDismissRequest = {
-                                    expanded = false
-                                    selectedSong = null
-                                },
-                                onClick = {
-                                    songList.remove(song)
-                                    selectedSong = null
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
+                HeaderPlaylist(
+                    stateSortView = stateSortView,
+                    onToggleSortView = { stateSortView = !stateSortView },
+                    stateGridView = stateGridView,
+                    onToggleGridView = { stateGridView = !stateGridView }
+                )
 
-                } else {
-                    LazyColumn {
-                        items(songList) { song ->
-                            var isExpanded = expanded && selectedSong == song
-                            SongItemColumn(
-                                song = song,
-                                expanded = isExpanded,
-                                onOpenMenu = {
-                                    if (selectedSong == song && expanded) {
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    if (stateGridView) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2)
+                        ) {
+                            items(songList) { song ->
+                                var isExpanded = expanded && selectedSong == song
+                                ItemGrid(
+                                    song = song,
+                                    expanded = isExpanded,
+                                    onOpenMenu = {
+                                        if (selectedSong == song && expanded) {
+                                            expanded = false
+                                            selectedSong = null
+                                        } else {
+                                            expanded = true
+                                            selectedSong = song
+                                        }
+                                    },
+                                    onDismissRequest = {
                                         expanded = false
                                         selectedSong = null
-                                    } else {
-                                        expanded = true
-                                        selectedSong = song
+                                    },
+                                    onClick = {
+                                        songList.remove(song)
+                                        selectedSong = null
+                                        expanded = false
                                     }
-                                },
-                                onDismissRequest = {
-                                    expanded = false
-                                    selectedSong = null
-                                },
-                                onClick = {
-                                    songList.remove(song)
-                                    selectedSong = null
-                                    expanded = false
-                                }
-                            )
+                                )
+                            }
+                        }
+
+                    } else {
+                        LazyColumn {
+                            items(songList) { song ->
+                                var isExpanded = expanded && selectedSong == song
+                                ItemColumn(
+                                    song = song,
+                                    expanded = isExpanded,
+                                    onOpenMenu = {
+                                        if (selectedSong == song && expanded) {
+                                            expanded = false
+                                            selectedSong = null
+                                        } else {
+                                            expanded = true
+                                            selectedSong = song
+                                        }
+                                    },
+                                    onDismissRequest = {
+                                        expanded = false
+                                        selectedSong = null
+                                    },
+                                    onClick = {
+                                        songList.remove(song)
+                                        selectedSong = null
+                                        expanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            NavigationBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Black),
-                onClickPlaylist = {},
-                onClickLibrary = {},
-                isPlaylistScreen = isPlaylistScreen
-            )
+                NavigationBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background),
+                    onClickPlaylist = {},
+                    onClickLibrary = {},
+                    isPlaylistScreen = isPlaylistScreen
+                )
+            }
         }
     }
 }

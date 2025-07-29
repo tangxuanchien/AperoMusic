@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +36,7 @@ fun HeaderPlaylist(
             Icon(
                 imageVector = ImageVector.Companion.vectorResource(R.drawable.cancel),
                 contentDescription = null,
-                tint = Color.Companion.White,
+                tint = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.Companion
                     .size(20.dp)
                     .align(Alignment.Companion.CenterStart)
@@ -51,7 +51,7 @@ fun HeaderPlaylist(
             } else {
                 "Sorting"
             },
-            color = Color.Companion.White,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Companion.Center,
             fontWeight = FontWeight.Companion.Bold,
             fontSize = 24.sp,
@@ -66,7 +66,7 @@ fun HeaderPlaylist(
                 Icon(
                     imageVector = ImageVector.Companion.vectorResource(R.drawable.column),
                     contentDescription = null,
-                    tint = Color.Companion.White,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(24.dp)
                         .clickable { onToggleGridView() }
@@ -75,7 +75,7 @@ fun HeaderPlaylist(
                 Icon(
                     imageVector = ImageVector.Companion.vectorResource(R.drawable.grid),
                     contentDescription = null,
-                    tint = Color.Companion.White,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(24.dp)
                         .clickable { onToggleGridView() }
@@ -86,7 +86,7 @@ fun HeaderPlaylist(
                 Icon(
                     imageVector = ImageVector.Companion.vectorResource(R.drawable.done),
                     contentDescription = null,
-                    tint = Color.Companion.White,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(20.dp)
                         .clickable {
@@ -97,7 +97,7 @@ fun HeaderPlaylist(
                 Icon(
                     imageVector = ImageVector.Companion.vectorResource(R.drawable.sort),
                     contentDescription = null,
-                    tint = Color.Companion.White,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(26.dp)
                         .clickable {

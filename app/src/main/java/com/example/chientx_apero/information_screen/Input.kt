@@ -1,7 +1,5 @@
 package com.example.chientx_apero.information_screen
 
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +20,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -112,7 +109,7 @@ fun PreviewTest(modifier: Modifier = Modifier) {
         value = "",
         onValueChange = {
         },
-        leadingIcon = R.drawable.outline_visibility_off_24,
+        leadingIcon = R.drawable.no_eye,
         textError = "Error",
     )
 }

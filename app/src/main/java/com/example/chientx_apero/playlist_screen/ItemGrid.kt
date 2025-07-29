@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +30,7 @@ import androidx.compose.ui.zIndex
 import com.example.chientx_apero.R
 
 @Composable
-fun SongItemGrid(
+fun ItemGrid(
     song: Song,
     onOpenMenu: () -> Unit,
     onClick: () -> Unit,
@@ -38,7 +39,7 @@ fun SongItemGrid(
 ) {
     Column(
         modifier = Modifier.Companion
-            .background(Color.Companion.Black)
+            .background(MaterialTheme.colorScheme.background)
             .padding(12.dp)
     ) {
         Box(
@@ -61,7 +62,7 @@ fun SongItemGrid(
                 Icon(
                     imageVector = ImageVector.Companion.vectorResource(R.drawable.option),
                     contentDescription = null,
-                    tint = Color.Companion.White,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(20.dp)
                         .clickable {
@@ -86,7 +87,7 @@ fun SongItemGrid(
                 ) {
                     Text(
                         text = song.name,
-                        color = Color.Companion.White,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Companion.Bold,
                         maxLines = 1,
@@ -105,7 +106,7 @@ fun SongItemGrid(
                         modifier = Modifier.Companion.padding(top = 8.dp),
                         text = song.duration,
                         fontSize = 18.sp,
-                        color = Color.Companion.White,
+                        color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
             }

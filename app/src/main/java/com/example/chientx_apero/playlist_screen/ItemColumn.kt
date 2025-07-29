@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.example.chientx_apero.R
 
 @Composable
-fun SongItemColumn(
+fun ItemColumn(
     song: Song,
     onOpenMenu: () -> Unit,
     onClick: () -> Unit,
@@ -37,7 +37,7 @@ fun SongItemColumn(
     Row(
         modifier = Modifier.Companion
             .fillMaxWidth()
-            .background(Color.Companion.Black)
+            .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)
     ) {
         Image(
@@ -57,7 +57,7 @@ fun SongItemColumn(
             ) {
                 Text(
                     text = song.name,
-                    color = Color.Companion.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Companion.Bold,
                     modifier = Modifier.Companion.padding(bottom = 4.dp)
@@ -66,7 +66,7 @@ fun SongItemColumn(
                     text = song.artist,
                     fontWeight = FontWeight.Companion.Bold,
                     fontSize = 16.sp,
-                    color = Color(0x99CCCCCC)
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
             Row(
@@ -75,13 +75,13 @@ fun SongItemColumn(
                 Text(
                     text = song.duration,
                     fontSize = 18.sp,
-                    color = Color.Companion.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 Spacer(modifier = Modifier.Companion.padding(6.dp))
                 Icon(
                     imageVector = ImageVector.Companion.vectorResource(R.drawable.option),
                     contentDescription = null,
-                    tint = Color.Companion.White,
+                    tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(20.dp)
                         .clickable {

@@ -1,24 +1,16 @@
 package com.example.chientx_apero.information_screen
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,17 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.chientx_apero.R
+import com.example.chientx_apero.UserInformation
 import com.example.chientx_apero.ui.theme.AppTheme
 import com.example.chientx_apero.ui.theme.darkTheme
 import com.example.chientx_apero.ui.theme.lightTheme
@@ -46,10 +33,10 @@ fun InformationScreen(
     onClickBack: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    var name by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var university by remember { mutableStateOf("") }
-    var describe by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(UserInformation.name) }
+    var phone by remember { mutableStateOf(UserInformation.phone) }
+    var university by remember { mutableStateOf(UserInformation.university) }
+    var describe by remember { mutableStateOf(UserInformation.describe) }
 
     var nameError by remember { mutableStateOf("") }
     var phoneError by remember { mutableStateOf("") }
@@ -61,6 +48,18 @@ fun InformationScreen(
     var enabledStatus by remember { mutableStateOf(false) }
     if (editStatus) {
         enabledStatus = true
+    }
+
+    val context = LocalContext.current
+    val imageUri = remember { mutableStateOf<Any?>(UserInformation.imageUri) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            imageUri.value = uri
+            UserInformation.imageUri = uri
+        }
     }
 
     var currentTheme by remember { mutableStateOf(darkTheme) }
@@ -80,60 +79,21 @@ fun InformationScreen(
                     .clickable() { focusManager.clearFocus() },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Box(
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(
-                            id = if (currentTheme == lightTheme) {
-                                R.drawable.dark_theme
-                            } else R.drawable.light_theme
-                        ),
-                        contentDescription = "Home Icon",
-                        modifier = Modifier
-                            .size(28.dp)
-                            .align(Alignment.CenterStart)
-                            .clickable {
-                                if (currentTheme == lightTheme) {
-                                    currentTheme = darkTheme
-                                } else currentTheme = lightTheme
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        text = "My Information".uppercase(),
-                        fontSize = 24.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    if (!editStatus) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.edit_icon),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(28.dp)
-                                .align(Alignment.CenterEnd)
-                                .clickable {
-                                    editStatus = true
-                                },
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                HeaderInformation(
+                    currentTheme = currentTheme,
+                    editStatus = editStatus,
+                    onToggleEditStatus = { editStatus = !editStatus },
+                    onToggleCurrentTheme = {
+                        if (currentTheme == lightTheme) {
+                            currentTheme = darkTheme
+                        } else currentTheme = lightTheme
                     }
-                }
-                Image(
-                    painter = painterResource(R.drawable.avatar),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(CircleShape)
-                        .border(
-                            width = 3.dp,
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
-                        )
+                )
+                Avatar(
+                    context = context,
+                    imageUri = imageUri,
+                    editStatus = editStatus,
+                    imagePickerLauncher = imagePickerLauncher
                 )
                 Row(
                 ) {
@@ -208,37 +168,28 @@ fun InformationScreen(
                     enabledStatus = enabledStatus,
                     keyboardType = KeyboardType.Text
                 )
-                if (editStatus) {
-                    Button(
-                        onClick = {
-                            if (name.isEmpty()) {
-                                nameError = "Empty name"
-                            } else if (phone.isEmpty()) {
-                                phoneError = "Empty phone"
-                            } else if (university.isEmpty()) {
-                                universityError = "Empty university"
-                            } else if (describe.isEmpty()) {
-                                describeError = "Empty describe"
-                            } else {
-                                if (nameError.isEmpty() and phoneError.isEmpty() and universityError.isEmpty() and describeError.isEmpty()) {
-                                    showPopup = true
-                                }
+                ButtonInformation(
+                    onClickButtonInformation = {
+                        if (name.isEmpty()) {
+                            nameError = "Empty name"
+                        } else if (phone.isEmpty()) {
+                            phoneError = "Empty phone"
+                        } else if (university.isEmpty()) {
+                            universityError = "Empty university"
+                        } else if (describe.isEmpty()) {
+                            describeError = "Empty describe"
+                        } else {
+                            if (nameError.isEmpty() and phoneError.isEmpty() and universityError.isEmpty() and describeError.isEmpty()) {
+                                showPopup = true
+                                UserInformation.name = name
+                                UserInformation.phone = phone
+                                UserInformation.university = university
+                                UserInformation.describe = describe
                             }
-                        },
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier
-                            .padding(bottom = 40.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceTint
-                        )
-                    ) {
-                        Text(
-                            text = "Submit",
-                            modifier = Modifier
-                                .padding(vertical = 15.dp, horizontal = 35.dp)
-                        )
-                    }
-                }
+                        }
+                    },
+                    editStatus = editStatus
+                )
             }
             if (showPopup) {
                 PopupLayout(
@@ -260,3 +211,5 @@ fun PreviewScreen() {
         )
     }
 }
+
+
