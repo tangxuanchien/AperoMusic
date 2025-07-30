@@ -131,11 +131,7 @@ fun SignUpScreen(
                                 tint = Color(0xFF808080)
                             )
                         },
-                        visualTransformation = if (!state.passwordVisible) {
-                            PasswordVisualTransformation()
-                        } else {
-                            VisualTransformation.None
-                        }
+                        visualTransformation = state.visualTransformationPassword
                     )
                     Input(
                         placeholder = "Confirm Password",
@@ -160,11 +156,7 @@ fun SignUpScreen(
                                 tint = Color(0xFF808080)
                             )
                         },
-                        visualTransformation = if (!state.confirmPasswordVisible) {
-                            PasswordVisualTransformation()
-                        } else {
-                            VisualTransformation.None
-                        }
+                        visualTransformation = state.visualTransformationConfirmPassword
                     )
                     Input(
                         placeholder = "Email",

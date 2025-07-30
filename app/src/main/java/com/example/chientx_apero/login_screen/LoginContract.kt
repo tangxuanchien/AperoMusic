@@ -1,5 +1,7 @@
 package com.example.chientx_apero.login_screen
 
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
 
@@ -11,7 +13,13 @@ data class LoginState(
     val passwordVisible: Boolean = false,
     val currentTheme: ThemeData = darkTheme,
     val checked: Boolean = false
-)
+){
+    val visualTransformation: VisualTransformation = if (!passwordVisible) {
+        PasswordVisualTransformation()
+    } else {
+        VisualTransformation.None
+    }
+}
 
 sealed interface LoginIntent {
     data class UsernameChanged(val username: String) : LoginIntent

@@ -1,5 +1,7 @@
 package com.example.chientx_apero.signup_screen
 
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
 
@@ -17,8 +19,17 @@ data class SignUpState(
     val currentTheme: ThemeData = darkTheme,
     val checked: Boolean = false,
     val isSubmitSignUp: Boolean = false
-){
-
+) {
+    val visualTransformationConfirmPassword: VisualTransformation = if (!confirmPasswordVisible) {
+        PasswordVisualTransformation()
+    } else {
+        VisualTransformation.None
+    }
+    val visualTransformationPassword: VisualTransformation = if (!passwordVisible) {
+        PasswordVisualTransformation()
+    } else {
+        VisualTransformation.None
+    }
 }
 
 sealed interface SignUpIntent {

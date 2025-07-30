@@ -120,11 +120,7 @@ fun LoginScreen(
                                 tint = Color(0xFF808080)
                             )
                         },
-                        visualTransformation = if (!state.passwordVisible) {
-                            PasswordVisualTransformation()
-                        } else {
-                            VisualTransformation.None
-                        }
+                        visualTransformation = state.visualTransformation
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
