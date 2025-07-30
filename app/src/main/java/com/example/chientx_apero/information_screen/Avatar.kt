@@ -33,9 +33,9 @@ import com.example.chientx_apero.R
 @Composable
 fun Avatar(
     context: Context,
-    imageUri: MutableState<Any?>,
+    imageUri: Any,
     editStatus: Boolean,
-    imagePickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>
+    onClickSelectImage: () -> Unit
 ) {
     Box(
         modifier = Modifier.Companion
@@ -44,7 +44,7 @@ fun Avatar(
         Image(
             painter = rememberAsyncImagePainter(
                 model = ImageRequest.Builder(context)
-                    .data(imageUri.value)
+                    .data(imageUri)
                     .size(300, 300)
                     .build()
 //                          Crop preview image 300x300
@@ -79,9 +79,7 @@ fun Avatar(
                         .size(28.dp)
                         .align(Alignment.Companion.Center)
                         .clickable {
-                            imagePickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
+                            onClickSelectImage()
                         }
                 )
             }

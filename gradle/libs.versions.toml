@@ -10,6 +10,8 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
 composeBom = "2024.09.00"
+lifecycleViewmodelCompose = "2.9.2"
+lifecycleViewmodelKtx = "2.9.2"
 navigation3UiAndroid = "1.0.0-alpha05"
 
 nav3Core = "1.0.0-alpha01"
@@ -21,6 +23,8 @@ material3AdaptiveNav3 = "1.0.0-SNAPSHOT"
 [libraries]
 androidx-adaptive-navigation3 = { module = "androidx.compose.material3.adaptive:adaptive-navigation3" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -1,4 +1,4 @@
-package com.example.chientx_apero.login_screen
+package com.example.chientx_apero.signup_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -15,10 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,9 +29,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.R
 import com.example.chientx_apero.information_screen.Input
-import com.example.chientx_apero.ui.theme.darkTheme
 
 data class User(
     var name: String,
@@ -41,23 +40,21 @@ data class User(
 
 @Composable
 fun SignUpScreen(
-    onClickLogin: (username: String, password: String) -> Unit
+    onClickLogin: (username: String, password: String) -> Unit,
+    viewModel: SignUpViewModel = viewModel()
 ) {
-    var userError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
-    var confirmPasswordError by remember { mutableStateOf("") }
-    var emailError by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var currentTheme by remember { mutableStateOf(darkTheme) }
-    var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state.isSubmitSignUp) {
+        if (state.isSubmitSignUp) {
+            onClickLogin(state.username, state.password)
+            viewModel.processIntent(SignUpIntent.ResetIsSubmitSignUp)
+        }
+    }
 
     MaterialTheme(
-        colorScheme = currentTheme.color,
-        typography = currentTheme.typography
+        colorScheme = state.currentTheme.color,
+        typography = state.currentTheme.typography
     ) {
         Surface(
             modifier = Modifier
@@ -104,37 +101,37 @@ fun SignUpScreen(
                     }
                     Input(
                         placeholder = "Username",
-                        value = username,
+                        value = state.username,
                         onValueChange = {
-                            username = it
-                            userError = ""
+                            viewModel.processIntent(SignUpIntent.UsernameChanged(it))
                         },
-                        textError = userError,
+                        textError = state.usernameError,
                         leadingIcon = R.drawable.user
                     )
                     Input(
                         placeholder = "Password",
-                        value = password,
+                        value = state.password,
                         onValueChange = {
-                            password = it
-                            passwordError = ""
+                            viewModel.processIntent(SignUpIntent.PasswordChanged(it))
                         },
-                        textError = passwordError,
+                        textError = state.passwordError,
                         leadingIcon = R.drawable.lock,
                         trailingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(
-                                    if (passwordVisible) R.drawable.eye
+                                    if (state.passwordVisible) R.drawable.eye
                                     else R.drawable.no_eye
                                 ),
                                 contentDescription = "Toggle Password Visibility",
                                 modifier = Modifier
                                     .size(20.dp)
-                                    .clickable { passwordVisible = !passwordVisible },
+                                    .clickable {
+                                        viewModel.processIntent(SignUpIntent.TogglePasswordVisibility)
+                                    },
                                 tint = Color(0xFF808080)
                             )
                         },
-                        visualTransformation = if (!passwordVisible) {
+                        visualTransformation = if (!state.passwordVisible) {
                             PasswordVisualTransformation()
                         } else {
                             VisualTransformation.None
@@ -142,27 +139,28 @@ fun SignUpScreen(
                     )
                     Input(
                         placeholder = "Confirm Password",
-                        value = confirmPassword,
+                        value = state.confirmPassword,
                         onValueChange = {
-                            confirmPassword = it
-                            confirmPasswordError = ""
+                            viewModel.processIntent(SignUpIntent.ConfirmPasswordChanged(it))
                         },
-                        textError = confirmPasswordError,
+                        textError = state.confirmPasswordError,
                         leadingIcon = R.drawable.lock,
                         trailingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(
-                                    if (confirmPasswordVisible) R.drawable.eye
+                                    if (state.confirmPasswordVisible) R.drawable.eye
                                     else R.drawable.no_eye
                                 ),
                                 contentDescription = "Toggle Password Visibility",
                                 modifier = Modifier
                                     .size(20.dp)
-                                    .clickable { confirmPasswordVisible = !confirmPasswordVisible },
+                                    .clickable {
+                                        viewModel.processIntent(SignUpIntent.ToggleConfirmPasswordVisibility)
+                                    },
                                 tint = Color(0xFF808080)
                             )
                         },
-                        visualTransformation = if (!confirmPasswordVisible) {
+                        visualTransformation = if (!state.confirmPasswordVisible) {
                             PasswordVisualTransformation()
                         } else {
                             VisualTransformation.None
@@ -170,57 +168,17 @@ fun SignUpScreen(
                     )
                     Input(
                         placeholder = "Email",
-                        value = email,
+                        value = state.email,
                         onValueChange = {
-                            email = it
-                            emailError = ""
+                            viewModel.processIntent(SignUpIntent.EmailChanged(it))
                         },
-                        textError = emailError,
+                        textError = state.emailError,
                         leadingIcon = R.drawable.email,
                     )
                 }
                 Button(
                     onClick = {
-//                        Username
-                        if (!Regex("^[a-z0-9]+$").matches(username) || username.isEmpty()) {
-                            userError = "Invalid format"
-                            username = ""
-                        } else {
-                            userError = ""
-                        }
-//                        Password
-                        if (!Regex("^[a-zA-Z0-9]+$").matches(password) || password.isEmpty()) {
-                            passwordError = "Invalid format"
-                            password = ""
-                        } else {
-                            passwordError = ""
-                        }
-
-//                        Confirm Password
-                        if (!Regex("^[a-z0-9]+$").matches(confirmPassword) || confirmPassword.isEmpty()
-                            || confirmPassword != password
-                        ) {
-                            confirmPasswordError = "Invalid format"
-                            confirmPassword = ""
-                        } else {
-                            confirmPasswordError = ""
-                        }
-
-//                        Email
-                        if (!Regex("^[a-zA-Z0-9._@-]+$").matches(email) || email.isEmpty()
-                            || !email.endsWith(
-                                "@apero.vn"
-                            )
-                        ) {
-                            emailError = "Invalid format"
-                            email = ""
-                        } else {
-                            emailError = ""
-                        }
-
-                        if (confirmPasswordError.isEmpty() && passwordError.isEmpty() && userError.isEmpty() && emailError.isEmpty()) {
-                            onClickLogin(username, password)
-                        }
+                        viewModel.processIntent(SignUpIntent.SubmitSignUp)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary

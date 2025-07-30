@@ -1,4 +1,4 @@
-package com.example.chientx_apero.login_screen
+package com.example.chientx_apero.signup_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

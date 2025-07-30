@@ -19,10 +19,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,9 +33,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.R
 import com.example.chientx_apero.information_screen.Input
-import com.example.chientx_apero.ui.theme.darkTheme
 
 
 @Composable
@@ -44,19 +43,17 @@ fun LoginScreen(
     onClickSignUp: () -> Unit,
     onClickHome: () -> Unit,
     username: String,
-    password: String
+    password: String,
+    viewModel: LoginViewModel = viewModel()
 ) {
-    var userError by remember { mutableStateOf("") }
-    var passwordError by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf(username) }
-    var password by remember { mutableStateOf(password) }
-    var currentTheme by remember { mutableStateOf(darkTheme) }
-    var checked by remember { mutableStateOf(false) }
-    var passwordVisible by remember { mutableStateOf(false) }
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.processIntent(LoginIntent.SetInitialData(username, password))
+    }
 
     MaterialTheme(
-        colorScheme = currentTheme.color,
-        typography = currentTheme.typography
+        colorScheme = state.currentTheme.color,
+        typography = state.currentTheme.typography
     ) {
         Surface(
             modifier = Modifier
@@ -90,25 +87,25 @@ fun LoginScreen(
                     }
                     Input(
                         placeholder = "Username",
-                        value = username,
+                        value = state.username,
                         onValueChange = {
-                            username = it
+                            viewModel.processIntent(LoginIntent.UsernameChanged(it))
                         },
-                        textError = userError,
+                        textError = state.usernameError,
                         leadingIcon = R.drawable.user
                     )
                     Input(
                         placeholder = "Password",
-                        value = password,
+                        value = state.password,
                         onValueChange = {
-                            password = it
+                            viewModel.processIntent(LoginIntent.PasswordChanged(it))
                         },
-                        textError = passwordError,
+                        textError = state.passwordError,
                         leadingIcon = R.drawable.lock,
                         trailingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(
-                                    if (passwordVisible) {
+                                    if (state.passwordVisible) {
                                         R.drawable.eye
                                     } else {
                                         R.drawable.no_eye
@@ -118,12 +115,12 @@ fun LoginScreen(
                                 modifier = Modifier
                                     .size(20.dp)
                                     .clickable {
-                                        passwordVisible = !passwordVisible
+                                        viewModel.processIntent(LoginIntent.TogglePasswordVisibility)
                                     },
                                 tint = Color(0xFF808080)
                             )
                         },
-                        visualTransformation = if (!passwordVisible) {
+                        visualTransformation = if (!state.passwordVisible) {
                             PasswordVisualTransformation()
                         } else {
                             VisualTransformation.None
@@ -136,8 +133,8 @@ fun LoginScreen(
                             .padding(bottom = 24.dp)
                     ) {
                         Checkbox(
-                            checked = checked,
-                            onCheckedChange = { checked = it },
+                            checked = state.checked,
+                            onCheckedChange = {},
                             colors = CheckboxDefaults.colors(
                                 uncheckedColor = MaterialTheme.colorScheme.surfaceTint
                             )
