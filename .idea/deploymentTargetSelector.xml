@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Chientx-Apero.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-07-28T02:03:06.587254Z">
+        <DropdownSelection timestamp="2025-07-31T09:58:31.662680600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\MAY TINH BAC THANH\.android\avd\Medium_Phone.avd" />

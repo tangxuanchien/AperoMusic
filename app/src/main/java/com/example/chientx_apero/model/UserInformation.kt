@@ -1,4 +1,6 @@
-package com.example.chientx_apero
+package com.example.chientx_apero.model
+
+import com.example.chientx_apero.R
 
 object UserInformation {
     var name: String = ""

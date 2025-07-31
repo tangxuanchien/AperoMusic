@@ -3,7 +3,7 @@ package com.example.chientx_apero.information_screen
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.lifecycle.ViewModel
-import com.example.chientx_apero.UserInformation
+import com.example.chientx_apero.model.UserInformation
 import com.example.chientx_apero.ui.theme.darkTheme
 import com.example.chientx_apero.ui.theme.lightTheme
 import kotlinx.coroutines.flow.MutableStateFlow

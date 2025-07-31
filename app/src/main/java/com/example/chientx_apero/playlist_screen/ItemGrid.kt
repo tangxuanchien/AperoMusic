@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -27,7 +28,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.Song
 
 @Composable
 fun ItemGrid(
@@ -71,7 +74,7 @@ fun ItemGrid(
                 )
             }
             Image(
-                painter = painterResource(song.image),
+                painter = rememberAsyncImagePainter(song.image),
                 contentDescription = null,
                 modifier = Modifier.Companion
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(14.dp))
@@ -100,6 +103,8 @@ fun ItemGrid(
                         text = song.artist,
                         fontWeight = FontWeight.Companion.Bold,
                         fontSize = 18.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Companion.Ellipsis,
                         color = Color(0x99CCCCCC)
                     )
                     Text(

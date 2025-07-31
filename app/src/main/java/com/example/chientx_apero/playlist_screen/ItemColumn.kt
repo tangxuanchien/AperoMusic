@@ -18,13 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.Song
 
 @Composable
 fun ItemColumn(
@@ -41,7 +44,7 @@ fun ItemColumn(
             .padding(8.dp)
     ) {
         Image(
-            painter = painterResource(song.image),
+            painter = rememberAsyncImagePainter(song.image),
             contentDescription = null,
             modifier = Modifier.Companion
                 .clip(RoundedCornerShape(10.dp))

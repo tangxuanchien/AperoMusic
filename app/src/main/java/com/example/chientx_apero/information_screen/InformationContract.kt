@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
-import com.example.chientx_apero.UserInformation
+import com.example.chientx_apero.model.UserInformation
 import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
 
