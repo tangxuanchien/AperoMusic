@@ -72,9 +72,6 @@ fun Navigation() {
             }
             entry<Screen.Library> {
                 LibraryScreen(
-                    onClickProfile = {
-                        backStack.add(Screen.Information)
-                    },
                     onClickBack = { backStack.removeLastOrNull() },
                     isLibraryScreen = true
                 )

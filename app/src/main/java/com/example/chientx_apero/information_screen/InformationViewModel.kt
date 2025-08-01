@@ -10,23 +10,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-class InformationViewModel: ViewModel() {
+class InformationViewModel : ViewModel() {
     private val _state = MutableStateFlow<InformationState>(InformationState())
     val state: StateFlow<InformationState> = _state
 
     fun processIntent(intent: InformationIntent) {
         when (intent) {
             is InformationIntent.DescribeChanged -> {
-                var describeError = ""
-                if (!Regex("^[A-Za-z0-9\\s]+\$").matches(intent.describe)) {
-                    describeError = "Invalid error"
-                } else if (Regex("^[A-Za-z0-9\\s]+\$").matches(intent.describe) and !describeError.isEmpty()) {
-                    describeError = ""
-                }
                 _state.update {
                     it.copy(
                         describe = intent.describe,
-                        describeError = describeError
                     )
                 }
             }
@@ -106,6 +99,7 @@ class InformationViewModel: ViewModel() {
                     )
                 }
             }
+
             InformationIntent.SubmitInformation -> {
                 val current = _state.value
                 var nameError = ""
@@ -113,30 +107,43 @@ class InformationViewModel: ViewModel() {
                 var universityError = ""
                 var describeError = ""
 
+                if (!Regex("^[A-Za-z0-9\\s]+\$").matches(current.describe)) {
+                    describeError = "Invalid error"
+                } else if (Regex("^[A-Za-z0-9\\s]+\$").matches(current.describe) and !describeError.isEmpty()) {
+                    describeError = ""
+                }
                 if (current.name.isEmpty()) {
                     nameError = "Empty name"
-                } else if (current.phone.isEmpty()) {
+                }
+                if (current.phone.isEmpty()) {
                     phoneError = "Empty phone"
-                } else if (current.university.isEmpty()) {
+                }
+                if (current.university.isEmpty()) {
                     universityError = "Empty university"
-                } else if (current.describe.isEmpty()) {
+                }
+                if (current.describe.isEmpty()) {
                     describeError = "Empty describe"
-                } else {
-                    if (current.nameError.isEmpty() and current.phoneError.isEmpty() and current.universityError.isEmpty() and current.describeError.isEmpty()) {
-                        _state.update {
-                            it.copy(
-                                showPopup = true,
-                                nameError = nameError,
-                                phoneError = phoneError,
-                                universityError = universityError,
-                                describeError = describeError
-                            )
-                        }
-                        UserInformation.name = current.name
-                        UserInformation.phone = current.phone
-                        UserInformation.university = current.university
-                        UserInformation.describe = current.describe
+                }
+
+                _state.update {
+                    it.copy(
+                        nameError = nameError,
+                        phoneError = phoneError,
+                        universityError = universityError,
+                        describeError = describeError
+                    )
+                }
+
+                if (nameError.isEmpty() and phoneError.isEmpty() and universityError.isEmpty() and describeError.isEmpty()) {
+                    _state.update {
+                        it.copy(
+                            showPopup = true
+                        )
                     }
+                    UserInformation.name = current.name
+                    UserInformation.phone = current.phone
+                    UserInformation.university = current.university
+                    UserInformation.describe = current.describe
                 }
             }
 
@@ -145,6 +152,7 @@ class InformationViewModel: ViewModel() {
                     PickVisualMediaRequest(PickVisualMedia.ImageOnly)
                 )
             }
+
             is InformationIntent.HidePopUp -> {
                 _state.update {
                     it.copy(showPopup = false, editStatus = false)

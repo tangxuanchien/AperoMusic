@@ -63,7 +63,7 @@ fun PlaylistScreen(
                             columns = GridCells.Fixed(2)
                         ) {
                             items(state.displayedSongs) { song ->
-                                var isExpanded = state.expanded && state.selectedSong == song
+                                val isExpanded = state.expanded && state.selectedSong == song
                                 ItemGrid(
                                     song = song,
                                     expanded = isExpanded,
@@ -83,7 +83,7 @@ fun PlaylistScreen(
                     } else {
                         LazyColumn {
                             items(state.displayedSongs) { song ->
-                                var isExpanded = state.expanded && state.selectedSong == song
+                                val isExpanded = state.expanded && state.selectedSong == song
                                 ItemColumn(
                                     song = song,
                                     expanded = isExpanded,
