@@ -23,11 +23,10 @@ import com.example.chientx_apero.R
 
 @Composable
 fun HeaderPlaylist(
-    modifier: Modifier = Modifier.Companion,
-    stateSortView: Boolean,
-    stateGridView: Boolean,
-    onToggleSortView: () -> Unit,
-    onToggleGridView: () -> Unit
+    stateSortView: Boolean = false,
+    stateGridView: Boolean = false,
+    onToggleSortView: () -> Unit = {},
+    onToggleGridView: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier.Companion.padding(vertical = 10.dp)

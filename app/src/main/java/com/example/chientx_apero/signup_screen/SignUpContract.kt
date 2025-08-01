@@ -43,7 +43,3 @@ sealed interface SignUpIntent {
     data object SubmitSignUp : SignUpIntent
     data object ResetIsSubmitSignUp : SignUpIntent
 }
-
-sealed interface MviEvent {
-//    Show message error
-}

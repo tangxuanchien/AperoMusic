@@ -52,7 +52,7 @@ fun PopupAddPlaylist(
     onClickAddPlaylist: () -> Unit,
     currentTheme: ThemeData = darkTheme,
     playlists: SnapshotStateList<Playlist>
-//    = mutableStateListOf<Playlist>(Playlist("Music Apero", 2, R.drawable.central_cee1))
+    = mutableStateListOf<Playlist>()
 ) {
     MaterialTheme(
         colorScheme = currentTheme.color
@@ -158,10 +158,8 @@ fun PopupAddPlaylist(
 @Preview(showBackground = true)
 @Composable
 fun PreviewPopUp() {
-    val playlists = mutableStateListOf<Playlist>()
     PopupAddPlaylist(
         onDismissRequest = {},
-        onClickAddPlaylist = {},
-        playlists = playlists
+        onClickAddPlaylist = {}
     )
 }

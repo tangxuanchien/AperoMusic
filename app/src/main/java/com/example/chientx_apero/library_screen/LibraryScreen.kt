@@ -40,6 +40,7 @@ import com.example.chientx_apero.model.Playlist
 @Composable
 fun LibraryScreen(
     onClickBack: () -> Unit,
+    onClickPlaylist: () -> Unit,
     isLibraryScreen: Boolean = false,
     viewModel: LibraryViewModel = viewModel()
 ) {
@@ -125,9 +126,8 @@ fun LibraryScreen(
         }
         if(state.showPopup){
             PopupAddPlaylist(
-                onClickAddPlaylist = {},
-                onDismissRequest = {},
-                playlists = mutableStateListOf<Playlist>()
+                onClickAddPlaylist = onClickPlaylist,
+                onDismissRequest = {}
             )
         }
     }
@@ -137,6 +137,7 @@ fun LibraryScreen(
 @Composable
 fun Preview() {
     LibraryScreen(
-        onClickBack = {}
+        onClickBack = {},
+        onClickPlaylist = {}
     )
 }

@@ -10,6 +10,7 @@ import com.example.chientx_apero.home_screen.HomeScreen
 import com.example.chientx_apero.information_screen.InformationScreen
 import com.example.chientx_apero.library_screen.LibraryScreen
 import com.example.chientx_apero.login_screen.LoginScreen
+import com.example.chientx_apero.my_playlist_screen.MyPlaylistScreen
 import com.example.chientx_apero.signup_screen.SignUpScreen
 import com.example.chientx_apero.playlist_screen.PlaylistScreen
 
@@ -73,7 +74,15 @@ fun Navigation() {
             entry<Screen.Library> {
                 LibraryScreen(
                     onClickBack = { backStack.removeLastOrNull() },
+                    onClickPlaylist = {
+                        backStack.add(Screen.MyPlaylist)
+                    },
                     isLibraryScreen = true
+                )
+            }
+            entry<Screen.MyPlaylist> {
+                MyPlaylistScreen(
+                    isPlaylistScreen = true
                 )
             }
         }
