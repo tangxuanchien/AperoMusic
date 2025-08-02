@@ -23,6 +23,7 @@ import com.example.chientx_apero.R
 fun DropdownItemLibrary(
     expanded: Boolean,
     onClick: () -> Unit,
+    onShare: () -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier
 ) {
@@ -78,7 +79,7 @@ fun DropdownItemLibrary(
                         color = Color.Companion.White
                     )
                 },
-                onClick = {}
+                onClick = {onShare()}
             )
         }
     }

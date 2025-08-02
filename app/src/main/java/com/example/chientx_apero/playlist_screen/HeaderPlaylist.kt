@@ -23,10 +23,13 @@ import com.example.chientx_apero.R
 
 @Composable
 fun HeaderPlaylist(
+    stateMyPlaylist: Boolean = false,
     stateSortView: Boolean = false,
     stateGridView: Boolean = false,
+    titlePlaylist: String = "My playlist",
     onToggleSortView: () -> Unit = {},
-    onToggleGridView: () -> Unit = {}
+    onToggleGridView: () -> Unit = {},
+    onClickAddMyPlaylist: () -> Unit = {},
 ) {
     Box(
         modifier = Modifier.Companion.padding(vertical = 10.dp)
@@ -46,7 +49,7 @@ fun HeaderPlaylist(
         }
         Text(
             text = if (!stateSortView) {
-                "My playlist"
+                titlePlaylist
             } else {
                 "Sorting"
             },
@@ -61,48 +64,61 @@ fun HeaderPlaylist(
             modifier = Modifier.Companion
                 .align(Alignment.Companion.BottomEnd)
         ) {
-            if (stateGridView) {
+            if (stateMyPlaylist) {
                 Icon(
-                    imageVector = ImageVector.Companion.vectorResource(R.drawable.column),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.Companion
-                        .size(24.dp)
-                        .clickable { onToggleGridView() }
-                )
-            } else {
-                Icon(
-                    imageVector = ImageVector.Companion.vectorResource(R.drawable.grid),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.Companion
-                        .size(24.dp)
-                        .clickable { onToggleGridView() }
-                )
-            }
-            Spacer(modifier = Modifier.Companion.padding(8.dp))
-            if (stateSortView) {
-                Icon(
-                    imageVector = ImageVector.Companion.vectorResource(R.drawable.done),
+                    imageVector = ImageVector.Companion.vectorResource(R.drawable.add_playlist),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.Companion
                         .size(20.dp)
                         .clickable {
-                            onToggleSortView()
+                            onClickAddMyPlaylist()
                         }
                 )
             } else {
-                Icon(
-                    imageVector = ImageVector.Companion.vectorResource(R.drawable.sort),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.Companion
-                        .size(26.dp)
-                        .clickable {
-                            onToggleSortView()
-                        }
-                )
+                if (stateGridView) {
+                    Icon(
+                        imageVector = ImageVector.Companion.vectorResource(R.drawable.column),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.Companion
+                            .size(24.dp)
+                            .clickable { onToggleGridView() }
+                    )
+                } else {
+                    Icon(
+                        imageVector = ImageVector.Companion.vectorResource(R.drawable.grid),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.Companion
+                            .size(24.dp)
+                            .clickable { onToggleGridView() }
+                    )
+                }
+                Spacer(modifier = Modifier.Companion.padding(8.dp))
+                if (stateSortView) {
+                    Icon(
+                        imageVector = ImageVector.Companion.vectorResource(R.drawable.done),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.Companion
+                            .size(20.dp)
+                            .clickable {
+                                onToggleSortView()
+                            }
+                    )
+                } else {
+                    Icon(
+                        imageVector = ImageVector.Companion.vectorResource(R.drawable.sort),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.Companion
+                            .size(26.dp)
+                            .clickable {
+                                onToggleSortView()
+                            }
+                    )
+                }
             }
         }
     }

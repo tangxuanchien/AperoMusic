@@ -1,49 +1,42 @@
 package com.example.chientx_apero.my_playlist_screen
 
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import com.example.chientx_apero.playlist_screen.HeaderPlaylist
-import com.example.chientx_apero.playlist_screen.ItemColumn
-import com.example.chientx_apero.playlist_screen.ItemGrid
-import com.example.chientx_apero.playlist_screen.PlaylistIntent
-import com.example.chientx_apero.playlist_screen.PlaylistViewModel
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.chientx_apero.R
 import com.example.chientx_apero.home_screen.NavigationBar
-import com.example.chientx_apero.playlist_screen.PlaylistScreen
+import com.example.chientx_apero.model.DataPlaylists
+import com.example.chientx_apero.model.MyPlaylists
+import com.example.chientx_apero.model.Playlist
+import com.example.chientx_apero.playlist_screen.HeaderPlaylist
 
 @Composable
 fun MyPlaylistScreen(
     isPlaylistScreen: Boolean = false,
     viewModel: MyPlaylistViewModel = viewModel(),
+    onClickLibrary: () -> Unit = {},
+    onClickPlaylist: () -> Unit = {}
 ) {
-    val context = LocalContext.current
+    var titleMyPlaylist by remember { mutableStateOf("") }
+    var showPopup by remember { mutableStateOf(false) }
+    var isRename by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
     MaterialTheme(
         colorScheme = state.currentTheme.color
@@ -56,7 +49,13 @@ fun MyPlaylistScreen(
                     .padding(vertical = 18.dp, horizontal = 10.dp)
                     .fillMaxSize()
             ) {
-                HeaderPlaylist()
+                HeaderPlaylist(
+                    stateMyPlaylist = true,
+                    onClickAddMyPlaylist = {
+                        showPopup = true
+                        titleMyPlaylist = ""
+                    }
+                )
                 Box(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -74,12 +73,23 @@ fun MyPlaylistScreen(
                                     onDismissRequest = {
                                         viewModel.processIntent(MyPlaylistIntent.CloseMenu)
                                     },
-                                    onClick = {
+                                    onClickRemovePlaylist = {
                                         viewModel.processIntent(
-                                            MyPlaylistIntent.RemovePlaylist(
-                                                playlist
-                                            )
+                                            MyPlaylistIntent.RemovePlaylist(playlist)
                                         )
+                                    },
+                                    onClickRename = {
+                                        viewModel.processIntent(
+                                            MyPlaylistIntent.RenamePlaylist(playlist)
+                                        )
+                                        showPopup = true
+                                        isRename = true
+                                    },
+                                    onClickPlaylist = {
+                                        onClickPlaylist()
+                                        DataPlaylists.name = playlist.name
+                                        DataPlaylists.songs = playlist.song
+                                        DataPlaylists.id = playlist.id
                                     }
                                 )
                             }
@@ -88,26 +98,11 @@ fun MyPlaylistScreen(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            if (!state.showPopup) {
-                                Text(
-                                    text = "You don't have any playlists. Click the \"+\" button to add",
-                                    fontSize = 25.sp,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    textAlign = TextAlign.Companion.Center,
-                                    modifier = Modifier
-                                        .padding(
-                                            bottom = 25.dp,
-                                            start = 45.dp,
-                                            end = 45.dp,
-                                            top = 200.dp
-                                        )
-                                )
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.plus),
-                                    contentDescription = "Add playlist",
-                                    tint = MaterialTheme.colorScheme.onBackground,
-                                    modifier = Modifier.clickable {
-                                        viewModel.processIntent(MyPlaylistIntent.AddMyPlaylist)
+                            if (!showPopup) {
+                                DefaultMyPlaylistScreen(
+                                    onClickAddMyPlaylist = {
+                                        showPopup = true
+                                        titleMyPlaylist = ""
                                     }
                                 )
                             }
@@ -119,22 +114,53 @@ fun MyPlaylistScreen(
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background),
                     onClickPlaylist = {},
-                    onClickLibrary = {},
+                    onClickLibrary = {
+                        onClickLibrary()
+                        MyPlaylists.myPlaylists = state.displayedMyPlaylists
+                    },
                     isPlaylistScreen = isPlaylistScreen
                 )
-                if (state.showPopup) {
-                    PopupAddMyPlaylist(
-                        onDismissRequest = {
-
-                        },
-                        onCreateMyPlaylist = {
-
-                        },
-                        onValueChange = {
-                            viewModel.processIntent(MyPlaylistIntent.TitleMyPlaylistChanged(it))
-                        },
-                        value = state.titleMyPlaylist
-                    )
+                if (showPopup) {
+                    if (isRename) {
+                        PopupAddMyPlaylist(
+                            onDismissRequest = {
+                                showPopup = false
+                            },
+                            onCreateMyPlaylist = {
+                                viewModel.processIntent(
+                                    MyPlaylistIntent.SubmitRenameMyPlaylist(
+                                        playlist = state.selectedMyPlaylist!!,
+                                        oldNameMyPlaylist = state.oldNameMyPlaylist
+                                    )
+                                )
+                                showPopup = false
+                            },
+                            onValueChange = {
+                                viewModel.processIntent(
+                                    MyPlaylistIntent.OldNameMyPlaylistChanged(it)
+                                )
+                            },
+                            value = state.oldNameMyPlaylist
+                        )
+                    } else {
+                        PopupAddMyPlaylist(
+                            onDismissRequest = {
+                                showPopup = false
+                            },
+                            onCreateMyPlaylist = {
+                                viewModel.processIntent(
+                                    MyPlaylistIntent.SubmitNewMyPlaylist(
+                                        titleMyPlaylist
+                                    )
+                                )
+                                showPopup = false
+                            },
+                            onValueChange = {
+                                titleMyPlaylist = it
+                            },
+                            value = titleMyPlaylist
+                        )
+                    }
                 }
             }
         }
@@ -145,7 +171,6 @@ fun MyPlaylistScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewItemGrid() {
-    MyPlaylistScreen(
-    )
+    MyPlaylistScreen()
 }
 

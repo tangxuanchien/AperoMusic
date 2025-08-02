@@ -63,7 +63,7 @@ fun getAllMp3Files(context: Context): MutableList<Song> {
             val durationFormat = String.format("%02d:%02d", minutes, seconds)
 
 //            Log.d("Music", "$id + $title + $artist + $duration + $data + $imageCover")
-            songs.add(Song(title, artist , durationFormat, imageCover))
+            songs.add(Song(id, title, artist , data, durationFormat, imageCover))
         }
     }
     return songs

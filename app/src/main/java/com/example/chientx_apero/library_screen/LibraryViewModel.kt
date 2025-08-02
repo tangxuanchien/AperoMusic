@@ -49,16 +49,13 @@ class LibraryViewModel: ViewModel() {
                 }
             }
 
-            is LibraryIntent.AddToPlaylist -> {
+            LibraryIntent.HidePopUp -> {
                 _state.update {
                     it.copy(
-                        showPopup = true,
-                        expanded = false,
+                        expanded = false
                     )
                 }
             }
-
-            LibraryIntent.HidePopUp -> TODO()
         }
     }
 }

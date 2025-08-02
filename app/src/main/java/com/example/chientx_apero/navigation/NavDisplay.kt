@@ -29,7 +29,7 @@ fun Navigation() {
                     },
                     onClickPlaylist = {
                         backStack.clear()
-                        backStack.add(Screen.Playlist)
+                        backStack.add(Screen.MyPlaylist)
                     },
                     onClickLibrary = {
                         backStack.clear()
@@ -41,7 +41,7 @@ fun Navigation() {
                     isHomeScreen = true
                 )
             }
-            entry<Screen.Login> { screen ->
+            entry<Screen.Login> {
                 LoginScreen(
                     onClickSignUp = {
                         backStack.add(Screen.Signup)
@@ -50,8 +50,8 @@ fun Navigation() {
                         backStack.clear()
                         backStack.add(Screen.Home)
                     },
-                    username = screen.username,
-                    password = screen.password
+                    username = it.username,
+                    password = it.password
                 )
             }
             entry<Screen.Signup> {
@@ -61,7 +61,7 @@ fun Navigation() {
                     }
                 )
             }
-            entry<Screen.Playlist> {
+            entry<Screen.Playlists> {
                 PlaylistScreen(
                     isPlaylistScreen = true
                 )
@@ -82,7 +82,15 @@ fun Navigation() {
             }
             entry<Screen.MyPlaylist> {
                 MyPlaylistScreen(
-                    isPlaylistScreen = true
+                    isPlaylistScreen = true,
+                    onClickLibrary = {
+                        backStack.clear()
+                        backStack.add(Screen.Library)
+                    },
+                    onClickPlaylist = {
+                        backStack.clear()
+                        backStack.add(Screen.Playlists)
+                    }
                 )
             }
         }

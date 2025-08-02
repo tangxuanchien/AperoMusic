@@ -1,5 +1,7 @@
 package com.example.chientx_apero.library_screen
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +26,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.home_screen.NavigationBar
+import com.example.chientx_apero.model.MyPlaylists
 import com.example.chientx_apero.model.Playlist
 
 
@@ -46,6 +53,9 @@ fun LibraryScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    var showPopup by remember { mutableStateOf(false) }
+    var myPlaylists = MyPlaylists.myPlaylists
+
     LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadSongs(context))
     }
@@ -111,23 +121,38 @@ fun LibraryScreen(
                                     viewModel.processIntent(LibraryIntent.CloseMenu)
                                 },
                                 onClick = {
-                                    viewModel.processIntent(LibraryIntent.AddToPlaylist(song))
+                                    viewModel.processIntent(LibraryIntent.HidePopUp)
+                                    showPopup = true
+                                },
+                                onShare = {
+                                    shareDataToDevice(context, song)
                                 }
                             )
                         }
                     }
                 }
                 NavigationBar(
-                    onClickPlaylist = { },
+                    onClickPlaylist = onClickPlaylist,
                     onClickLibrary = { },
                     isLibraryScreen = isLibraryScreen
                 )
             }
         }
-        if(state.showPopup){
-            PopupAddPlaylist(
-                onClickAddPlaylist = onClickPlaylist,
-                onDismissRequest = {}
+        if(showPopup){
+            PopupAddToPlaylist(
+                onClickCreatePlaylist = onClickPlaylist,
+                onClickAddToPlaylist = { playlist ->
+                    myPlaylists.map {
+                        if(it.id == playlist){
+                            it.song.add(state.selectedSong!!)
+//                            Log.d("Playlist", it.toString())
+                            Toast.makeText(context, "Add success to ${it.name}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    showPopup = false
+                },
+                onDismissRequest = {},
+                playlists = myPlaylists
             )
         }
     }

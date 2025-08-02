@@ -13,14 +13,15 @@ data class MyPlaylistState(
     val selectedMyPlaylist: Playlist? = null,
     val currentTheme: ThemeData = darkTheme,
     val checked: Boolean = false,
-    val showPopup: Boolean = false,
-    val titleMyPlaylist: String = ""
+    val oldNameMyPlaylist: String = "",
 )
 
 sealed interface MyPlaylistIntent {
     data class RemovePlaylist(val playlist: Playlist) : MyPlaylistIntent
+    data class RenamePlaylist(val playlist: Playlist) : MyPlaylistIntent
     data class OpenMenu(val playlist: Playlist) : MyPlaylistIntent
     data object CloseMenu : MyPlaylistIntent
-    data object AddMyPlaylist : MyPlaylistIntent
-    data class TitleMyPlaylistChanged(val titleMyPlaylist: String): MyPlaylistIntent
+    data class OldNameMyPlaylistChanged(val oldNameMyPlaylist: String) : MyPlaylistIntent
+    data class SubmitNewMyPlaylist(val titleMyPlaylist: String): MyPlaylistIntent
+    data class SubmitRenameMyPlaylist(val playlist: Playlist, val oldNameMyPlaylist: String): MyPlaylistIntent
 }

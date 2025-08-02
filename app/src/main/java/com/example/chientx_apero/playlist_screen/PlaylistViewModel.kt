@@ -61,10 +61,17 @@ class PlaylistViewModel : ViewModel() {
             }
 
             is PlaylistIntent.LoadSongs -> {
+                val intentSongIds = intent.songs.map { it.id }.toSet()
                 val songs = getAllMp3Files(intent.context)
+                    .filter {
+                        it.id in intentSongIds
+                    }
+                var displayedSongs = mutableStateListOf<Song>()
+                displayedSongs.addAll(songs)
+
                 _state.update {
                     it.copy(
-                        displayedSongs = mutableStateListOf<Song>().apply { addAll(songs) }
+                        displayedSongs = displayedSongs
                     )
                 }
             }

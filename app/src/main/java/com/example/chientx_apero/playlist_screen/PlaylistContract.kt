@@ -26,9 +26,5 @@ sealed interface PlaylistIntent {
     data class RemoveSong(val song: Song) : PlaylistIntent
     data class OpenMenu(val song: Song) : PlaylistIntent
     data object CloseMenu : PlaylistIntent
-    data class LoadSongs(val context: Context): PlaylistIntent
-}
-
-sealed interface PlaylistEvent {
-//    data class LoadSongs(val context: Context): PlaylistEvent
+    data class LoadSongs(val context: Context, val songs: MutableList<Song>): PlaylistIntent
 }

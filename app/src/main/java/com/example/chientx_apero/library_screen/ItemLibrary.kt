@@ -36,6 +36,7 @@ fun ItemLibrary(
     song: Song,
     onOpenMenu: () -> Unit,
     onClick: () -> Unit,
+    onShare: () -> Unit,
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
@@ -97,6 +98,7 @@ fun ItemLibrary(
             DropdownItemLibrary(
                 expanded = expanded,
                 onClick = onClick,
+                onShare = onShare,
                 onDismissRequest = onDismissRequest,
                 modifier = Modifier.Companion.align(Alignment.Companion.CenterEnd)
             )

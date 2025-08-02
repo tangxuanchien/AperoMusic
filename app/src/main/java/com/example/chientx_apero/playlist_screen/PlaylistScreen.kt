@@ -1,5 +1,6 @@
 package com.example.chientx_apero.playlist_screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.home_screen.NavigationBar
+import com.example.chientx_apero.model.DataPlaylists
 
 @Composable
 fun PlaylistScreen(
@@ -30,8 +32,12 @@ fun PlaylistScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+    val name = DataPlaylists.name
+    val songs = DataPlaylists.songs
+    Log.d("Choose", DataPlaylists.songs.toString())
+    Log.d("Choose", getAllMp3Files(context).toString())
     LaunchedEffect(Unit) {
-        viewModel.processIntent(PlaylistIntent.LoadSongs(context))
+        viewModel.processIntent(PlaylistIntent.LoadSongs(context, songs))
     }
     MaterialTheme(
         colorScheme = state.currentTheme.color
@@ -45,6 +51,7 @@ fun PlaylistScreen(
                     .fillMaxSize()
             ) {
                 HeaderPlaylist(
+                    titlePlaylist = name,
                     stateSortView = state.isSortView,
                     onToggleSortView = {
                         viewModel.processIntent(PlaylistIntent.ToggleSortView)

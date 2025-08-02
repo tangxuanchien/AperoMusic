@@ -35,7 +35,9 @@ import com.example.chientx_apero.model.Song
 fun ItemMyPlaylist(
     playlist: Playlist,
     onOpenMenu: () -> Unit,
-    onClick: () -> Unit,
+    onClickRemovePlaylist: () -> Unit,
+    onClickRename: () -> Unit,
+    onClickPlaylist: () -> Unit,
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
@@ -65,10 +67,14 @@ fun ItemMyPlaylist(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Companion.Bold,
-                    modifier = Modifier.Companion.padding(bottom = 4.dp)
+                    modifier = Modifier.Companion
+                        .padding(bottom = 4.dp)
+                        .clickable{
+                            onClickPlaylist()
+                        }
                 )
                 Text(
-                    text = "${playlist.totalSong} songs",
+                    text = "${playlist.song.size} songs",
                     fontWeight = FontWeight.Companion.Bold,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.secondary
@@ -88,9 +94,10 @@ fun ItemMyPlaylist(
                         }
                 )
             }
-            DropdownItemApp(
+            DropdownMenuMyPlaylist(
                 expanded = expanded,
-                onClick = onClick,
+                onClickRename = onClickRename,
+                onClickRemovePlaylist = onClickRemovePlaylist,
                 onDismissRequest = onDismissRequest,
                 modifier = Modifier.Companion.align(Alignment.Companion.CenterEnd)
             )
