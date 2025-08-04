@@ -1,5 +1,6 @@
 package com.example.chientx_apero.login_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,10 +23,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.R
 import com.example.chientx_apero.information_screen.Input
+import com.example.chientx_apero.ui.theme.ThemeData
+import com.example.chientx_apero.ui.theme.darkTheme
 
 
 @Composable
@@ -44,16 +51,32 @@ fun LoginScreen(
     onClickHome: () -> Unit,
     username: String,
     password: String,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+    var password by remember { mutableStateOf(password) }
+    var username by remember { mutableStateOf(username) }
+    var currentTheme by remember { mutableStateOf(darkTheme) }
+    LaunchedEffect(state.isLoginSuccess) {
+        if (state.isLoginSuccess) {
+            onClickHome()
+            viewModel.processIntent(LoginIntent.ResetLoginSuccess)
+        }
+    }
     LaunchedEffect(Unit) {
-        viewModel.processIntent(LoginIntent.SetInitialData(username, password))
+        viewModel.event.collect { event ->
+            when(event) {
+                is LoginEvent.ShowLoginMessage -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     MaterialTheme(
-        colorScheme = state.currentTheme.color,
-        typography = state.currentTheme.typography
+        colorScheme = currentTheme.color,
+        typography = currentTheme.typography
     ) {
         Surface(
             modifier = Modifier
@@ -87,20 +110,16 @@ fun LoginScreen(
                     }
                     Input(
                         placeholder = "Username",
-                        value = state.username,
-                        onValueChange = {
-                            viewModel.processIntent(LoginIntent.UsernameChanged(it))
-                        },
-                        textError = state.usernameError,
+                        value = username,
+                        onValueChange = { username = it },
+                        textError = "",
                         leadingIcon = R.drawable.user
                     )
                     Input(
                         placeholder = "Password",
-                        value = state.password,
-                        onValueChange = {
-                            viewModel.processIntent(LoginIntent.PasswordChanged(it))
-                        },
-                        textError = state.passwordError,
+                        value = password,
+                        onValueChange = { password = it },
+                        textError = "",
                         leadingIcon = R.drawable.lock,
                         trailingIcon = {
                             Icon(
@@ -143,7 +162,15 @@ fun LoginScreen(
                         )
                     }
                     Button(
-                        onClick = onClickHome,
+                        onClick = {
+                            viewModel.processIntent(
+                                LoginIntent.CheckPermission(
+                                    username,
+                                    password,
+                                    context
+                                )
+                            )
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary
                         ),

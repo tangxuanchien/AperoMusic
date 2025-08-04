@@ -1,14 +1,28 @@
 package com.example.chientx_apero.signup_screen
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.chientx_apero.login_screen.LoginEvent
+import com.example.chientx_apero.room_db.entity.User
+import com.example.chientx_apero.room_db.repository.AppDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SignUpViewModel : ViewModel() {
     private val _state = MutableStateFlow<SignUpState>(SignUpState())
     val state: StateFlow<SignUpState> = _state
+    private val _event = MutableSharedFlow<SignUpEvent>()
+    val event: SharedFlow<SignUpEvent> = _event.asSharedFlow()
+    var db: AppDatabase? = null
 
     fun processIntent(intent: SignUpIntent) {
         when (intent) {
@@ -68,12 +82,21 @@ class SignUpViewModel : ViewModel() {
                     )
                 }
             }
+
+            is SignUpIntent.ProvideContext -> {
+                db = AppDatabase.getDatabase(intent.context)
+            }
+        }
+    }
+
+    private fun sendEvent(event: SignUpEvent) {
+        viewModelScope.launch {
+            _event.emit(event)
         }
     }
 
     private fun submitSignUp() {
         val current = _state.value
-
         var usernameError = ""
         var passwordError = ""
         var confirmPasswordError = ""
@@ -119,18 +142,50 @@ class SignUpViewModel : ViewModel() {
             emailError = ""
         }
 
-        val hasError = confirmPasswordError.isEmpty() && passwordError.isEmpty() &&
-                usernameError.isEmpty() && emailError.isEmpty()
-
-        _state.update {
-            it.copy(
-                usernameError = usernameError,
-                passwordError = passwordError,
-                confirmPasswordError = confirmPasswordError,
-                emailError = emailError,
-                isSubmitSignUp = hasError
-            )
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    usernameError = usernameError,
+                    passwordError = passwordError,
+                    confirmPasswordError = confirmPasswordError,
+                    emailError = emailError
+                )
+            }
         }
 
+        var hasError = confirmPasswordError.isEmpty() && passwordError.isEmpty() &&
+                usernameError.isEmpty() && emailError.isEmpty()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val userDao = db?.userDao()
+            if (userDao?.checkExistAccount(_state.value.username) != null) {
+                sendEvent(SignUpEvent.showSignUpMessage("Account already exists"))
+                hasError = false
+            } else {
+                if (hasError) {
+                    userDao?.insertAll(
+                        User(
+                            id = 0,
+                            name = null,
+                            describe = null,
+                            university = null,
+                            phone = null,
+                            avatar = null,
+                            password = _state.value.password,
+                            email = _state.value.email,
+                            username = _state.value.username
+                        )
+                    )
+                    sendEvent(SignUpEvent.showSignUpMessage("Sign up success"))
+                }
+            }
+        }
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isSubmitSignUp = hasError
+                )
+            }
+        }
     }
 }

@@ -1,59 +1,29 @@
 package com.example.chientx_apero.information_screen
 
+import android.content.Context
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.model.SessionUser
 import com.example.chientx_apero.model.UserInformation
+import com.example.chientx_apero.room_db.entity.User
+import com.example.chientx_apero.room_db.repository.AppDatabase
 import com.example.chientx_apero.ui.theme.darkTheme
 import com.example.chientx_apero.ui.theme.lightTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class InformationViewModel : ViewModel() {
+class InformationViewModel() : ViewModel() {
     private val _state = MutableStateFlow<InformationState>(InformationState())
     val state: StateFlow<InformationState> = _state
+    private var db: AppDatabase? = null
 
     fun processIntent(intent: InformationIntent) {
         when (intent) {
-            is InformationIntent.DescribeChanged -> {
-                _state.update {
-                    it.copy(
-                        describe = intent.describe,
-                    )
-                }
-            }
-
-            is InformationIntent.NameChanged -> {
-                var nameError = ""
-                if (!Regex("^[\\p{L}\\s]+\$").matches(intent.name)) {
-                    nameError = "Invalid error"
-                } else if (Regex("^[\\p{L}\\s]+\$").matches(intent.name) and !nameError.isEmpty()) {
-                    nameError = ""
-                }
-                _state.update {
-                    it.copy(
-                        name = intent.name,
-                        nameError = nameError
-                    )
-                }
-            }
-
-            is InformationIntent.PhoneChanged -> {
-                var phoneError = ""
-                if (!Regex("^\\d+\$").matches(intent.phone)) {
-                    phoneError = "Invalid error"
-                } else if (Regex("^\\d+\$").matches(intent.phone) and !phoneError.isEmpty()) {
-                    phoneError = ""
-                }
-                _state.update {
-                    it.copy(
-                        phone = intent.phone,
-                        phoneError = phoneError
-                    )
-                }
-            }
-
             is InformationIntent.ToggleCurrentTheme -> {
                 var currentTheme = _state.value.currentTheme
                 if (_state.value.currentTheme == lightTheme) {
@@ -64,21 +34,6 @@ class InformationViewModel : ViewModel() {
                 _state.update {
                     it.copy(
                         currentTheme = currentTheme
-                    )
-                }
-            }
-
-            is InformationIntent.UniversityChanged -> {
-                var universityError = ""
-                if (!Regex("^[\\p{L}\\s]+\$").matches(intent.university)) {
-                    universityError = "Invalid error"
-                } else if (Regex("^[\\p{L}\\s]+\$").matches(intent.university) and !universityError.isEmpty()) {
-                    universityError = ""
-                }
-                _state.update {
-                    it.copy(
-                        university = intent.university,
-                        universityError = universityError
                     )
                 }
             }
@@ -100,29 +55,28 @@ class InformationViewModel : ViewModel() {
                 }
             }
 
-            InformationIntent.SubmitInformation -> {
-                val current = _state.value
+            is InformationIntent.SubmitInformation -> {
                 var nameError = ""
                 var phoneError = ""
                 var universityError = ""
                 var describeError = ""
 
-                if (!Regex("^[A-Za-z0-9\\s]+\$").matches(current.describe)) {
+                if (!Regex("^[A-Za-z0-9\\s]+\$").matches(intent.describe)) {
                     describeError = "Invalid error"
-                } else if (Regex("^[A-Za-z0-9\\s]+\$").matches(current.describe) and !describeError.isEmpty()) {
+                } else if (Regex("^[A-Za-z0-9\\s]+\$").matches(intent.describe) and !describeError.isEmpty()) {
                     describeError = ""
                 }
-                if (current.name.isEmpty()) {
-                    nameError = "Empty name"
+
+                if (!Regex("^[\\p{L}\\s]+\$").matches(intent.name)) {
+                    nameError = "Invalid error"
+                } else if (Regex("^[\\p{L}\\s]+\$").matches(intent.name) and !nameError.isEmpty()) {
+                    nameError = ""
                 }
-                if (current.phone.isEmpty()) {
-                    phoneError = "Empty phone"
-                }
-                if (current.university.isEmpty()) {
-                    universityError = "Empty university"
-                }
-                if (current.describe.isEmpty()) {
-                    describeError = "Empty describe"
+
+                if (!Regex("^\\d+\$").matches(intent.phone)) {
+                    phoneError = "Invalid error"
+                } else if (Regex("^\\d+\$").matches(intent.phone) and !phoneError.isEmpty()) {
+                    phoneError = ""
                 }
 
                 _state.update {
@@ -140,10 +94,18 @@ class InformationViewModel : ViewModel() {
                             showPopup = true
                         )
                     }
-                    UserInformation.name = current.name
-                    UserInformation.phone = current.phone
-                    UserInformation.university = current.university
-                    UserInformation.describe = current.describe
+
+                    viewModelScope.launch {
+                        val db = AppDatabase.getDatabase(intent.context)
+                        db.userDao().updateInformation(
+                            name = intent.name,
+                            phone = intent.phone,
+                            university = intent.university,
+                            describe = intent.describe,
+                            username = SessionUser.currentUser?.username!!
+                        )
+                        SessionUser.currentUser = db.userDao().findByUsername(SessionUser.currentUser?.username!!)
+                    }
                 }
             }
 
@@ -157,6 +119,10 @@ class InformationViewModel : ViewModel() {
                 _state.update {
                     it.copy(showPopup = false, editStatus = false)
                 }
+            }
+
+            is InformationIntent.ProvideContext -> {
+                db = AppDatabase.getDatabase(intent.context)
             }
         }
     }

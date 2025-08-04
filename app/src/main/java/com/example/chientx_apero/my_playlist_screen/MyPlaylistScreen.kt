@@ -52,8 +52,8 @@ fun MyPlaylistScreen(
                 HeaderPlaylist(
                     stateMyPlaylist = true,
                     onClickAddMyPlaylist = {
-                        showPopup = true
                         titleMyPlaylist = ""
+                        showPopup = true
                     }
                 )
                 Box(
@@ -125,6 +125,7 @@ fun MyPlaylistScreen(
                         PopupAddMyPlaylist(
                             onDismissRequest = {
                                 showPopup = false
+                                titleMyPlaylist = ""
                             },
                             onCreateMyPlaylist = {
                                 viewModel.processIntent(

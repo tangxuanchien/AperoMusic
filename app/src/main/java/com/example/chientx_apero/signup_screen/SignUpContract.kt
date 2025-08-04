@@ -1,5 +1,6 @@
 package com.example.chientx_apero.signup_screen
 
+import android.content.Context
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.chientx_apero.ui.theme.ThemeData
@@ -38,8 +39,13 @@ sealed interface SignUpIntent {
     data class ConfirmPasswordChanged(val confirmPassword: String) : SignUpIntent
     data class EmailChanged(val email: String) : SignUpIntent
     data class SetInitialData(val username: String, val password: String) : SignUpIntent
+    data class ProvideContext(val context: Context) : SignUpIntent
     data object TogglePasswordVisibility : SignUpIntent
     data object ToggleConfirmPasswordVisibility : SignUpIntent
     data object SubmitSignUp : SignUpIntent
     data object ResetIsSubmitSignUp : SignUpIntent
+}
+
+sealed interface SignUpEvent {
+    data class showSignUpMessage(val message: String): SignUpEvent
 }
