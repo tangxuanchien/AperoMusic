@@ -6,13 +6,13 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.example.chientx_apero.home_screen.HomeScreen
-import com.example.chientx_apero.information_screen.InformationScreen
-import com.example.chientx_apero.library_screen.LibraryScreen
-import com.example.chientx_apero.login_screen.LoginScreen
-import com.example.chientx_apero.my_playlist_screen.MyPlaylistScreen
-import com.example.chientx_apero.signup_screen.SignUpScreen
-import com.example.chientx_apero.playlist_screen.PlaylistScreen
+import com.example.chientx_apero.ui.home.HomeScreen
+import com.example.chientx_apero.ui.information.InformationScreen
+import com.example.chientx_apero.ui.library.LibraryScreen
+import com.example.chientx_apero.ui.login.LoginScreen
+import com.example.chientx_apero.ui.my_playlist.MyPlaylistScreen
+import com.example.chientx_apero.ui.signup.SignUpScreen
+import com.example.chientx_apero.ui.playlist.PlaylistScreen
 
 @Composable
 fun Navigation() {

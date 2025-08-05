@@ -9,17 +9,20 @@ import com.example.chientx_apero.room_db.entity.Playlist
 @Dao
 interface PlaylistDao {
     @Query("SELECT * FROM playlist")
-    fun getAll(): List<Playlist>
+    suspend fun getAll(): List<Playlist>
 
     @Query("SELECT * FROM playlist WHERE id IN (:playlistIds)")
-    fun loadAllByIds(playlistIds: IntArray): List<Playlist>
+    suspend fun loadAllByIds(playlistIds: IntArray): List<Playlist>
 
     @Query("SELECT * FROM playlist WHERE name = :name LIMIT 1")
-    fun findByName(name: String): Playlist
+    suspend fun findByName(name: String): Playlist
 
     @Insert
-    fun insertAll(vararg playlist: Playlist)
+    suspend fun insertAll(vararg playlist: Playlist)
 
-    @Delete
-    fun delete(playlist: Playlist)
+    @Query("DELETE FROM playlist WHERE id = :id")
+    suspend fun deleteById(id: Int): Int
+
+    @Query("UPDATE playlist SET name = :name WHERE id = :id")
+    suspend fun updateNameById(name: String, id: Int): Int
 }

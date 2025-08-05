@@ -5,6 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Playlist(
-    @PrimaryKey val id: Int,
-    val name: String
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val name: String,
+    val image: String?,
+    val totalSongs: Int
 )
