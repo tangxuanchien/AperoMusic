@@ -8,6 +8,7 @@ class PlaylistRepository(context: Context) {
     val playlistDao = AppDatabase.getDatabase(context).playlistDao()
 
     suspend fun getAllPlaylists(): List<Playlist> = playlistDao.getAll()
+    suspend fun getPlaylistById(playlistId: Long): Playlist = playlistDao.getPlaylistById(playlistId)
     suspend fun insertPlaylist(playlist: Playlist) = playlistDao.insertAll(playlist)
 
     suspend fun deletePlaylist(idPlaylist: Int) = playlistDao.deleteById(idPlaylist)

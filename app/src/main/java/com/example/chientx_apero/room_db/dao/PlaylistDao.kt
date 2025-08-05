@@ -10,8 +10,8 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlist")
     suspend fun getAll(): List<Playlist>
 
-    @Query("SELECT * FROM playlist WHERE id IN (:playlistIds)")
-    suspend fun loadAllByIds(playlistIds: IntArray): List<Playlist>
+    @Query("SELECT * FROM playlist WHERE id = :playlistIds")
+    suspend fun getPlaylistById(playlistIds: Long): Playlist
 
     @Query("SELECT * FROM playlist WHERE name = :name LIMIT 1")
     suspend fun findByName(name: String): Playlist

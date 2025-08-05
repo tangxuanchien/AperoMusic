@@ -55,7 +55,6 @@ fun MyPlaylistScreen(
             }
         }
     }
-    Log.d("Playlist", state.displayedMyPlaylists.toString())
     MaterialTheme(
         colorScheme = state.currentTheme.color
     ) {
@@ -151,6 +150,7 @@ fun MyPlaylistScreen(
                                     )
                                 )
                                 showPopup = false
+                                isRename = false
                             },
                             onValueChange = {
                                 viewModel.processIntent(

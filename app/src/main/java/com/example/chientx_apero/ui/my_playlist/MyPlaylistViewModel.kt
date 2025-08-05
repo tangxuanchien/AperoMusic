@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.R
 import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.room_db.repository.PlaylistRepository
+import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -56,6 +57,10 @@ class MyPlaylistViewModel : ViewModel() {
                     val repository = PlaylistRepository(intent.context)
                     repository.deletePlaylist(
                         intent.playlist.id
+                    )
+                    val crossRefRepository = PlaylistSongCrossRefRepository(intent.context)
+                    crossRefRepository.deleteByPlaylistId(
+                        intent.playlist.id.toLong()
                     )
                     loadPlaylists(intent.context)
                 }

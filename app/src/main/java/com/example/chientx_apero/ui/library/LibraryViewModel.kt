@@ -83,13 +83,17 @@ class LibraryViewModel() : ViewModel() {
                     if(hasSongInPlaylist == null) {
                         val repository = PlaylistSongCrossRefRepository(intent.context)
                         repository.addSongToPlaylist(intent.playlistId, intent.songId)
-                        val totalSongs = repository.getTotalSongsInPlaylistById(intent.playlistId)
 
                         val playlistRepository = PlaylistRepository(intent.context)
+                        val totalSongs = playlistRepository.getPlaylistById(intent.playlistId)
                         playlistRepository.updateTotalSongsById(
-                            totalSongs.toInt(),
+                            totalSongs.totalSongs.toInt() + 1,
                             intent.playlistId.toInt()
                         )
+
+                        _state.value.playlists.clear()
+                        _state.value.playlists.addAll(playlistRepository.getAllPlaylists())
+
                         sendEvent(LibraryEvent.ShowMessageLibrary("Add song to playlist success"))
                     } else{
                         sendEvent(LibraryEvent.ShowMessageLibrary("Song has in playlists"))
