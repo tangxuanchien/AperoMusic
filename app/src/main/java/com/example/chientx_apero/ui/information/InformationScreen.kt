@@ -28,7 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.chientx_apero.model.SessionUser
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.Input
 import com.example.chientx_apero.ui.information.components.Avatar
 import com.example.chientx_apero.ui.information.components.ButtonInformation
@@ -45,10 +45,10 @@ fun InformationScreen(
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
-    var name by remember { mutableStateOf(SessionUser.currentUser?.name ?: "") }
-    var phone by remember { mutableStateOf(SessionUser.currentUser?.phone ?: "") }
-    var university by remember { mutableStateOf(SessionUser.currentUser?.university ?: "") }
-    var describe by remember { mutableStateOf(SessionUser.currentUser?.describe ?: "") }
+    var name by remember { mutableStateOf(AppCache.currentUser?.name ?: "") }
+    var phone by remember { mutableStateOf(AppCache.currentUser?.phone ?: "") }
+    var university by remember { mutableStateOf(AppCache.currentUser?.university ?: "") }
+    var describe by remember { mutableStateOf(AppCache.currentUser?.describe ?: "") }
 
     LaunchedEffect(Unit) {
         viewModel.processIntent(InformationIntent.ProvideContext(context))

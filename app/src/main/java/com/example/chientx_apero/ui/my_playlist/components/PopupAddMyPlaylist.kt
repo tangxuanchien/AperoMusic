@@ -29,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.chientx_apero.model.PlaylistModel
+import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
 
@@ -40,8 +40,8 @@ fun PopupAddMyPlaylist(
     currentTheme: ThemeData = darkTheme,
     onValueChange: (String) -> Unit,
     value: String,
-    playlistModels: SnapshotStateList<PlaylistModel>
-    = mutableStateListOf<PlaylistModel>(),
+    playlists: SnapshotStateList<Playlist>
+    = mutableStateListOf<Playlist>(),
 ) {
     MaterialTheme(
         colorScheme = currentTheme.color
@@ -78,7 +78,7 @@ fun PopupAddMyPlaylist(
                         modifier = Modifier.Companion
                             .fillMaxWidth()
                     )
-                    if (playlistModels.isEmpty()) {
+                    if (playlists.isEmpty()) {
                         TextField(
                             placeholder = { Text("Give your playlist a title") },
                             value = value,

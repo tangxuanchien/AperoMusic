@@ -28,11 +28,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
-import com.example.chientx_apero.model.SongModel
+import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
 fun ItemGrid(
-    songModel: SongModel,
+    song: Song,
     onOpenMenu: () -> Unit,
     onClick: () -> Unit,
     expanded: Boolean,
@@ -72,7 +72,7 @@ fun ItemGrid(
                 )
             }
             Image(
-                painter = rememberAsyncImagePainter(songModel.image),
+                painter = rememberAsyncImagePainter(song.image),
                 contentDescription = null,
                 modifier = Modifier.Companion
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(14.dp))
@@ -87,7 +87,7 @@ fun ItemGrid(
                     horizontalAlignment = Alignment.Companion.CenterHorizontally
                 ) {
                     Text(
-                        text = songModel.name,
+                        text = song.name,
                         color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Companion.Bold,
@@ -98,7 +98,7 @@ fun ItemGrid(
                     )
                     Text(
                         modifier = Modifier.Companion.padding(top = 4.dp),
-                        text = songModel.artist,
+                        text = song.artist,
                         fontWeight = FontWeight.Companion.Bold,
                         fontSize = 18.sp,
                         maxLines = 1,
@@ -107,7 +107,7 @@ fun ItemGrid(
                     )
                     Text(
                         modifier = Modifier.Companion.padding(top = 8.dp),
-                        text = songModel.duration,
+                        text = song.duration,
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                     )

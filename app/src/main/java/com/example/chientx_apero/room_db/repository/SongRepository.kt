@@ -10,4 +10,6 @@ class SongRepository(context: Context) {
 
     suspend fun getAllSongs(): List<Song> = songDao.getAll()
     suspend fun insertSongs(songs: List<Song>) = songDao.insertAll(songs)
+    suspend fun getAllSongsInPlaylist(playlistId: Long) = songDao.getAllSongsInPlaylist(playlistId)
+
 }

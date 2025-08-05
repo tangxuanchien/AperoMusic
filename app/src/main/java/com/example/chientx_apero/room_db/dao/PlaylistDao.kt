@@ -1,7 +1,6 @@
 package com.example.chientx_apero.room_db.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.chientx_apero.room_db.entity.Playlist
@@ -25,4 +24,9 @@ interface PlaylistDao {
 
     @Query("UPDATE playlist SET name = :name WHERE id = :id")
     suspend fun updateNameById(name: String, id: Int): Int
+
+    @Query("UPDATE playlist SET totalSongs = :totalSongs WHERE id = :id")
+    suspend fun updateTotalSongsById(totalSongs: Int, id: Int): Int
+
+
 }

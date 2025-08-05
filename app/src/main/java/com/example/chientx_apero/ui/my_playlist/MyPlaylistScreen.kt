@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.my_playlist.components.DefaultMyPlaylistScreen
 import com.example.chientx_apero.ui.my_playlist.components.ItemMyPlaylist
@@ -104,6 +105,7 @@ fun MyPlaylistScreen(
                                     },
                                     onClickPlaylist = {
                                         onClickPlaylist()
+                                        AppCache.playlist = playlist
                                     }
                                 )
                             }

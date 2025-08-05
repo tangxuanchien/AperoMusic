@@ -12,4 +12,5 @@ class PlaylistRepository(context: Context) {
 
     suspend fun deletePlaylist(idPlaylist: Int) = playlistDao.deleteById(idPlaylist)
     suspend fun updatePlaylistName(name: String, id: Int) = playlistDao.updateNameById(name, id)
+    suspend fun updateTotalSongsById(totalSongs: Int, id: Int) = playlistDao.updateTotalSongsById(totalSongs, id)
 }

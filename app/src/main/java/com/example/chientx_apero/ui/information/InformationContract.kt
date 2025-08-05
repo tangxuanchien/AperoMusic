@@ -4,9 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
-import com.example.chientx_apero.model.SessionUser
 
 data class InformationState(
     val nameError: String = "",
@@ -16,7 +16,7 @@ data class InformationState(
     val showPopup: Boolean = false,
     val editStatus: Boolean = false,
     val currentTheme: ThemeData = darkTheme,
-    val imageUri: Uri? = SessionUser.currentUser?.avatar
+    val imageUri: Uri? = AppCache.currentUser?.avatar
     ){
     val enabledStatus: Boolean get() = editStatus
 }

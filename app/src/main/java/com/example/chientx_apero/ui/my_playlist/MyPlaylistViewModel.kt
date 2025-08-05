@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.R
-import com.example.chientx_apero.model.PlaylistModel
 import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.room_db.repository.PlaylistRepository
 import kotlinx.coroutines.flow.MutableSharedFlow

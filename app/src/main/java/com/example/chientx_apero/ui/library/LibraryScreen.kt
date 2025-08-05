@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.ui.components.NavigationBar
-import com.example.chientx_apero.model.MyPlaylists
 import com.example.chientx_apero.ui.library.components.ItemLibrary
 import com.example.chientx_apero.ui.library.components.PopupAddToPlaylist
 import com.example.chientx_apero.ui.library.components.shareDataToDevice
@@ -53,6 +52,13 @@ fun LibraryScreen(
     LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadSongs(context))
         viewModel.processIntent(LibraryIntent.LoadPlaylists(context))
+        viewModel.event.collect { event ->
+            when(event) {
+                is LibraryEvent.ShowMessageLibrary -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
     MaterialTheme(
         colorScheme = state.currentTheme.color

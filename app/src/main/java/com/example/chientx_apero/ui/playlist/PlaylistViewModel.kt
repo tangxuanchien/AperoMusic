@@ -1,12 +1,18 @@
 package com.example.chientx_apero.ui.playlist
 
-import androidx.compose.runtime.mutableStateListOf
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.example.chientx_apero.model.SongModel
+import androidx.lifecycle.viewModelScope
+import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefRepository
+import com.example.chientx_apero.room_db.repository.SongRepository
 import com.example.chientx_apero.ui.playlist.components.getAllMp3Files
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlaylistViewModel : ViewModel() {
     private val _state = MutableStateFlow<PlaylistState>(PlaylistState())
@@ -27,18 +33,18 @@ class PlaylistViewModel : ViewModel() {
             }
 
             is PlaylistIntent.OpenMenu -> {
-                var selectedSong = _state.value.selectedSongModel
+                var selectedSong = _state.value.selectedSong
                 var expanded = _state.value.expanded
 
-                if (selectedSong == intent.songModel && expanded) {
+                if (selectedSong == intent.song && expanded) {
                     expanded = false
                     selectedSong = null
                 } else {
                     expanded = true
-                    selectedSong = intent.songModel
+                    selectedSong = intent.song
                 }
                 _state.update {
-                    it.copy(expanded = expanded, selectedSongModel = selectedSong)
+                    it.copy(expanded = expanded, selectedSong = selectedSong)
                 }
             }
 
@@ -46,36 +52,36 @@ class PlaylistViewModel : ViewModel() {
                 _state.update {
                     it.copy(
                         expanded = false,
-                        selectedSongModel = null
+                        selectedSong = null
                     )
                 }
             }
 
             is PlaylistIntent.RemoveSong -> {
-                _state.value.displayedSongModels.remove(intent.songModel)
+                viewModelScope.launch {
+                    val repository = PlaylistSongCrossRefRepository(intent.context)
+                    repository.deleteSongInPlaylistId(intent.playlistId, intent.songId)
+                    loadSongsInPlaylist(intent.context, intent.playlistId)
+                }
                 _state.update {
                     it.copy(
-                        selectedSongModel = null,
+                        selectedSong = null,
                         expanded = false
                     )
                 }
             }
 
-            is PlaylistIntent.LoadSongs -> {
-                val intentSongIds = intent.songModels.map { it.id }.toSet()
-                val songs = getAllMp3Files(intent.context)
-                    .filter {
-                        it.id in intentSongIds
-                    }
-                val displayedSongModels = mutableStateListOf<SongModel>()
-                displayedSongModels.addAll(songs)
-
-                _state.update {
-                    it.copy(
-                        displayedSongModels = displayedSongModels
-                    )
-                }
+            is PlaylistIntent.LoadSongsInPlaylist -> {
+                loadSongsInPlaylist(intent.context, intent.playlistId)
             }
+        }
+    }
+    private fun loadSongsInPlaylist(context: Context, playlistId: Long){
+        viewModelScope.launch(Dispatchers.IO) {
+            val repository = SongRepository(context)
+            val songsInPlaylist = repository.getAllSongsInPlaylist(playlistId)
+            _state.value.songs.clear()
+            _state.value.songs.addAll(songsInPlaylist)
         }
     }
 }

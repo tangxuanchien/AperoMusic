@@ -7,11 +7,12 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Size
-import com.example.chientx_apero.model.SongModel
+import androidx.core.net.toUri
+import com.example.chientx_apero.room_db.entity.Song
 
 @SuppressLint("DefaultLocale")
-fun getAllMp3Files(context: Context): MutableList<SongModel> {
-    val songModels = mutableListOf<SongModel>()
+fun getAllMp3Files(context: Context): MutableList<Song> {
+    val songs = mutableListOf<Song>()
     val contentResolver: ContentResolver = context.contentResolver
     val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
     val selection = "${MediaStore.Audio.Media.DURATION} > 0"
@@ -51,8 +52,8 @@ fun getAllMp3Files(context: Context): MutableList<SongModel> {
             val seconds = totalSeconds % 60
             val durationFormat = String.format("%02d:%02d", minutes, seconds)
 
-            songModels.add(SongModel(id, title, artist, data, durationFormat, imageCover))
+            songs.add(Song(id, title, data.toUri(), imageCover, artist, durationFormat))
         }
     }
-    return songModels
+    return songs
 }

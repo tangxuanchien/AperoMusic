@@ -1,7 +1,0 @@
-package com.example.chientx_apero.model
-
-object DataPlaylists {
-    var id: Int = -1
-    var name: String = ""
-    var songModels: MutableList<SongModel> = mutableListOf<SongModel>()
-}

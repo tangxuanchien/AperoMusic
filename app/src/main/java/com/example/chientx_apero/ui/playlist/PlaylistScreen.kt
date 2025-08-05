@@ -1,6 +1,5 @@
 package com.example.chientx_apero.ui.playlist
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,17 +16,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.NavigationBar
-import com.example.chientx_apero.model.DataPlaylists
 import com.example.chientx_apero.ui.playlist.components.HeaderPlaylist
 import com.example.chientx_apero.ui.playlist.components.ItemColumn
 import com.example.chientx_apero.ui.playlist.components.ItemGrid
-import com.example.chientx_apero.ui.playlist.components.getAllMp3Files
 
 @Composable
 fun PlaylistScreen(
@@ -36,12 +37,10 @@ fun PlaylistScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
-    val name = DataPlaylists.name
-    val songs = DataPlaylists.songModels
-    Log.d("Choose", DataPlaylists.songModels.toString())
-    Log.d("Choose", getAllMp3Files(context).toString())
+    val playlistId by remember { mutableLongStateOf(AppCache.playlist?.id!!.toLong()) }
+    val playlistName by remember { mutableStateOf(AppCache.playlist?.name!!) }
     LaunchedEffect(Unit) {
-        viewModel.processIntent(PlaylistIntent.LoadSongs(context, songs))
+        viewModel.processIntent(PlaylistIntent.LoadSongsInPlaylist(context, playlistId))
     }
     MaterialTheme(
         colorScheme = state.currentTheme.color
@@ -55,7 +54,7 @@ fun PlaylistScreen(
                     .fillMaxSize()
             ) {
                 HeaderPlaylist(
-                    titlePlaylist = name,
+                    titlePlaylist = playlistName,
                     stateSortView = state.isSortView,
                     onToggleSortView = {
                         viewModel.processIntent(PlaylistIntent.ToggleSortView)
@@ -73,10 +72,10 @@ fun PlaylistScreen(
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2)
                         ) {
-                            items(state.displayedSongModels) { song ->
-                                val isExpanded = state.expanded && state.selectedSongModel == song
+                            items(state.songs) { song ->
+                                val isExpanded = state.expanded && state.selectedSong == song
                                 ItemGrid(
-                                    songModel = song,
+                                    song = song,
                                     expanded = isExpanded,
                                     onOpenMenu = {
                                         viewModel.processIntent(PlaylistIntent.OpenMenu(song))
@@ -85,7 +84,13 @@ fun PlaylistScreen(
                                         viewModel.processIntent(PlaylistIntent.CloseMenu)
                                     },
                                     onClick = {
-                                        viewModel.processIntent(PlaylistIntent.RemoveSong(song))
+                                        viewModel.processIntent(
+                                            PlaylistIntent.RemoveSong(
+                                                context = context,
+                                                songId = song.id,
+                                                playlistId = playlistId
+                                            )
+                                        )
                                     }
                                 )
                             }
@@ -93,10 +98,10 @@ fun PlaylistScreen(
 
                     } else {
                         LazyColumn {
-                            items(state.displayedSongModels) { song ->
-                                val isExpanded = state.expanded && state.selectedSongModel == song
+                            items(state.songs) { song ->
+                                val isExpanded = state.expanded && state.selectedSong == song
                                 ItemColumn(
-                                    songModel = song,
+                                    song = song,
                                     expanded = isExpanded,
                                     onOpenMenu = {
                                         viewModel.processIntent(PlaylistIntent.OpenMenu(song))
@@ -105,7 +110,13 @@ fun PlaylistScreen(
                                         viewModel.processIntent(PlaylistIntent.CloseMenu)
                                     },
                                     onClick = {
-                                        viewModel.processIntent(PlaylistIntent.RemoveSong(song))
+                                        viewModel.processIntent(
+                                            PlaylistIntent.RemoveSong(
+                                                context = context,
+                                                songId = song.id,
+                                                playlistId = playlistId
+                                            )
+                                        )
                                     }
                                 )
                             }

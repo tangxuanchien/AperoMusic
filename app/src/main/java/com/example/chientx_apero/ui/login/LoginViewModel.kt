@@ -3,7 +3,7 @@ package com.example.chientx_apero.ui.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chientx_apero.model.SessionUser
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -38,8 +38,8 @@ class LoginViewModel : ViewModel() {
                                 isLoginSuccess = true
                             )
                         }
-                        SessionUser.currentUser = auth
-                        Log.d("User", SessionUser.currentUser.toString())
+                        AppCache.currentUser = auth
+                        Log.d("User", AppCache.currentUser.toString())
                         sendEvent(LoginEvent.ShowLoginMessage("Login Success"))
                     } else {
                         sendEvent(LoginEvent.ShowLoginMessage("Wrong login information"))

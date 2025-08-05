@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
-import com.example.chientx_apero.model.SongModel
 import com.example.chientx_apero.playlist_screen.DropdownItemLibrary
 import com.example.chientx_apero.room_db.entity.Song
 

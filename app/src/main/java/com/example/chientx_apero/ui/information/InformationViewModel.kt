@@ -4,7 +4,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chientx_apero.model.SessionUser
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.AppDatabase
 import com.example.chientx_apero.ui.theme.darkTheme
 import com.example.chientx_apero.ui.theme.lightTheme
@@ -44,7 +44,7 @@ class InformationViewModel() : ViewModel() {
                     val db = AppDatabase.getDatabase(intent.context)
                     db.userDao().updateAvatar(
                         avatar = intent.imageUri,
-                        username = SessionUser.currentUser?.username!!
+                        username = AppCache.currentUser?.username!!
                     )
                 }
             }
@@ -104,9 +104,9 @@ class InformationViewModel() : ViewModel() {
                             phone = intent.phone,
                             university = intent.university,
                             describe = intent.describe,
-                            username = SessionUser.currentUser?.username!!
+                            username = AppCache.currentUser?.username!!
                         )
-                        SessionUser.currentUser = db.userDao().findByUsername(SessionUser.currentUser?.username!!)
+                        AppCache.currentUser = db.userDao().findByUsername(AppCache.currentUser?.username!!)
                     }
                 }
             }

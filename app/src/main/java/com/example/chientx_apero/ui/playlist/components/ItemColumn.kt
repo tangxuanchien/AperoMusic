@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
-import com.example.chientx_apero.model.SongModel
+import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
 fun ItemColumn(
-    songModel: SongModel,
+    song: Song,
     onOpenMenu: () -> Unit,
     onClick: () -> Unit,
     expanded: Boolean,
@@ -42,7 +42,7 @@ fun ItemColumn(
             .padding(8.dp)
     ) {
         Image(
-            painter = rememberAsyncImagePainter(songModel.image),
+            painter = rememberAsyncImagePainter(song.image),
             contentDescription = null,
             modifier = Modifier.Companion
                 .clip(RoundedCornerShape(10.dp))
@@ -57,14 +57,14 @@ fun ItemColumn(
                 modifier = Modifier.Companion.align(Alignment.Companion.CenterStart)
             ) {
                 Text(
-                    text = songModel.name,
+                    text = song.name,
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Companion.Bold,
                     modifier = Modifier.Companion.padding(bottom = 4.dp)
                 )
                 Text(
-                    text = songModel.artist,
+                    text = song.artist,
                     fontWeight = FontWeight.Companion.Bold,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.secondary
@@ -74,7 +74,7 @@ fun ItemColumn(
                 modifier = Modifier.Companion.align(Alignment.Companion.CenterEnd)
             ) {
                 Text(
-                    text = songModel.duration,
+                    text = song.duration,
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
