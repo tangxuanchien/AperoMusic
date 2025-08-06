@@ -13,12 +13,12 @@ data class InformationState(
     val phoneError: String = "",
     val universityError: String = "",
     val describeError: String = "",
-    val showPopup: Boolean = false,
-    val editStatus: Boolean = false,
+    val isShowPopup: Boolean = false,
+    val canEditStatus: Boolean = false,
     val currentTheme: ThemeData = darkTheme,
     val imageUri: Uri? = AppCache.currentUser?.avatar
     ){
-    val enabledStatus: Boolean get() = editStatus
+    val enabledStatus: Boolean get() = canEditStatus
 }
 
 
@@ -28,10 +28,9 @@ sealed interface InformationIntent {
     data object ToggleEditStatus : InformationIntent
     data object HidePopUp : InformationIntent
     data class SubmitInformation(val context: Context, val phone: String, val name: String, val university: String, val describe: String) : InformationIntent
-    data class ProvideContext(val context: Context) : InformationIntent
     data class SelectImage(val imagePickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>): InformationIntent
 }
 
 sealed interface InformationEvent {
-    data class showMessageInformation(val message: String): InformationEvent
+    data class ShowMessageInformation(val message: String): InformationEvent
 }

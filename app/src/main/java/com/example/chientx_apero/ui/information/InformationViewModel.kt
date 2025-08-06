@@ -1,22 +1,28 @@
 package com.example.chientx_apero.ui.information
 
+import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.retrofit.APIClient
 import com.example.chientx_apero.room_db.AppDatabase
 import com.example.chientx_apero.ui.theme.darkTheme
 import com.example.chientx_apero.ui.theme.lightTheme
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class InformationViewModel() : ViewModel() {
     private val _state = MutableStateFlow<InformationState>(InformationState())
     val state: StateFlow<InformationState> = _state
-    private var db: AppDatabase? = null
+    private val _event = MutableSharedFlow<InformationEvent>()
+    val event: SharedFlow<InformationEvent> = _event.asSharedFlow()
 
     fun processIntent(intent: InformationIntent) {
         when (intent) {
@@ -52,7 +58,7 @@ class InformationViewModel() : ViewModel() {
             InformationIntent.ToggleEditStatus -> {
                 _state.update {
                     it.copy(
-                        editStatus = !_state.value.editStatus
+                        canEditStatus = !_state.value.canEditStatus
                     )
                 }
             }
@@ -60,7 +66,6 @@ class InformationViewModel() : ViewModel() {
             is InformationIntent.SubmitInformation -> {
                 var nameError = ""
                 var phoneError = ""
-                var universityError = ""
                 var describeError = ""
 
                 if (!Regex("^[A-Za-z0-9\\s]+\$").matches(intent.describe)) {
@@ -85,15 +90,14 @@ class InformationViewModel() : ViewModel() {
                     it.copy(
                         nameError = nameError,
                         phoneError = phoneError,
-                        universityError = universityError,
                         describeError = describeError
                     )
                 }
 
-                if (nameError.isEmpty() and phoneError.isEmpty() and universityError.isEmpty() and describeError.isEmpty()) {
+                if (nameError.isEmpty() and phoneError.isEmpty() and describeError.isEmpty()) {
                     _state.update {
                         it.copy(
-                            showPopup = true
+                            isShowPopup = true
                         )
                     }
 
@@ -106,7 +110,9 @@ class InformationViewModel() : ViewModel() {
                             describe = intent.describe,
                             username = AppCache.currentUser?.username!!
                         )
-                        AppCache.currentUser = db.userDao().findByUsername(AppCache.currentUser?.username!!)
+                        AppCache.currentUser =
+                            db.userDao().findByUsername(AppCache.currentUser?.username!!)
+                        sendEvent(InformationEvent.ShowMessageInformation("Update information success"))
                     }
                 }
             }
@@ -119,13 +125,15 @@ class InformationViewModel() : ViewModel() {
 
             is InformationIntent.HidePopUp -> {
                 _state.update {
-                    it.copy(showPopup = false, editStatus = false)
+                    it.copy(isShowPopup = false, canEditStatus = false)
                 }
             }
+        }
+    }
 
-            is InformationIntent.ProvideContext -> {
-                db = AppDatabase.getDatabase(intent.context)
-            }
+    private fun sendEvent(event: InformationEvent) {
+        viewModelScope.launch {
+            _event.emit(event)
         }
     }
 }

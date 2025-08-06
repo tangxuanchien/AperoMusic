@@ -1,16 +1,14 @@
 package com.example.chientx_apero.ui.library
 
-import androidx.core.net.toUri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.model.AppCache
-import com.example.chientx_apero.room_db.entity.*
+import com.example.chientx_apero.retrofit.APIClient
+import com.example.chientx_apero.retrofit.model.SongRetrofit
+import com.example.chientx_apero.retrofit.model.toSong
 import com.example.chientx_apero.room_db.repository.PlaylistRepository
 import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefRepository
-import com.example.chientx_apero.room_db.repository.SongRepository
-import com.example.chientx_apero.ui.my_playlist.MyPlaylistEvent
-import com.example.chientx_apero.ui.playlist.components.getAllMp3Files
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +17,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LibraryViewModel() : ViewModel() {
     private val _state = MutableStateFlow<LibraryState>(LibraryState())
@@ -29,9 +31,43 @@ class LibraryViewModel() : ViewModel() {
     fun processIntent(intent: LibraryIntent) {
         when (intent) {
             is LibraryIntent.LoadSongs -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    _state.value.displayedSongs.clear()
-                    _state.value.displayedSongs.addAll(AppCache.allSongs)
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (intent.isLocalLibrary) {
+                        withContext(Dispatchers.Main) {
+                            _state.value.displayedSongs.clear()
+                            _state.value.displayedSongs.addAll(AppCache.allSongs)
+                        }
+                        Log.d("Remote", _state.value.displayedSongs.toString())
+                    } else {
+                        _state.value.displayedSongs.clear()
+
+                        val call = APIClient.build().getSongs()
+                        call.enqueue(object : Callback<List<SongRetrofit>> {
+                            override fun onResponse(
+                                call: Call<List<SongRetrofit>>,
+                                response: Response<List<SongRetrofit>>,
+                            ) {
+                                if (response.isSuccessful) {
+                                    val songs = response.body() ?: emptyList()
+                                    Log.d("Response", songs.toString())
+                                    _state.value.displayedSongs.clear()
+                                    _state.value.displayedSongs.addAll(songs.map {
+                                        it.toSong(
+                                            intent.context
+                                        )
+                                    })
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<List<SongRetrofit>>,
+                                t: Throwable,
+                            ) {
+                                _state.value.displayedSongs.clear()
+                            }
+                        })
+                        Log.d("Remote", _state.value.displayedSongs.toString())
+                    }
                 }
             }
 
@@ -78,9 +114,13 @@ class LibraryViewModel() : ViewModel() {
 
             is LibraryIntent.AddSongToPlaylist -> {
                 viewModelScope.launch {
-                    val playlistSongCrossRefRepository = PlaylistSongCrossRefRepository(intent.context)
-                    val hasSongInPlaylist = playlistSongCrossRefRepository.hasSongInPlaylist(intent.playlistId, intent.songId)
-                    if(hasSongInPlaylist == null) {
+                    val playlistSongCrossRefRepository =
+                        PlaylistSongCrossRefRepository(intent.context)
+                    val hasSongInPlaylist = playlistSongCrossRefRepository.hasSongInPlaylist(
+                        intent.playlistId,
+                        intent.songId
+                    )
+                    if (hasSongInPlaylist == null) {
                         val repository = PlaylistSongCrossRefRepository(intent.context)
                         repository.addSongToPlaylist(intent.playlistId, intent.songId)
 
@@ -95,7 +135,7 @@ class LibraryViewModel() : ViewModel() {
                         _state.value.playlists.addAll(playlistRepository.getAllPlaylists())
 
                         sendEvent(LibraryEvent.ShowMessageLibrary("Add song to playlist success"))
-                    } else{
+                    } else {
                         sendEvent(LibraryEvent.ShowMessageLibrary("Song has in playlists"))
                     }
                 }

@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,9 +30,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.ui.components.NavigationBar
+import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
 import com.example.chientx_apero.ui.library.components.ItemLibrary
+import com.example.chientx_apero.ui.library.components.LoadingAnimation
+import com.example.chientx_apero.ui.library.components.NoInternetScreen
 import com.example.chientx_apero.ui.library.components.PopupAddToPlaylist
 import com.example.chientx_apero.ui.library.components.shareDataToDevice
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -43,22 +47,27 @@ fun LibraryScreen(
     onClickBack: () -> Unit,
     onClickPlaylist: () -> Unit,
     isLibraryScreen: Boolean = false,
-    viewModel: LibraryViewModel = viewModel()
+    viewModel: LibraryViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var isShowPopup by remember { mutableStateOf(false) }
+    var isLocalLibrary by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        viewModel.processIntent(LibraryIntent.LoadSongs(context))
-        viewModel.processIntent(LibraryIntent.LoadPlaylists(context))
         viewModel.event.collect { event ->
-            when(event) {
+            when (event) {
                 is LibraryEvent.ShowMessageLibrary -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+    LaunchedEffect(isLocalLibrary) {
+        viewModel.processIntent(LibraryIntent.LoadSongs(context, isLocalLibrary))
+        delay(1000)
+        isLoading = false
     }
     MaterialTheme(
         colorScheme = state.currentTheme.color
@@ -84,51 +93,74 @@ fun LibraryScreen(
                 Row(
                     modifier = Modifier.padding(vertical = 10.dp)
                 ) {
-                    Button(
-                        onClick = {},
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(
-                            text = "Local",
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        )
-                    }
+                    ButtonSelectLibrary(
+                        onClickSelectLibrary = {
+                            if(!isLocalLibrary) {
+                                isLocalLibrary = true
+                                isLoading = true
+                            }
+                        },
+                        isLocalLibrary = isLocalLibrary,
+                        text = "Local"
+                    )
                     Spacer(modifier = Modifier.padding(20.dp))
-                    Button(
-                        onClick = {},
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.onBackground
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(
-                            text = "Remote",
-                        )
-                    }
+                    ButtonSelectLibrary(
+                        onClickSelectLibrary = {
+                            if(isLocalLibrary) {
+                                isLocalLibrary = false
+                                isLoading = true
+                            }
+                        },
+                        isLocalLibrary = !isLocalLibrary,
+                        text = "Remote"
+                    )
                 }
                 Box(
                     modifier = Modifier.weight(1f)
                 ) {
-                    LazyColumn {
-                        items(state.displayedSongs) { song ->
-                            val isExpanded = state.expanded && state.selectedSong == song
-                            ItemLibrary(
-                                song = song,
-                                expanded = isExpanded,
-                                onOpenMenu = {
-                                    viewModel.processIntent(LibraryIntent.OpenMenu(song))
+                    if (isLoading) {
+                        LoadingAnimation()
+                    } else {
+                        if (state.displayedSongs.isEmpty()) {
+                            NoInternetScreen(
+                                onClickTryAgain = {
+                                    isLoading = true
+                                    viewModel.processIntent(
+                                        LibraryIntent.LoadSongs(
+                                            context,
+                                            isLocalLibrary
+                                        )
+                                    )
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        delay(1000)
+                                        isLoading = false
+                                    }
                                 },
-                                onDismissRequest = {
-                                    viewModel.processIntent(LibraryIntent.CloseMenu)
-                                },
-                                onClick = {
-                                    viewModel.processIntent(LibraryIntent.HidePopUp)
-                                    isShowPopup = true
-                                },
-                                onShare = {
-                                    shareDataToDevice(context, song)
-                                }
+                                modifier = Modifier.align(Alignment.Center)
                             )
+                        } else {
+                            LazyColumn {
+                                items(state.displayedSongs) { song ->
+                                    val isExpanded = state.expanded && state.selectedSong == song
+                                    ItemLibrary(
+                                        song = song,
+                                        expanded = isExpanded,
+                                        onOpenMenu = {
+                                            viewModel.processIntent(LibraryIntent.OpenMenu(song))
+                                        },
+                                        onDismissRequest = {
+                                            viewModel.processIntent(LibraryIntent.CloseMenu)
+                                        },
+                                        onClick = {
+                                            viewModel.processIntent(LibraryIntent.HidePopUp)
+                                            isShowPopup = true
+                                        },
+                                        onShare = {
+                                            shareDataToDevice(context, song)
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -139,15 +171,17 @@ fun LibraryScreen(
                 )
             }
         }
-        if(isShowPopup){
+        if (isShowPopup) {
             PopupAddToPlaylist(
                 onClickCreatePlaylist = onClickPlaylist,
                 onClickAddToPlaylist = { playlist ->
-                    viewModel.processIntent(LibraryIntent.AddSongToPlaylist(
-                        context = context,
-                        songId = state.selectedSong?.id!!.toLong(),
-                        playlistId = playlist.toLong()
-                    ))
+                    viewModel.processIntent(
+                        LibraryIntent.AddSongToPlaylist(
+                            context = context,
+                            songId = state.selectedSong?.id!!.toLong(),
+                            playlistId = playlist.toLong()
+                        )
+                    )
                     isShowPopup = false
                 },
                 onDismissRequest = {

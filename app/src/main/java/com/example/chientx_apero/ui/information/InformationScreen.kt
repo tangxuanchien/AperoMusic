@@ -2,6 +2,7 @@ package com.example.chientx_apero.ui.information
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.clickable
@@ -44,15 +45,10 @@ fun InformationScreen(
     val state by viewModel.state.collectAsState()
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-
     var name by remember { mutableStateOf(AppCache.currentUser?.name ?: "") }
     var phone by remember { mutableStateOf(AppCache.currentUser?.phone ?: "") }
     var university by remember { mutableStateOf(AppCache.currentUser?.university ?: "") }
     var describe by remember { mutableStateOf(AppCache.currentUser?.describe ?: "") }
-
-    LaunchedEffect(Unit) {
-        viewModel.processIntent(InformationIntent.ProvideContext(context))
-    }
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = PickVisualMedia()
     ) { uri ->
@@ -64,13 +60,22 @@ fun InformationScreen(
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             } catch (e: SecurityException) {
-                Log.e("Avatar", "Không thể lấy quyền persist URI", e)
+                Log.e("Avatar", "No have permission")
             }
 
             viewModel.processIntent(InformationIntent.UpdateImageUri(it, context))
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            when(event){
+                is InformationEvent.ShowMessageInformation -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
     MaterialTheme(
         colorScheme = state.currentTheme.color,
         typography = state.currentTheme.typography,
@@ -88,7 +93,7 @@ fun InformationScreen(
             ) {
                 HeaderInformation(
                     currentTheme = state.currentTheme,
-                    editStatus = state.editStatus,
+                    editStatus = state.canEditStatus,
                     onToggleEditStatus = {
                         viewModel.processIntent(InformationIntent.ToggleEditStatus)
                     },
@@ -99,7 +104,7 @@ fun InformationScreen(
                 Avatar(
                     context = context,
                     imageUri = state.imageUri,
-                    editStatus = state.editStatus,
+                    editStatus = state.canEditStatus,
                     onClickSelectImage = {
                         viewModel.processIntent(InformationIntent.SelectImage(imagePickerLauncher))
                     }
@@ -169,10 +174,10 @@ fun InformationScreen(
                             )
                         )
                     },
-                    editStatus = state.editStatus
+                    editStatus = state.canEditStatus
                 )
             }
-            if (state.showPopup) {
+            if (state.isShowPopup) {
                 PopupLayout(
                     onDismiss = { viewModel.processIntent(InformationIntent.HidePopUp) }
                 )
