@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.room_db.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,7 +40,7 @@ class LoginViewModel : ViewModel() {
                             )
                         }
                         AppCache.currentUser = auth
-                        Log.d("User", AppCache.currentUser.toString())
+                        PreferenceManager.saveLoginState(auth)
                         sendEvent(LoginEvent.ShowLoginMessage("Login Success"))
                     } else {
                         sendEvent(LoginEvent.ShowLoginMessage("Wrong login information"))

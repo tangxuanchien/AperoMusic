@@ -12,5 +12,6 @@ data class Song(
     val data: Uri,
     val image: Bitmap,
     val artist: String,
-    val duration: String
+    val duration: String,
+    val library: String
 )

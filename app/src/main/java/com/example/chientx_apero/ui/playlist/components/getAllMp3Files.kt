@@ -31,6 +31,7 @@ fun getAllMp3Files(context: Context): MutableList<Song> {
         val dataColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
         val durationColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
+        var incrementId = 0L
         while (it.moveToNext()) {
             val id = it.getLong(idColumn)
             val title = it.getString(titleColumn)
@@ -52,7 +53,8 @@ fun getAllMp3Files(context: Context): MutableList<Song> {
             val seconds = totalSeconds % 60
             val durationFormat = String.format("%02d:%02d", minutes, seconds)
 
-            songs.add(Song(id, title, data.toUri(), imageCover, artist, durationFormat))
+            incrementId++
+            songs.add(Song(incrementId, title, data.toUri(), imageCover, artist, durationFormat, "local"))
         }
     }
     return songs

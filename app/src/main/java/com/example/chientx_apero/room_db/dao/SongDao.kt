@@ -7,15 +7,18 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.room_db.entity.Song
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SongDao {
-    @Query("SELECT * FROM song")
-    suspend fun getAll(): List<Song>
-    @Query("SELECT * FROM song WHERE id IN (:songIds)")
-    suspend fun loadAllByIds(songIds: IntArray): List<Song>
-    @Query("SELECT * FROM song WHERE name = :name LIMIT 1")
-    suspend fun findByName(name: String): Song
+    @Query("""
+            SELECT * FROM song WHERE library = 'local'
+            """)
+    suspend fun getAllFromLocal(): List<Song>
+    @Query("""
+            SELECT * FROM song WHERE library = 'remote'
+            """)
+    suspend fun getAllFromRemote(): List<Song>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(songs: List<Song>)
     @Delete

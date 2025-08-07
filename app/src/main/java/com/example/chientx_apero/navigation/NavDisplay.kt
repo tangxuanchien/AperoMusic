@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.ui.home.HomeScreen
 import com.example.chientx_apero.ui.information.InformationScreen
 import com.example.chientx_apero.ui.library.LibraryScreen
@@ -16,7 +18,16 @@ import com.example.chientx_apero.ui.playlist.PlaylistScreen
 
 @Composable
 fun Navigation() {
-    val backStack = remember { mutableStateListOf<Screen>(Screen.Login("", "")) }
+    val firstScreen: Screen =
+        if (PreferenceManager.isLoggedIn()) {
+        val user = PreferenceManager.getSaveUser()
+        AppCache.currentUser = user
+
+        Screen.Home
+    } else {
+        Screen.Login("", "")
+    }
+    val backStack = remember { mutableStateListOf<Screen>(firstScreen) }
 
     NavDisplay(
         backStack = backStack,

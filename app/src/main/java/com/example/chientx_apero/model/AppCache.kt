@@ -7,7 +7,6 @@ import com.example.chientx_apero.room_db.entity.Song
 import com.example.chientx_apero.room_db.entity.User
 
 object AppCache {
-    var allSongs = mutableListOf<Song>()
     var playlist: Playlist? = null
     var currentUser: User? = null
 }

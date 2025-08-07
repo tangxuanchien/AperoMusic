@@ -1,26 +1,40 @@
 package com.example.chientx_apero.ui.library
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.retrofit.APIClient
 import com.example.chientx_apero.retrofit.model.SongRetrofit
 import com.example.chientx_apero.retrofit.model.toSong
+import com.example.chientx_apero.room_db.entity.Song
 import com.example.chientx_apero.room_db.repository.PlaylistRepository
 import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefRepository
+import com.example.chientx_apero.room_db.repository.SongRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
+import java.net.URL
 
 class LibraryViewModel() : ViewModel() {
     private val _state = MutableStateFlow<LibraryState>(LibraryState())
@@ -32,41 +46,23 @@ class LibraryViewModel() : ViewModel() {
         when (intent) {
             is LibraryIntent.LoadSongs -> {
                 viewModelScope.launch(Dispatchers.IO) {
+                    val repository = SongRepository(intent.context)
+
                     if (intent.isLocalLibrary) {
-                        withContext(Dispatchers.Main) {
-                            _state.value.displayedSongs.clear()
-                            _state.value.displayedSongs.addAll(AppCache.allSongs)
-                        }
-                        Log.d("Remote", _state.value.displayedSongs.toString())
+                        val songs = repository.getAllSongsFromLocal()
+                        _state.value.displayedSongs.clear()
+                        _state.value.displayedSongs.addAll(songs)
                     } else {
                         _state.value.displayedSongs.clear()
-
-                        val call = APIClient.build().getSongs()
-                        call.enqueue(object : Callback<List<SongRetrofit>> {
-                            override fun onResponse(
-                                call: Call<List<SongRetrofit>>,
-                                response: Response<List<SongRetrofit>>,
-                            ) {
-                                if (response.isSuccessful) {
-                                    val songs = response.body() ?: emptyList()
-                                    Log.d("Response", songs.toString())
-                                    _state.value.displayedSongs.clear()
-                                    _state.value.displayedSongs.addAll(songs.map {
-                                        it.toSong(
-                                            intent.context
-                                        )
-                                    })
-                                }
-                            }
-
-                            override fun onFailure(
-                                call: Call<List<SongRetrofit>>,
-                                t: Throwable,
-                            ) {
-                                _state.value.displayedSongs.clear()
-                            }
-                        })
-                        Log.d("Remote", _state.value.displayedSongs.toString())
+                        if (PreferenceManager.getApiCalled()) {
+                            _state.value.displayedSongs.clear()
+                            _state.value.displayedSongs.addAll(repository.getAllSongsFromRemote())
+                            Log.d("Api", "Has call")
+                        } else {
+                            fetchAndStoreSongsFromRemote(intent.context, repository)
+                            PreferenceManager.setApiCalled()
+                            Log.d("Api", "No call")
+                        }
                     }
                 }
             }
@@ -147,5 +143,48 @@ class LibraryViewModel() : ViewModel() {
         viewModelScope.launch {
             _event.emit(event)
         }
+    }
+
+    fun fetchAndStoreSongsFromRemote(context: Context, repository: SongRepository) {
+        val call = APIClient.build().getSongs()
+//                        Call enqueue run on main thread
+        call.enqueue(object : Callback<List<SongRetrofit>> {
+            override fun onResponse(
+                call: Call<List<SongRetrofit>>,
+                response: Response<List<SongRetrofit>>,
+            ) {
+
+                if (response.isSuccessful) {
+                    val songs = response.body() ?: emptyList()
+                    viewModelScope.launch(Dispatchers.IO) {
+//                                        Download song must run on IO thread
+                        songs.map { song ->
+                            val url = URL(song.path)
+                            val outputFile =
+                                File(context.filesDir, "${song.title}.mp3")
+
+                            url.openStream().use { inputStream ->
+                                FileOutputStream(outputFile).use { outputStream ->
+                                    inputStream.copyTo(outputStream)
+                                }
+                            }
+                            song.path = outputFile.absolutePath
+                        }
+                        repository.insertSongs(songs.map {
+                            it.toSong(context)
+                        })
+                        _state.value.displayedSongs.clear()
+                        _state.value.displayedSongs.addAll(repository.getAllSongsFromRemote())
+                    }
+                }
+            }
+
+            override fun onFailure(
+                call: Call<List<SongRetrofit>>,
+                t: Throwable,
+            ) {
+                _state.value.displayedSongs.clear()
+            }
+        })
     }
 }

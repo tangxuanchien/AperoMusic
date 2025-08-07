@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
 import com.example.chientx_apero.ui.library.components.ItemLibrary
@@ -56,17 +57,21 @@ fun LibraryScreen(
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is LibraryEvent.ShowMessageLibrary -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+        viewModel.processIntent(LibraryIntent.LoadPlaylists(context))
+
+        launch{
+            viewModel.event.collect { event ->
+                when (event) {
+                    is LibraryEvent.ShowMessageLibrary -> {
+                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
     }
     LaunchedEffect(isLocalLibrary) {
         viewModel.processIntent(LibraryIntent.LoadSongs(context, isLocalLibrary))
-        delay(1000)
+        delay(1500)
         isLoading = false
     }
     MaterialTheme(
@@ -178,7 +183,7 @@ fun LibraryScreen(
                     viewModel.processIntent(
                         LibraryIntent.AddSongToPlaylist(
                             context = context,
-                            songId = state.selectedSong?.id!!.toLong(),
+                            songId = state.selectedSong?.id!!,
                             playlistId = playlist.toLong()
                         )
                     )
