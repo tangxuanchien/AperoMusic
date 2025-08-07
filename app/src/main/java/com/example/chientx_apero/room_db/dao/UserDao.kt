@@ -12,8 +12,8 @@ interface UserDao {
     @Query("SELECT * FROM user")
     suspend fun getAll(): List<User>
 
-    @Query("SELECT * FROM user WHERE id IN (:userIds)")
-    suspend fun loadAllByIds(userIds: IntArray): List<User>
+    @Query("SELECT * FROM user WHERE id = :userId LIMIT 1")
+    suspend fun getUserByIds(userId: Long): User?
 
     @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
     suspend fun checkExistAccount(username: String): User?

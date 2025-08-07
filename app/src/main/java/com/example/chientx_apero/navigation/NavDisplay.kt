@@ -1,13 +1,17 @@
 package com.example.chientx_apero.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.model.PreferenceManager
+import com.example.chientx_apero.room_db.repository.UserRepository
 import com.example.chientx_apero.ui.home.HomeScreen
 import com.example.chientx_apero.ui.information.InformationScreen
 import com.example.chientx_apero.ui.library.LibraryScreen
@@ -15,19 +19,24 @@ import com.example.chientx_apero.ui.login.LoginScreen
 import com.example.chientx_apero.ui.my_playlist.MyPlaylistScreen
 import com.example.chientx_apero.ui.signup.SignUpScreen
 import com.example.chientx_apero.ui.playlist.PlaylistScreen
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun Navigation() {
-    val firstScreen: Screen =
+    val context = LocalContext.current
+    var startScreen: Screen = Screen.Login("", "")
+    LaunchedEffect(Unit) {
         if (PreferenceManager.isLoggedIn()) {
-        val user = PreferenceManager.getSaveUser()
-        AppCache.currentUser = user
-
-        Screen.Home
-    } else {
-        Screen.Login("", "")
+            val repository = UserRepository(context)
+            val userId = PreferenceManager.getSaveUserId()
+            if (userId != null) {
+                val user = repository.checkExistAccount(userId)
+                AppCache.currentUser = user
+                startScreen = Screen.Home
+            }
+        }
     }
-    val backStack = remember { mutableStateListOf<Screen>(firstScreen) }
+    val backStack = remember { mutableStateListOf<Screen>(startScreen) }
 
     NavDisplay(
         backStack = backStack,

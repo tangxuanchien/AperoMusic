@@ -10,7 +10,7 @@ object PreferenceManager {
     private const val PREF_NAME = "MyPreferences"
     private const val KEY_IS_CALL_API = "is_call_api"
     private const val KEY_IS_LOGGED_IN = "is_logged_in"
-    private const val KEY_USER = "username"
+    private const val KEY_USER = "userId"
     private const val KEY_PASSWORD = "password"
     private var prefs: SharedPreferences? = null
 
@@ -20,11 +20,10 @@ object PreferenceManager {
         }
     }
 
-    fun saveLoginState(user: User) {
-        val json = Gson().toJson(user)
+    fun saveLoginState(userId: Long) {
         prefs?.edit {
             putBoolean(KEY_IS_LOGGED_IN, true)
-            putString(KEY_USER, json)
+            putLong(KEY_USER, userId)
         }
     }
 
@@ -32,9 +31,8 @@ object PreferenceManager {
         return prefs?.getBoolean(KEY_IS_LOGGED_IN, false) ?: false
     }
 
-    fun getSaveUser(): User? {
-        val json = prefs?.getString(KEY_USER, null) ?: return null
-        return Gson().fromJson(json, User::class.java)
+    fun getSaveUserId(): Long? {
+        return prefs?.getLong(KEY_USER, 0L) ?: 0L
     }
 
     fun setApiCalled() {

@@ -40,7 +40,7 @@ class LoginViewModel : ViewModel() {
                             )
                         }
                         AppCache.currentUser = auth
-                        PreferenceManager.saveLoginState(auth)
+                        PreferenceManager.saveLoginState(auth.id)
                         sendEvent(LoginEvent.ShowLoginMessage("Login Success"))
                     } else {
                         sendEvent(LoginEvent.ShowLoginMessage("Wrong login information"))
