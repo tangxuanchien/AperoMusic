@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Size
@@ -36,7 +37,7 @@ fun getAllMp3Files(context: Context): MutableList<Song> {
             val id = it.getLong(idColumn)
             val title = it.getString(titleColumn)
             val artist = it.getString(artistColumn)
-            val data = it.getString(dataColumn)
+            val data = it.getString(dataColumn).toUri()
             val duration = it.getLong(durationColumn)
             val contentUri: Uri = ContentUris.withAppendedId(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -54,7 +55,7 @@ fun getAllMp3Files(context: Context): MutableList<Song> {
             val durationFormat = String.format("%02d:%02d", minutes, seconds)
 
             incrementId++
-            songs.add(Song(incrementId, title, data.toUri(), imageCover, artist, durationFormat, "local"))
+            songs.add(Song(incrementId, title, data, imageCover, artist, durationFormat, "local"))
         }
     }
     return songs

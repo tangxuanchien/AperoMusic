@@ -2,15 +2,20 @@ package com.example.chientx_apero.ui.library
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,14 +27,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.chientx_apero.model.PreferenceManager
+import com.example.chientx_apero.R
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
 import com.example.chientx_apero.ui.library.components.ItemLibrary
@@ -55,11 +62,12 @@ fun LibraryScreen(
     var isShowPopup by remember { mutableStateOf(false) }
     var isLocalLibrary by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(true) }
+    var isPlaySong by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadPlaylists(context))
 
-        launch{
+        launch {
             viewModel.event.collect { event ->
                 when (event) {
                     is LibraryEvent.ShowMessageLibrary -> {
@@ -83,7 +91,7 @@ fun LibraryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(vertical = 18.dp, horizontal = 10.dp)
+                    .padding(vertical = 18.dp)
                     .fillMaxSize()
             ) {
                 Text(
@@ -100,7 +108,7 @@ fun LibraryScreen(
                 ) {
                     ButtonSelectLibrary(
                         onClickSelectLibrary = {
-                            if(!isLocalLibrary) {
+                            if (!isLocalLibrary) {
                                 isLocalLibrary = true
                                 isLoading = true
                             }
@@ -111,7 +119,7 @@ fun LibraryScreen(
                     Spacer(modifier = Modifier.padding(20.dp))
                     ButtonSelectLibrary(
                         onClickSelectLibrary = {
-                            if(isLocalLibrary) {
+                            if (isLocalLibrary) {
                                 isLocalLibrary = false
                                 isLoading = true
                             }
@@ -150,6 +158,7 @@ fun LibraryScreen(
                                     ItemLibrary(
                                         song = song,
                                         expanded = isExpanded,
+                                        isPlaySong = isPlaySong,
                                         onOpenMenu = {
                                             viewModel.processIntent(LibraryIntent.OpenMenu(song))
                                         },
@@ -162,10 +171,39 @@ fun LibraryScreen(
                                         },
                                         onShare = {
                                             shareDataToDevice(context, song)
+                                        },
+                                        onClickPlay = {
+//                                            isPlaySong = !isPlaySong
                                         }
                                     )
                                 }
                             }
+                        }
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Column(
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.Companion.vectorResource(R.drawable.play_fill),
+                                contentDescription = "Next",
+                                modifier = Modifier.Companion
+                                    .size(24.dp)
+                                    .clickable {
+//                                        onClickPlay()
+                                    },
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
                         }
                     }
                 }
@@ -203,6 +241,7 @@ fun LibraryScreen(
 fun Preview() {
     LibraryScreen(
         onClickBack = {},
-        onClickPlaylist = {}
+        onClickPlaylist = {},
+        isLibraryScreen = true
     )
 }

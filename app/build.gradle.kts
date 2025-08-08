@@ -65,4 +65,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.lottie.compose)
+    implementation(libs.androidx.lifecycle.service)
 }

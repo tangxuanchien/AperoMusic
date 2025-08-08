@@ -31,17 +31,28 @@ import com.example.chientx_apero.room_db.entity.Song
 @Composable
 fun ItemLibrary(
     song: Song,
+    isPlaySong: Boolean = false,
     onOpenMenu: () -> Unit,
     onClick: () -> Unit,
     onShare: () -> Unit,
+    onClickPlay: () -> Unit,
     expanded: Boolean,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
     Row(
         modifier = Modifier.Companion
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
+            .background(
+                if (!isPlaySong) {
+                    MaterialTheme.colorScheme.background
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                }
+            )
             .padding(8.dp)
+            .clickable {
+                onClickPlay()
+            }
     ) {
         Image(
             painter = rememberAsyncImagePainter(song.image),

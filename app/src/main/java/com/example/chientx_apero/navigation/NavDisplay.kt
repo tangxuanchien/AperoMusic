@@ -1,5 +1,6 @@
 package com.example.chientx_apero.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -17,6 +18,7 @@ import com.example.chientx_apero.ui.information.InformationScreen
 import com.example.chientx_apero.ui.library.LibraryScreen
 import com.example.chientx_apero.ui.login.LoginScreen
 import com.example.chientx_apero.ui.my_playlist.MyPlaylistScreen
+import com.example.chientx_apero.ui.player.PlayerScreen
 import com.example.chientx_apero.ui.signup.SignUpScreen
 import com.example.chientx_apero.ui.playlist.PlaylistScreen
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun Navigation() {
     val context = LocalContext.current
-    var startScreen: Screen = Screen.Login("", "")
     LaunchedEffect(Unit) {
         if (PreferenceManager.isLoggedIn()) {
             val repository = UserRepository(context)
@@ -32,11 +33,19 @@ fun Navigation() {
             if (userId != null) {
                 val user = repository.checkExistAccount(userId)
                 AppCache.currentUser = user
-                startScreen = Screen.Home
             }
         }
     }
-    val backStack = remember { mutableStateListOf<Screen>(startScreen) }
+    val backStack = remember {
+        mutableStateListOf<Screen>(
+//            if (PreferenceManager.isLoggedIn()) {
+//                Screen.Home
+//            } else {
+//                Screen.Login("", "")
+//            }
+            Screen.Player
+        )
+    }
 
     NavDisplay(
         backStack = backStack,
@@ -89,6 +98,14 @@ fun Navigation() {
             entry<Screen.Information> {
                 InformationScreen(
                     onClickBack = { backStack.removeLastOrNull() }
+                )
+            }
+            entry<Screen.Player> {
+                PlayerScreen(
+                    onClickHome = {
+                        backStack.add(Screen.Home)
+                    },
+                    onClickBack = {}
                 )
             }
             entry<Screen.Library> {

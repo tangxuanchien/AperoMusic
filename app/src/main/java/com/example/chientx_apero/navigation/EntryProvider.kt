@@ -8,4 +8,5 @@ sealed interface Screen {
     data object Information : Screen
     data object Library : Screen
     data object MyPlaylist : Screen
+    data object Player : Screen
 }
