@@ -1,5 +1,6 @@
 package com.example.chientx_apero.ui.library
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
 import com.example.chientx_apero.ui.library.components.ItemLibrary
@@ -142,12 +144,14 @@ fun LibraryScreen(
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         } else {
+                            Log.d("LIB", "LibraryScreen: ${AppCache.playingSong}")
                             LazyColumn {
                                 items(state.displayedSongs) { song ->
+                                    Log.d("LIB", "LibraryScreen: ${AppCache.playingSong == song}")
                                     ItemLibrary(
                                         song = song,
                                         expanded = state.expanded && state.selectedSong == song,
-                                        isPlaySong = state.isPlaySong && state.selectedSong == song,
+                                        isPlaySong = AppCache.playingSong?.id == song.id,
                                         onOpenMenu = {
                                             viewModel.processIntent(
                                                 LibraryIntent.OpenMenu(song),
@@ -172,9 +176,10 @@ fun LibraryScreen(
                                         },
                                         onClickPlay = {
                                             viewModel.processIntent(
-                                                LibraryIntent.PlaySong(song),
+                                                LibraryIntent.HandleSongAction(song),
                                                 context
                                             )
+                                            AppCache.playingSong = song
                                         }
                                     )
                                 }
@@ -182,14 +187,16 @@ fun LibraryScreen(
                         }
                     }
                 }
-                if (state.selectedSong != null && state.isPlaySong == true) {
+                if (state.selectedSong != null) {
                     PlayerBar(
                         song = state.selectedSong!!,
+                        isPlaySong = state.isPlaySong,
                         onClickPlaySong = {
-                            viewModel.processIntent(LibraryIntent.PlaySong(state.selectedSong!!), context)
+                            viewModel.processIntent(LibraryIntent.HandleSongAction(state.selectedSong!!), context)
                         },
                         onClickPlayer = {
                             onClickPlayer()
+                            AppCache.playingSong = state.selectedSong
                         }
                     )
                 }

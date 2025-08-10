@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.player.components.HeaderPlayer
 import com.example.chientx_apero.ui.player.components.PlayerBar
 import com.example.chientx_apero.ui.player.components.PlayerSlider
@@ -37,6 +38,7 @@ fun PlayerScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var currentTheme by remember { mutableStateOf(darkTheme) }
+    var song by remember { mutableStateOf(AppCache.playingSong) }
 
     MaterialTheme(
         colorScheme = currentTheme.color
@@ -65,9 +67,9 @@ fun PlayerScreen(
                         modifier = Modifier.Companion.fillMaxWidth()
                     ) {
                         SongInfo(
-                            image = R.drawable.justin_2,
-                            name = "Lovely",
-                            artist = "Phuong Ly"
+                            image = song?.image,
+                            name = song?.name!!,
+                            artist = song?.artist!!
                         )
                         PlayerSlider()
                         PlayerBar(

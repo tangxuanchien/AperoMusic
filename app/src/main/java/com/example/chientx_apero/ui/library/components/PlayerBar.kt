@@ -29,14 +29,15 @@ fun PlayerBar(
     modifier: Modifier = Modifier,
     song: Song,
     onClickPlaySong: () -> Unit,
-    onClickPlayer: () -> Unit
+    onClickPlayer: () -> Unit,
+    isPlaySong: Boolean,
 ) {
     Box(
         modifier = Modifier.Companion
             .fillMaxWidth()
             .height(60.dp)
             .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable{
+            .clickable {
                 onClickPlayer()
             }
     ) {
@@ -51,7 +52,13 @@ fun PlayerBar(
                     .padding(horizontal = 20.dp)
             ) {
                 Icon(
-                    imageVector = ImageVector.Companion.vectorResource(R.drawable.play_fill),
+                    imageVector = ImageVector.Companion.vectorResource(
+                        if (isPlaySong) {
+                            R.drawable.pause
+                        } else {
+                            R.drawable.play
+                        }
+                    ),
                     contentDescription = "Next",
                     modifier = Modifier.Companion
                         .size(24.dp)

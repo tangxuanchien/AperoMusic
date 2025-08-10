@@ -1,5 +1,6 @@
 package com.example.chientx_apero.ui.library
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -36,6 +37,7 @@ class LibraryViewModel() : ViewModel() {
     val event: SharedFlow<LibraryEvent> = _event.asSharedFlow()
 
     fun processIntent(intent: LibraryIntent, context: Context) {
+        val current = _state.value
         when (intent) {
             is LibraryIntent.LoadSongs -> {
                 viewModelScope.launch(Dispatchers.IO) {
@@ -130,30 +132,51 @@ class LibraryViewModel() : ViewModel() {
                 }
             }
 
-            is LibraryIntent.PlaySong -> {
-                _state.update {
-                    it.copy(
-                        isPlaySong = true,
-                        selectedSong = intent.song
-                    )
-                }
-                Log.d("Library", "processIntent: ${_state.value.isStartPlaySong}")
+            is LibraryIntent.HandleSongAction -> {
+                var isPlaySong = current.isPlaySong
+                val isSameSong = intent.song == current.selectedSong
+
                 val intentService = Intent(context, MusicService::class.java).apply {
-                    if (_state.value.isStartPlaySong) {
-                        action = MusicService.ACTION_RESUME
-                    } else {
-                        action = MusicService.ACTION_PLAY
-                        Log.d("Library", "${intent.song.data::class.java}")
-                        putExtra("uri", intent.song.data.toString())
-                        Log.d("Library", "Put done")
-                        _state.update {
-                            it.copy(
-                                isStartPlaySong = true
-                            )
+                    when {
+//                        Case 1: Play other song (not playing)
+                        !isPlaySong && !isSameSong -> {
+                            action = MusicService.ACTION_PLAY
+                            putExtra("uri", intent.song.data.toString())
+                            isPlaySong = true
+                            Log.d(TAG, "Play first and other")
+                        }
+//                       Case 2: Pause song
+                        isPlaySong && isSameSong -> {
+                            action = MusicService.ACTION_PAUSE
+                            isPlaySong = false
+                            Log.d(TAG, "Pause song")
+                        }
+//                        Case 3: Resume song
+                        !isPlaySong && isSameSong -> {
+                            action = MusicService.ACTION_RESUME
+                            isPlaySong = true
+                            Log.d(TAG, "Resume song")
+                        }
+//                        Case 4: Play other song (playing)
+                        isPlaySong && !isSameSong -> {
+                            action = MusicService.ACTION_PLAY
+                            putExtra("uri", intent.song.data.toString())
+                            isPlaySong = true
+                            Log.d(TAG, "Play other song (playing)")
                         }
                     }
                 }
+
+                Log.d(TAG, "processIntent: Intent ${intent.song}")
+                Log.d(TAG, "processIntent: Selected ${current.selectedSong}")
                 context.startService(intentService)
+
+                _state.update {
+                    it.copy(
+                        isPlaySong = isPlaySong,
+                        selectedSong = intent.song
+                    )
+                }
             }
         }
     }

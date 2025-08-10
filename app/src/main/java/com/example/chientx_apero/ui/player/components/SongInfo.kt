@@ -23,12 +23,12 @@ import com.example.chientx_apero.room_db.entity.Song
 @Composable
 fun SongInfo(
     modifier: Modifier = Modifier,
-    image: Int,
+    image: Bitmap?,
     artist: String,
     name: String
 ) {
     Image(
-        painter = painterResource(image),
+        painter = rememberAsyncImagePainter(image ?: R.drawable.avatar),
         contentDescription = "Image Song",
         modifier = Modifier.Companion
             .size(375.dp)

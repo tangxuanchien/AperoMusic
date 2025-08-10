@@ -15,8 +15,7 @@ data class LibraryState(
     val currentTheme: ThemeData = darkTheme,
     val expanded: Boolean = false,
     val selectedSong: Song? = null,
-    val isPlaySong: Boolean = false,
-    val isStartPlaySong: Boolean = false
+    val isPlaySong: Boolean = false
 )
 
 sealed interface LibraryIntent {
@@ -24,7 +23,7 @@ sealed interface LibraryIntent {
     data class OpenMenu(val song: Song) : LibraryIntent
     data object CloseMenu : LibraryIntent
     data object HidePopUp : LibraryIntent
-    data class PlaySong(val song: Song) : LibraryIntent
+    data class HandleSongAction(val song: Song) : LibraryIntent
     data object LoadPlaylists : LibraryIntent
     data class AddSongToPlaylist(val songId: Long, val playlistId: Long) :
         LibraryIntent

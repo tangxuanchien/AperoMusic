@@ -9,4 +9,5 @@ import com.example.chientx_apero.room_db.entity.User
 object AppCache {
     var playlist: Playlist? = null
     var currentUser: User? = null
+    var playingSong: Song? = null
 }
