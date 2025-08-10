@@ -6,10 +6,8 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleService
 import com.example.chientx_apero.R
 import java.io.File
@@ -17,7 +15,6 @@ import java.io.File
 class MusicService : LifecycleService() {
     private val TAG = "MusicService"
     private var mediaPlayer: MediaPlayer? = null
-
 
     companion object {
         const val ACTION_PLAY = "ACTION_PLAY"
@@ -32,33 +29,40 @@ class MusicService : LifecycleService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        startForeground(1, createNotification())
+        var currentTime: Int = 0
+
         when (intent?.action) {
             ACTION_PLAY -> {
+                Log.d(TAG, "onStartCommand: ${intent.getStringExtra("uri")}")
                 val uri = Uri.fromFile(File(intent.getStringExtra("uri")!!))
-                Log.d(TAG, "ACTION_PLAY received, uri = $uri")
                 uri?.let {
                     mediaPlayer?.reset()
                     mediaPlayer?.setDataSource(applicationContext, it)
                     mediaPlayer?.prepare()
                     mediaPlayer?.start()
-                    Log.d(TAG, "MediaPlayer started successfully")
-                    startForeground(1, createNotification())
-                    Log.d(TAG, "Send Notification")
                 }
             }
 
             ACTION_PAUSE -> {
                 if (mediaPlayer!!.isPlaying) {
+                    currentTime = mediaPlayer?.currentPosition!!
                     mediaPlayer?.pause()
                 }
             }
 
             ACTION_STOP -> {
                 mediaPlayer?.stop()
+                currentTime = 0
                 stopSelf()
             }
+
+            ACTION_RESUME -> {
+                mediaPlayer?.start()
+            }
         }
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
@@ -68,21 +72,21 @@ class MusicService : LifecycleService() {
     }
 
     private fun createNotification(): Notification {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "music_service",
-                "Music Service",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
-        }
+//        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O not need because set SDK_INT is always > 29
+        val channelId = "music_service"
+        val channelName = "Music Service"
+        val manager = getSystemService(NotificationManager::class.java)
+        val channel = NotificationChannel(
+            channelId, channelName, NotificationManager.IMPORTANCE_LOW
+        )
+        manager.createNotificationChannel(channel)
 
-        val notificationBuilder = NotificationCompat.Builder(this, "music_service")
-        notificationBuilder.setSmallIcon(R.drawable.avatar)
-        notificationBuilder.setContentTitle("Music Service")
-        notificationBuilder.setContentText("Music is playing")
-
-        return notificationBuilder.build()
+        return NotificationCompat.Builder(this, "music_service")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle("Music Service")
+            .setContentText("Music is playing")
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
     }
 }

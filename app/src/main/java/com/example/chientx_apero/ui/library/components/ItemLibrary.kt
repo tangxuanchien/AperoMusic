@@ -55,7 +55,9 @@ fun ItemLibrary(
             }
     ) {
         Image(
-            painter = rememberAsyncImagePainter(song.image),
+            painter = rememberAsyncImagePainter(
+                song.image ?: R.drawable.avatar
+            ),
             contentDescription = null,
             modifier = Modifier.Companion
                 .clip(RoundedCornerShape(10.dp))

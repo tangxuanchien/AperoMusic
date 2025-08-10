@@ -10,7 +10,7 @@ data class Song(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String,
     val data: Uri,
-    val image: Bitmap,
+    val image: Bitmap?,
     val artist: String,
     val duration: String,
     val library: String

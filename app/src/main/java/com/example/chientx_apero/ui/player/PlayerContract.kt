@@ -6,6 +6,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 
 data class PlayerState(
     val isPlaySong: Boolean = false,
+    val isStartPlaySong: Boolean = false
 )
 
 sealed interface PlayerIntent {

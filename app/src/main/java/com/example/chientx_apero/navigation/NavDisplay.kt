@@ -38,12 +38,11 @@ fun Navigation() {
     }
     val backStack = remember {
         mutableStateListOf<Screen>(
-//            if (PreferenceManager.isLoggedIn()) {
-//                Screen.Home
-//            } else {
-//                Screen.Login("", "")
-//            }
-            Screen.Player
+            if (PreferenceManager.isLoggedIn()) {
+                Screen.Home
+            } else {
+                Screen.Login("", "")
+            }
         )
     }
 
@@ -113,6 +112,9 @@ fun Navigation() {
                     onClickBack = { backStack.removeLastOrNull() },
                     onClickPlaylist = {
                         backStack.add(Screen.MyPlaylist)
+                    },
+                    onClickPlayer = {
+                        backStack.add(Screen.Player)
                     },
                     isLibraryScreen = true
                 )

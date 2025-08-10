@@ -47,6 +47,11 @@ class MainActivity : ComponentActivity() {
             requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_AUDIO)
         }
 
+//        Bug not send notification in first time allow permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 100)
+        }
+
         setContent {
             AppTheme {
                 Navigation()

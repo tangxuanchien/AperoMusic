@@ -1,6 +1,5 @@
 package com.example.chientx_apero.ui.library
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.chientx_apero.retrofit.model.SongRetrofit
@@ -15,19 +14,22 @@ data class LibraryState(
     val playlists: SnapshotStateList<Playlist> = mutableStateListOf(),
     val currentTheme: ThemeData = darkTheme,
     val expanded: Boolean = false,
-    val selectedSong: Song? = null
+    val selectedSong: Song? = null,
+    val isPlaySong: Boolean = false,
+    val isStartPlaySong: Boolean = false
 )
 
 sealed interface LibraryIntent {
-    data class LoadSongs(val context: Context, val isLocalLibrary: Boolean) : LibraryIntent
+    data class LoadSongs(val isLocalLibrary: Boolean) : LibraryIntent
     data class OpenMenu(val song: Song) : LibraryIntent
     data object CloseMenu : LibraryIntent
     data object HidePopUp : LibraryIntent
-    data class LoadPlaylists(val context: Context) : LibraryIntent
-    data class AddSongToPlaylist(val context: Context, val songId: Long, val playlistId: Long) :
+    data class PlaySong(val song: Song) : LibraryIntent
+    data object LoadPlaylists : LibraryIntent
+    data class AddSongToPlaylist(val songId: Long, val playlistId: Long) :
         LibraryIntent
 }
 
 sealed interface LibraryEvent {
-    data class ShowMessageLibrary(val message: String): LibraryEvent
+    data class ShowMessageLibrary(val message: String) : LibraryEvent
 }

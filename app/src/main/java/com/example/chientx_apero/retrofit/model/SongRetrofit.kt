@@ -28,11 +28,7 @@ fun SongRetrofit.toSong(context: Context): Song {
         artist = this.artist,
         data = this.path.toUri(),
         duration = durationFormat,
-        image = context.contentResolver.loadThumbnail(
-            "content://media/picker/0/com.android.providers.media.photopicker/media/48".toUri(),
-            Size(200, 200),
-            null
-        ),
+        image = null,
         library = "remote"
     )
 }
