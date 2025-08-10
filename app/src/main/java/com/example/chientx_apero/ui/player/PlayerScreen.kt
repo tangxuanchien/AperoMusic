@@ -71,18 +71,25 @@ fun PlayerScreen(
                             name = song?.name!!,
                             artist = song?.artist!!
                         )
-                        PlayerSlider()
+                        PlayerSlider(
+                            song = song
+                        )
                         PlayerBar(
-                            onClickPlaySong = {
-                                viewModel.processIntent(PlayerIntent.PlaySong(context), context)
+                            onClickTogglePlayback = {
+                                viewModel.processIntent(PlayerIntent.TogglePlayback, context)
                             },
-                            onClickPauseSong = {
-                                viewModel.processIntent(PlayerIntent.PauseSong(context), context)
+                            onClickReplay = {
+                                viewModel.processIntent(PlayerIntent.ReplaySong, context)
                             },
-                            onClickReplay = {},
-                            onClickRandomSong = {},
-                            onClickPreviousSong = {},
-                            onClickNextSong = {},
+                            onClickRandomSong = {
+                                viewModel.processIntent(PlayerIntent.RandomSong, context)
+                            },
+                            onClickPreviousSong = {
+                                viewModel.processIntent(PlayerIntent.PreviousSong, context)
+                            },
+                            onClickNextSong = {
+                                viewModel.processIntent(PlayerIntent.NextSong, context)
+                            },
                             isPlaySong = state.isPlaySong
                         )
                     }

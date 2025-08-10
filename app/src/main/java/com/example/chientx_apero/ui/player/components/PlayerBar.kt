@@ -23,8 +23,7 @@ import com.example.chientx_apero.ui.theme.darkTheme
 
 @Composable
 fun PlayerBar(
-    onClickPlaySong: () -> Unit,
-    onClickPauseSong: () -> Unit,
+    onClickTogglePlayback: () -> Unit,
     onClickReplay: () -> Unit,
     onClickPreviousSong: () -> Unit,
     onClickNextSong: () -> Unit,
@@ -65,19 +64,15 @@ fun PlayerBar(
                 )
                 .padding(18.dp)
                 .clickable {
-                    if (!isPlaySong) {
-                        onClickPlaySong()
-                    } else {
-                        onClickPauseSong()
-                    }
+                    onClickTogglePlayback()
                 }
         ) {
             Icon(
                 imageVector = ImageVector.Companion.vectorResource(
-                    if (!isPlaySong) {
-                        R.drawable.play
-                    } else {
+                    if (isPlaySong) {
                         R.drawable.pause
+                    } else {
+                        R.drawable.play
                     }
                 ),
                 contentDescription = "Play",
@@ -117,12 +112,11 @@ private fun PrevPlayerBar() {
         colorScheme = darkTheme.color
     ) {
         PlayerBar(
-            onClickPlaySong = {},
+            onClickTogglePlayback = {},
             onClickReplay = {},
             onClickRandomSong = {},
             onClickPreviousSong = {},
-            onClickNextSong = {},
-            onClickPauseSong = {}
+            onClickNextSong = {}
         )
     }
 }

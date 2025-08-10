@@ -15,10 +15,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
 fun PlayerSlider(
     modifier: Modifier = Modifier,
+    song: Song?
 ) {
     Slider(
         value = 0.7f,
@@ -46,7 +48,7 @@ fun PlayerSlider(
             color = Color(0x99CCCCCC)
         )
         Text(
-            text = "03:36",
+            text = song!!.duration,
             fontWeight = FontWeight.Companion.Bold,
             fontSize = 14.sp,
             color = Color(0x99CCCCCC)

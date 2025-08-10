@@ -15,14 +15,18 @@ interface SongDao {
             SELECT * FROM song WHERE library = 'local'
             """)
     suspend fun getAllFromLocal(): List<Song>
+
     @Query("""
             SELECT * FROM song WHERE library = 'remote'
             """)
     suspend fun getAllFromRemote(): List<Song>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(songs: List<Song>)
+
     @Delete
     suspend fun delete(user: Song)
+
     @Query(
         """
     SELECT s.* FROM Song s
@@ -31,4 +35,7 @@ interface SongDao {
     """
     )
     suspend fun getAllSongsInPlaylist(playlistId: Long): List<Song>
+
+    @Query("SELECT * FROM song WHERE id = :id")
+    suspend fun getSongById(id: Long): Song
 }

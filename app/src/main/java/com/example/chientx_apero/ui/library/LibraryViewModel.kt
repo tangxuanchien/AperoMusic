@@ -143,32 +143,25 @@ class LibraryViewModel() : ViewModel() {
                             action = MusicService.ACTION_PLAY
                             putExtra("uri", intent.song.data.toString())
                             isPlaySong = true
-                            Log.d(TAG, "Play first and other")
                         }
 //                       Case 2: Pause song
                         isPlaySong && isSameSong -> {
                             action = MusicService.ACTION_PAUSE
                             isPlaySong = false
-                            Log.d(TAG, "Pause song")
                         }
 //                        Case 3: Resume song
                         !isPlaySong && isSameSong -> {
                             action = MusicService.ACTION_RESUME
                             isPlaySong = true
-                            Log.d(TAG, "Resume song")
                         }
 //                        Case 4: Play other song (playing)
                         isPlaySong && !isSameSong -> {
                             action = MusicService.ACTION_PLAY
                             putExtra("uri", intent.song.data.toString())
                             isPlaySong = true
-                            Log.d(TAG, "Play other song (playing)")
                         }
                     }
                 }
-
-                Log.d(TAG, "processIntent: Intent ${intent.song}")
-                Log.d(TAG, "processIntent: Selected ${current.selectedSong}")
                 context.startService(intentService)
 
                 _state.update {

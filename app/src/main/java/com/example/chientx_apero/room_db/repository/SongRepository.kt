@@ -13,5 +13,6 @@ class SongRepository(context: Context) {
     suspend fun getAllSongsFromLocal(): List<Song> = songDao.getAllFromLocal()
     suspend fun insertSongs(songs: List<Song>) = songDao.insertAll(songs)
     suspend fun getAllSongsInPlaylist(playlistId: Long) = songDao.getAllSongsInPlaylist(playlistId)
+    suspend fun getSongById(id: Long) = songDao.getSongById(id)
 
 }
