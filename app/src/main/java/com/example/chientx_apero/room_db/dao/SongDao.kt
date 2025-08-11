@@ -38,4 +38,7 @@ interface SongDao {
 
     @Query("SELECT * FROM song WHERE id = :id")
     suspend fun getSongById(id: Long): Song
+
+    @Query("SELECT * FROM song ORDER BY RANDOM() LIMIT 1")
+    suspend fun getSongByIdRandom(): Song
 }

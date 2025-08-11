@@ -91,7 +91,16 @@ fun Navigation() {
             }
             entry<Screen.Playlists> {
                 PlaylistScreen(
-                    isPlaylistScreen = true
+                    isPlaylistScreen = true,
+                    onClickPlaylist = {
+                        backStack.add(Screen.Playlists)
+                    },
+                    onClickLibrary = {
+                        backStack.add(Screen.Library)
+                    },
+                    onClickHome = {
+                        backStack.add(Screen.Home)
+                    }
                 )
             }
             entry<Screen.Information> {
@@ -116,6 +125,12 @@ fun Navigation() {
                     onClickPlayer = {
                         backStack.add(Screen.Player)
                     },
+                    onClickHome = {
+                        backStack.add(Screen.Home)
+                    },
+                    onClickLibrary = {
+                        backStack.add(Screen.Library)
+                    },
                     isLibraryScreen = true
                 )
             }
@@ -129,6 +144,10 @@ fun Navigation() {
                     onClickPlaylist = {
                         backStack.clear()
                         backStack.add(Screen.Playlists)
+                    },
+                    onClickHome = {
+                        backStack.clear()
+                        backStack.add(Screen.Home)
                     }
                 )
             }

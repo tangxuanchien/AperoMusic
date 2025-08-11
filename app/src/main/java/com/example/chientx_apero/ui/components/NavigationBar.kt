@@ -14,6 +14,7 @@ fun NavigationBar(
     modifier: Modifier = Modifier,
     onClickPlaylist: () -> Unit,
     onClickLibrary: () -> Unit,
+    onClickHome: () -> Unit,
     isHomeScreen: Boolean = false,
     isLibraryScreen: Boolean = false,
     isPlaylistScreen: Boolean = false
@@ -27,7 +28,7 @@ fun NavigationBar(
         NavigationIcon(
             text = "Home",
             icon = R.drawable.home,
-            onClick = {},
+            onClick = onClickHome,
             isScreen = isHomeScreen
         )
         NavigationIcon(

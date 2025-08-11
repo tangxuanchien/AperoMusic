@@ -1,4 +1,4 @@
-package com.example.chientx_apero.ui.home
+package com.example.chientx_apero.ui.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

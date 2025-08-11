@@ -49,7 +49,9 @@ import kotlinx.coroutines.launch
 fun LibraryScreen(
     onClickBack: () -> Unit,
     onClickPlayer: () -> Unit,
+    onClickHome: () -> Unit,
     onClickPlaylist: () -> Unit,
+    onClickLibrary: () -> Unit,
     isLibraryScreen: Boolean = false,
     viewModel: LibraryViewModel = viewModel(),
 ) {
@@ -192,17 +194,22 @@ fun LibraryScreen(
                         song = state.selectedSong!!,
                         isPlaySong = state.isPlaySong,
                         onClickPlaySong = {
-                            viewModel.processIntent(LibraryIntent.HandleSongAction(state.selectedSong!!), context)
+                            viewModel.processIntent(
+                                LibraryIntent.HandleSongAction(state.selectedSong!!),
+                                context
+                            )
                         },
                         onClickPlayer = {
                             onClickPlayer()
                             AppCache.playingSong = state.selectedSong
-                        }
+                        },
+                        currentTime = { 0f }
                     )
                 }
                 NavigationBar(
                     onClickPlaylist = onClickPlaylist,
-                    onClickLibrary = { },
+                    onClickLibrary = onClickLibrary,
+                    onClickHome = onClickHome,
                     isLibraryScreen = isLibraryScreen
                 )
             }
@@ -236,6 +243,8 @@ fun Preview() {
         onClickPlayer = {},
         onClickPlaylist = {},
         isLibraryScreen = true,
-        onClickBack = {}
+        onClickBack = {},
+        onClickHome = {},
+        onClickLibrary = {}
     )
 }

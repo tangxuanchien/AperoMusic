@@ -20,21 +20,29 @@ import com.example.chientx_apero.room_db.entity.Song
 @Composable
 fun PlayerSlider(
     modifier: Modifier = Modifier,
-    song: Song?
+    song: Song?,
+    onValueChangeFinished: () -> Unit,
+    onValueChange: (Float) -> Unit,
+    currentTime: String,
+    value: Float
 ) {
-    Slider(
-        value = 0.7f,
-        onValueChange = {},
-        onValueChangeFinished = {},
-        valueRange = 0f..1f,
-        colors = SliderDefaults.colors(
-            activeTrackColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            inactiveTrackColor = Color.Companion.DarkGray
-        ),
-        modifier = Modifier.Companion
-            .fillMaxWidth()
-            .height(6.dp)
-    )
+//    Slider(
+//        value = value,
+//        onValueChange = {
+//            onValueChange()
+//        },
+//        onValueChangeFinished = {
+//            onValueChangeFinished()
+//        },
+//        valueRange = 0f..1f,
+//        colors = SliderDefaults.colors(
+//            activeTrackColor = MaterialTheme.colorScheme.onPrimaryContainer,
+//            inactiveTrackColor = Color.Companion.DarkGray
+//        ),
+//        modifier = Modifier.Companion
+//            .fillMaxWidth()
+//            .height(6.dp)
+//    )
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.Companion
@@ -42,7 +50,7 @@ fun PlayerSlider(
             .fillMaxWidth()
     ) {
         Text(
-            text = "02:07",
+            text = currentTime,
             fontWeight = FontWeight.Companion.Bold,
             fontSize = 14.sp,
             color = Color(0x99CCCCCC)

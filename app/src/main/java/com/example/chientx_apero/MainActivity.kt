@@ -62,10 +62,8 @@ class MainActivity : ComponentActivity() {
     private fun loadMp3AndSaveDb() {
         CoroutineScope(Dispatchers.IO).launch {
             val allSongs = getAllMp3Files(this@MainActivity)
-            Log.d("Main", "${allSongs.size}")
             val repository = SongRepository(this@MainActivity)
             repository.insertSongs(allSongs)
-            Log.d("Main", "Insert success")
         }
     }
 }

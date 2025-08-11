@@ -33,7 +33,10 @@ import com.example.chientx_apero.ui.playlist.components.ItemGrid
 @Composable
 fun PlaylistScreen(
     isPlaylistScreen: Boolean = false,
-    viewModel: PlaylistViewModel = viewModel()
+    onClickPlaylist: () -> Unit = {},
+    onClickHome: () -> Unit = {},
+    onClickLibrary: () -> Unit = {},
+    viewModel: PlaylistViewModel = viewModel(),
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -128,8 +131,9 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background),
-                    onClickPlaylist = {},
-                    onClickLibrary = {},
+                    onClickPlaylist = onClickPlaylist,
+                    onClickLibrary = onClickLibrary,
+                    onClickHome = onClickHome,
                     isPlaylistScreen = isPlaylistScreen
                 )
             }
@@ -140,7 +144,7 @@ fun PlaylistScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewItemGrid() {
+fun PreviewPlaylist() {
     PlaylistScreen()
 }
 

@@ -37,7 +37,8 @@ fun MyPlaylistScreen(
     isPlaylistScreen: Boolean = false,
     viewModel: MyPlaylistViewModel = viewModel(),
     onClickLibrary: () -> Unit = {},
-    onClickPlaylist: () -> Unit = {}
+    onClickPlaylist: () -> Unit = {},
+    onClickHome: () -> Unit = {}
 ) {
     var titleMyPlaylist by remember { mutableStateOf("") }
     var showPopup by remember { mutableStateOf(false) }
@@ -48,7 +49,7 @@ fun MyPlaylistScreen(
     LaunchedEffect(Unit) {
         viewModel.processIntent(MyPlaylistIntent.LoadPlaylists(context))
         viewModel.event.collect { event ->
-            when(event){
+            when (event) {
                 is MyPlaylistEvent.ShowMessageMyPlaylist -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
@@ -128,10 +129,9 @@ fun MyPlaylistScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background),
-                    onClickPlaylist = {},
-                    onClickLibrary = {
-                        onClickLibrary()
-                    },
+                    onClickPlaylist = onClickPlaylist,
+                    onClickLibrary = onClickLibrary,
+                    onClickHome = onClickHome,
                     isPlaylistScreen = isPlaylistScreen
                 )
                 if (showPopup) {
