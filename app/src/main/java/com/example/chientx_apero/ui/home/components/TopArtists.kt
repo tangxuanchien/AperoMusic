@@ -20,13 +20,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.retrofit.model.ArtistRetrofit
 import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
 fun TopArtists(
     modifier: Modifier = Modifier.Companion,
-    artists: List<Song>
+    artists: List<ArtistRetrofit>
 ) {
     Box(
         modifier = Modifier.Companion
@@ -60,9 +62,7 @@ fun TopArtists(
                     .clip(RoundedCornerShape(6.dp))
             ) {
                 Image(
-                    painter = painterResource(
-                        R.drawable.avatar
-                    ),
+                    painter = rememberAsyncImagePainter(artist.image.first().url),
                     contentDescription = null,
                     modifier = Modifier.Companion
                         .size(180.dp),

@@ -182,7 +182,6 @@ class LibraryViewModel() : ViewModel() {
 
     fun fetchAndStoreSongsFromRemote(context: Context, repository: SongRepository) {
         val call = APIClient.build().getSongs()
-//                        Call enqueue run on main thread
         call.enqueue(object : Callback<List<SongRetrofit>> {
             override fun onResponse(
                 call: Call<List<SongRetrofit>>,
@@ -192,7 +191,6 @@ class LibraryViewModel() : ViewModel() {
                 if (response.isSuccessful) {
                     val songs = response.body() ?: emptyList()
                     viewModelScope.launch(Dispatchers.IO) {
-//                                        Download song must run on IO thread
                         songs.map { song ->
                             val url = URL(song.path)
                             val outputFile =

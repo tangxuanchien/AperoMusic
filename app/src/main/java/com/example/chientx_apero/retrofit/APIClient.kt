@@ -18,12 +18,18 @@ object APIClient {
             .baseUrl(BASE_URL)
             .build()
     }
+}
 
-    private fun buildClient(): OkHttpClient {
-        return OkHttpClient().newBuilder()
-            .connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+object APIClientHome {
+    private const val BASE_URL = "https://ws.audioscrobbler.com"
+    private const val REQUEST_TIMEOUT = 30L
+    private val retrofit by lazy { buildRetrofit() }
+    fun build(): ApiServiceHome { return retrofit.create(ApiServiceHome::class.java)}
+
+    private fun buildRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
             .build()
     }
 }

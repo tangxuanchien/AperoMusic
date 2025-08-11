@@ -1,6 +1,7 @@
 package com.example.chientx_apero.ui.home
 
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -63,6 +65,11 @@ fun HomeScreen(
         Color(0xFFFB003C),
         Color(0xFFF2A5FF)
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.processIntent(HomeIntent.LoadData, context)
+    }
+    Log.d("TopAlbums", "HomeScreen: ${state.topAlbums}")
     MaterialTheme(
         colorScheme = darkTheme.color
     ) {
@@ -81,17 +88,16 @@ fun HomeScreen(
                     )
                     Ranking()
                     TopAlbums(
-                        albums = songs.take(6)
+                        albums = state.topAlbums?.take(6) ?: emptyList()
                     )
                     TopTracks(
-                        tracks = songs.take(5),
+                        tracks = state.topTracks?.take(5) ?: emptyList(),
                         itemColors = itemColors
                     )
                     TopArtists(
-                        artists = songs.take(5)
+                        artists = state.topArtists?.take(5) ?: emptyList()
                     )
                 }
-                // End body
                 NavigationBar(
                     modifier = Modifier
                         .align(Alignment.BottomCenter),

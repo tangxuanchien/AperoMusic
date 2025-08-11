@@ -27,13 +27,15 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.retrofit.model.TrackRetrofit
 import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
 fun TopTracks(
     modifier: Modifier = Modifier.Companion,
-    tracks: List<Song>,
+    tracks: List<TrackRetrofit>,
     itemColors: List<Color>,
 ) {
     Box(
@@ -68,9 +70,7 @@ fun TopTracks(
                     .size(150.dp)
             ) {
                 Image(
-                    painter = painterResource(
-                        R.drawable.avatar
-                    ),
+                    painter = rememberAsyncImagePainter(track.image.first().url),
                     contentDescription = null,
                     modifier = Modifier.Companion
                         .size(150.dp),
@@ -106,7 +106,7 @@ fun TopTracks(
                                 .size(20.dp)
                         )
                         Text(
-                            text = track.library,
+                            text = track.listeners,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.Companion
@@ -126,7 +126,7 @@ fun TopTracks(
                                 .size(20.dp)
                         )
                         Text(
-                            text = track.artist,
+                            text = track.artist.name,
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.Companion

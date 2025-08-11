@@ -19,18 +19,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
-import com.example.chientx_apero.room_db.entity.Song
+import com.example.chientx_apero.retrofit.model.AlbumRetrofit
 
 @Composable
 fun TopAlbums(
     modifier: Modifier = Modifier.Companion,
-    albums: List<Song>
+    albums: List<AlbumRetrofit>
 ) {
     Box(
         modifier = Modifier.Companion
@@ -59,12 +60,19 @@ fun TopAlbums(
             Row(
                 modifier = Modifier.Companion
                     .padding(vertical = 6.dp, horizontal = 8.dp)
-                    .background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(10.dp)),
+                    .background(
+                        MaterialTheme.colorScheme.outlineVariant,
+                        RoundedCornerShape(10.dp)
+                    ),
                 verticalAlignment = Alignment.Companion.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(
-                         R.drawable.avatar
+                    painter = rememberAsyncImagePainter(
+                        if (album.image.last().url.isEmpty()) {
+                            R.drawable.avatar
+                        } else {
+                            album.image.last().url
+                        }
                     ),
                     contentDescription = null,
                     modifier = Modifier.Companion
@@ -80,12 +88,13 @@ fun TopAlbums(
                         text = album.name,
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        maxLines = 2,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Companion.Bold,
                         modifier = Modifier.Companion.padding(start = 10.dp)
                     )
                     Text(
-                        text = album.name,
+                        text = album.artist.name,
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.Companion.padding(start = 10.dp)
