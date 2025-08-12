@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,16 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.AppCache
-import com.example.chientx_apero.room_db.entity.Song
-import com.example.chientx_apero.service.MusicServiceManager
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
 import com.example.chientx_apero.ui.library.components.ItemLibrary
 import com.example.chientx_apero.ui.library.components.LoadingAnimation
 import com.example.chientx_apero.ui.library.components.NoInternetScreen
-import com.example.chientx_apero.ui.library.components.PlayerBar
 import com.example.chientx_apero.ui.library.components.PopupAddToPlaylist
 import com.example.chientx_apero.ui.library.components.shareDataToDevice
+import com.example.chientx_apero.ui.player_bar.PlayerBarIntent
+import com.example.chientx_apero.ui.player_bar.PlayerBarScreen
+import com.example.chientx_apero.ui.player_bar.PlayerBarViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -56,6 +55,7 @@ fun LibraryScreen(
     onClickLibrary: () -> Unit = {},
     isLibraryScreen: Boolean = false,
     viewModel: LibraryViewModel = viewModel(),
+    playerBarViewModel: PlayerBarViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
@@ -63,20 +63,6 @@ fun LibraryScreen(
     var isLocalLibrary by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(true) }
     var isExpanded by remember { mutableStateOf(false) }
-    var currentPosition by remember { mutableIntStateOf(0) }
-    val duration = parseDurationToMilliseconds(AppCache.playingSong?.duration ?: "00:00")
-    var progress: Float = currentPosition.toFloat() / duration.toFloat()
-    MusicServiceManager.bindService(context)
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            MusicServiceManager.getService()?.let {
-                currentPosition = it.getCurrentPosition()
-            }
-            delay(1000)
-        }
-    }
-    Log.d("Library", "LibraryScreen: ${duration}")
     LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadPlaylists, context)
         launch {
@@ -190,8 +176,8 @@ fun LibraryScreen(
                                             shareDataToDevice(context, song)
                                         },
                                         onClickPlay = {
-                                            viewModel.processIntent(
-                                                LibraryIntent.HandleSongAction(song),
+                                            playerBarViewModel.processIntent(
+                                                PlayerBarIntent.HandleSongAction(song),
                                                 context
                                             )
                                             AppCache.playingSong = song
@@ -204,30 +190,14 @@ fun LibraryScreen(
                     }
                 }
                 if (AppCache.playingSong != null) {
-                    PlayerBar(
-                        song = state.selectedSong!!,
-                        isPlaySong = state.isPlaySong,
-                        onClickPlaySong = {
-                            viewModel.processIntent(
-                                LibraryIntent.HandleSongAction(state.selectedSong!!),
-                                context
-                            )
-                        },
-                        onClickStopSong = {
-                            viewModel.processIntent(
-                                LibraryIntent.StopSong,
-                                context
-                            )
-                            isExpanded = false
-                            AppCache.playingSong = null
-                        },
-                        onClickPlayer = {
-                            AppCache.playingSong = state.selectedSong
-                            onClickPlayer()
-                        },
-                        currentTime = progress,
-                        expanded = isExpanded
+                    Log.d("Library", "LibraryScreen: Show")
+                    PlayerBarScreen(
+                        viewModel = playerBarViewModel,
+                        song = state.selectedSong,
+                        onClickPlayer = onClickPlayer
                     )
+                } else {
+                    Log.d("Library", "LibraryScreen: Don't Show")
                 }
                 NavigationBar(
                     onClickPlaylist = onClickPlaylist,
@@ -257,13 +227,6 @@ fun LibraryScreen(
             )
         }
     }
-}
-
-fun parseDurationToMilliseconds(durationStr: String): Long {
-    val parts = durationStr.split(":")
-    val minutes = parts[0].toLongOrNull() ?: 0
-    val seconds = parts[1].toLongOrNull() ?: 0
-    return (minutes * 60 + seconds) * 1000
 }
 
 @Preview(showBackground = true)

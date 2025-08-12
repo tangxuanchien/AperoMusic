@@ -1,12 +1,9 @@
 package com.example.chientx_apero.ui.library
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.retrofit.APIClient
 import com.example.chientx_apero.retrofit.model.SongRetrofit
@@ -14,9 +11,7 @@ import com.example.chientx_apero.retrofit.model.toSong
 import com.example.chientx_apero.room_db.repository.PlaylistRepository
 import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefRepository
 import com.example.chientx_apero.room_db.repository.SongRepository
-import com.example.chientx_apero.service.MusicService
 import com.example.chientx_apero.ui.library.LibraryEvent.ShowMessageLibrary
-import com.example.chientx_apero.ui.player.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -133,52 +128,6 @@ class LibraryViewModel(
                         sendEvent(ShowMessageLibrary("Song has in playlists"))
                     }
                 }
-            }
-
-            is LibraryIntent.HandleSongAction -> {
-                var isPlaySong = current.isPlaySong
-                val isSameSong = intent.song == current.selectedSong
-                val intentService = Intent(context, MusicService::class.java).apply {
-                    when {
-//                        Case 1: Play other song (not playing)
-                        !isPlaySong && !isSameSong -> {
-                            action = MusicService.ACTION_PLAY
-                            putExtra("uri", intent.song.data.toString())
-                            isPlaySong = true
-                        }
-//                       Case 2: Pause song
-                        isPlaySong && isSameSong -> {
-                            action = MusicService.ACTION_PAUSE
-                            isPlaySong = false
-                        }
-//                        Case 3: Resume song
-                        !isPlaySong && isSameSong -> {
-                            action = MusicService.ACTION_RESUME
-                            isPlaySong = true
-                        }
-//                        Case 4: Play other song (playing)
-                        isPlaySong && !isSameSong -> {
-                            action = MusicService.ACTION_PLAY
-                            putExtra("uri", intent.song.data.toString())
-                            isPlaySong = true
-                        }
-                    }
-                }
-                context.startService(intentService)
-
-                _state.update {
-                    it.copy(
-                        isPlaySong = isPlaySong,
-                        selectedSong = intent.song
-                    )
-                }
-            }
-
-            LibraryIntent.StopSong -> {
-                val intent = Intent(context, MusicService::class.java).apply {
-                    action = MusicService.ACTION_STOP
-                }
-                context.startService(intent)
             }
         }
     }

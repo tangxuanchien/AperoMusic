@@ -23,8 +23,6 @@ sealed interface LibraryIntent {
     data class OpenMenu(val song: Song) : LibraryIntent
     data object CloseMenu : LibraryIntent
     data object HidePopUp : LibraryIntent
-    data class HandleSongAction(val song: Song) : LibraryIntent
-    data object StopSong : LibraryIntent
     data object LoadPlaylists : LibraryIntent
     data class AddSongToPlaylist(val songId: Long, val playlistId: Long) :
         LibraryIntent

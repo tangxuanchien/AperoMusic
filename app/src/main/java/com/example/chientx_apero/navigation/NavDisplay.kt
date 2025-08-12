@@ -20,6 +20,7 @@ import com.example.chientx_apero.ui.library.LibraryScreen
 import com.example.chientx_apero.ui.login.LoginScreen
 import com.example.chientx_apero.ui.my_playlist.MyPlaylistScreen
 import com.example.chientx_apero.ui.player.PlayerScreen
+import com.example.chientx_apero.ui.player_bar.PlayerBarScreen
 import com.example.chientx_apero.ui.playlist.PlaylistScreen
 import com.example.chientx_apero.ui.settings.SettingsScreen
 import com.example.chientx_apero.ui.signup.SignUpScreen
@@ -146,7 +147,7 @@ fun Navigation() {
                     onClickHome = {
                         backStack.add(Screen.Home)
                     },
-                    onClickBack = {}
+                    onClickBack = { backStack.removeLastOrNull() }
                 )
             }
             entry<Screen.Library> {

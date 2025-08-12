@@ -29,6 +29,8 @@ import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.my_playlist.components.DefaultMyPlaylistScreen
 import com.example.chientx_apero.ui.my_playlist.components.ItemMyPlaylist
 import com.example.chientx_apero.ui.my_playlist.components.PopupAddMyPlaylist
+import com.example.chientx_apero.ui.player_bar.PlayerBarScreen
+import com.example.chientx_apero.ui.player_bar.PlayerBarViewModel
 import com.example.chientx_apero.ui.playlist.PlaylistIntent
 import com.example.chientx_apero.ui.playlist.components.HeaderPlaylist
 
@@ -38,7 +40,8 @@ fun MyPlaylistScreen(
     viewModel: MyPlaylistViewModel = viewModel(),
     onClickLibrary: () -> Unit = {},
     onClickPlaylist: () -> Unit = {},
-    onClickHome: () -> Unit = {}
+    onClickHome: () -> Unit = {},
+    playerBarViewModel: PlayerBarViewModel = viewModel()
 ) {
     var titleMyPlaylist by remember { mutableStateOf("") }
     var showPopup by remember { mutableStateOf(false) }
@@ -60,12 +63,14 @@ fun MyPlaylistScreen(
         colorScheme = state.currentTheme.color
     ) {
         Box(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .padding(vertical = 18.dp)
+                .fillMaxSize()
         ) {
             Column(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(vertical = 18.dp, horizontal = 10.dp)
-                    .fillMaxSize()
+                    .padding(horizontal = 10.dp)
             ) {
                 HeaderPlaylist(
                     stateMyPlaylist = true,
@@ -125,15 +130,11 @@ fun MyPlaylistScreen(
                         }
                     }
                 }
-                NavigationBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background),
-                    onClickPlaylist = onClickPlaylist,
-                    onClickLibrary = onClickLibrary,
-                    onClickHome = onClickHome,
-                    isPlaylistScreen = isPlaylistScreen
-                )
+                if (AppCache.playingSong != null) {
+                    PlayerBarScreen(
+                        viewModel = playerBarViewModel
+                    )
+                }
                 if (showPopup) {
                     if (isRename) {
                         PopupAddMyPlaylist(
@@ -179,6 +180,25 @@ fun MyPlaylistScreen(
                         )
                     }
                 }
+            }
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+            ) {
+                if (AppCache.playingSong != null) {
+                    PlayerBarScreen(
+                        viewModel = playerBarViewModel
+                    )
+                }
+                NavigationBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background),
+                    onClickPlaylist = onClickPlaylist,
+                    onClickLibrary = onClickLibrary,
+                    onClickHome = onClickHome,
+                    isPlaylistScreen = isPlaylistScreen
+                )
             }
         }
     }
