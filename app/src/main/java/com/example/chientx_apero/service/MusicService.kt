@@ -50,6 +50,7 @@ class MusicService : LifecycleService() {
         const val ACTION_STOP = "ACTION_STOP"
         const val ACTION_RESUME = "ACTION_RESUME"
         const val ACTION_REPLAY = "ACTION_REPLAY"
+        const val ACTION_SEEK_TO = "ACTION_SEEK_TO"
     }
 
     override fun onCreate() {
@@ -63,7 +64,6 @@ class MusicService : LifecycleService() {
 
         when (intent?.action) {
             ACTION_PLAY -> {
-                Log.d(TAG, "onStartCommand: ${intent.getStringExtra("uri")}")
                 val uri = Uri.fromFile(File(intent.getStringExtra("uri")!!))
                 uri?.let {
                     mediaPlayer?.reset()
@@ -94,6 +94,11 @@ class MusicService : LifecycleService() {
 
             ACTION_REPLAY -> {
                 mediaPlayer?.isLooping = true
+            }
+
+            ACTION_SEEK_TO -> {
+                val progress = intent.getFloatExtra("progress", 0f)
+                mediaPlayer?.seekTo(progress.toInt())
             }
         }
         return START_NOT_STICKY

@@ -24,12 +24,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.room_db.entity.User
 
 @Composable
 fun HeaderHome(
     modifier: Modifier = Modifier.Companion,
     onClickProfile: () -> Unit,
-    onClickSetting: () -> Unit,
+    onClickSettings: () -> Unit,
+    user: User?
 ) {
     Box(
         modifier = Modifier.Companion
@@ -42,11 +45,11 @@ fun HeaderHome(
         ) {
             Image(
                 painter = rememberAsyncImagePainter(
-                    R.drawable.avatar
+                    user?.avatar ?: R.drawable.avatar
                 ),
                 contentDescription = null,
                 modifier = Modifier.Companion
-                    .size(36.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
                     .border(
                         width = 2.dp,
@@ -69,7 +72,7 @@ fun HeaderHome(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Tang Xuan Chien",
+                    text = user?.name ?: "New User",
                     fontSize = 12.sp,
                     modifier = Modifier.Companion.padding(top = 14.dp),
                     fontWeight = FontWeight.Companion.Bold,
@@ -84,7 +87,7 @@ fun HeaderHome(
                 .align(Alignment.Companion.CenterEnd)
                 .size(28.dp)
                 .clickable(
-                    onClick = onClickSetting
+                    onClick = onClickSettings
                 )
         )
     }

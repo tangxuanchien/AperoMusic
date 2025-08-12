@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
-import androidx.room.util.copy
 import com.example.chientx_apero.R
 import com.example.chientx_apero.room_db.entity.Song
 import com.example.chientx_apero.ui.theme.darkTheme
@@ -33,78 +32,82 @@ import com.example.chientx_apero.ui.theme.darkTheme
 fun PlayerBar(
     modifier: Modifier = Modifier,
     song: Song,
-    onClickPlaySong: () -> Unit,
-    onClickPlayer: () -> Unit,
-    isPlaySong: Boolean,
-    currentTime: () -> Float
+    onClickPlaySong: () -> Unit = {},
+    onClickStopSong: () -> Unit = {},
+    onClickPlayer: () -> Unit = {},
+    isPlaySong: Boolean = false,
+    currentTime: Float = 0f,
+    expanded: Boolean = false,
 ) {
     Column(
         horizontalAlignment = Alignment.End
     ) {
-        Icon(
-            imageVector = ImageVector.Companion.vectorResource(R.drawable.cancel),
-            contentDescription = "Cancel",
-            modifier = Modifier.Companion
-                .size(24.dp)
-                .padding(vertical = 5.dp)
-                .clickable {
-                    onClickPlaySong()
+        if (expanded) {
+            Icon(
+                imageVector = ImageVector.Companion.vectorResource(R.drawable.cancel),
+                contentDescription = "Cancel",
+                modifier = Modifier.Companion
+                    .size(24.dp)
+                    .padding(vertical = 5.dp)
+                    .clickable {
+                        onClickStopSong()
+                    },
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+            LinearProgressIndicator(
+                progress = {
+                    currentTime
                 },
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-        LinearProgressIndicator(
-            progress = {
-                currentTime()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-        Box(
-            modifier = Modifier.Companion
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .clickable {
-                    onClickPlayer()
-                }
-        ) {
-            Column(
-                modifier = Modifier.Companion.align(Alignment.Companion.CenterStart)
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Box(
+                modifier = Modifier.Companion
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clickable {
+                        onClickPlayer()
+                    }
             ) {
-                Row(
-                    verticalAlignment = Alignment.Companion.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.Companion
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
+                Column(
+                    modifier = Modifier.Companion.align(Alignment.Companion.CenterStart)
                 ) {
-                    Icon(
-                        imageVector = ImageVector.Companion.vectorResource(
-                            if (isPlaySong) {
-                                R.drawable.pause
-                            } else {
-                                R.drawable.play
-                            }
-                        ),
-                        contentDescription = "Next",
+                    Row(
+                        verticalAlignment = Alignment.Companion.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.Companion
-                            .size(24.dp)
-                            .clickable {
-                                onClickPlaySong()
-                            },
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(
-                        text = song.name,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontWeight = FontWeight.Companion.Bold,
-                        fontSize = 20.sp
-                    )
-                    Text(
-                        text = song.duration,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        fontSize = 20.sp
-                    )
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.Companion.vectorResource(
+                                if (isPlaySong) {
+                                    R.drawable.pause
+                                } else {
+                                    R.drawable.play
+                                }
+                            ),
+                            contentDescription = "Next",
+                            modifier = Modifier.Companion
+                                .size(24.dp)
+                                .clickable {
+                                    onClickPlaySong()
+                                },
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = song.name,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontWeight = FontWeight.Companion.Bold,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            text = song.duration,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 20.sp
+                        )
+                    }
                 }
             }
         }
@@ -118,11 +121,7 @@ private fun PrevPlayerBar() {
         colorScheme = darkTheme.color
     ) {
         PlayerBar(
-            song = Song(1L, "Lover", "".toUri(), null, "Justin", "03:36", "remote"),
-            onClickPlaySong = {},
-            onClickPlayer = {},
-            isPlaySong = false,
-            currentTime = {0f}
+            song = Song(1L, "Lover", "".toUri(), null, "Justin", "03:36", "remote")
         )
     }
 }

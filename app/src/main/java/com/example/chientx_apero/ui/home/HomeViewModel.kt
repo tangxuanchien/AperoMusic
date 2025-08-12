@@ -4,11 +4,15 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.retrofit.APIClientHome
 import com.example.chientx_apero.retrofit.model.ArtistRetrofit
 import com.example.chientx_apero.retrofit.model.TopAlbumsResponse
 import com.example.chientx_apero.retrofit.model.TopArtistsResponse
 import com.example.chientx_apero.retrofit.model.TopTracksResponse
+import com.example.chientx_apero.room_db.AppDatabase
+import com.example.chientx_apero.room_db.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +37,9 @@ class HomeViewModel() : ViewModel() {
         when (intent) {
             HomeIntent.LoadData -> {
                 viewModelScope.launch {
+                    val userId = PreferenceManager.getSaveUserId()
+                    val repository = UserRepository(context)
+                    AppCache.currentUser = repository.getUserByIds(userId!!)
                     fetchTopArtistsFromApi()
                     fetchTopTracksFromApi()
                     fetchTopAlbumsFromApi()

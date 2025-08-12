@@ -21,6 +21,7 @@ import com.example.chientx_apero.ui.login.LoginScreen
 import com.example.chientx_apero.ui.my_playlist.MyPlaylistScreen
 import com.example.chientx_apero.ui.player.PlayerScreen
 import com.example.chientx_apero.ui.playlist.PlaylistScreen
+import com.example.chientx_apero.ui.settings.SettingsScreen
 import com.example.chientx_apero.ui.signup.SignUpScreen
 
 @Composable
@@ -75,6 +76,9 @@ fun Navigation() {
                     onClickTopTracks = {
                         backStack.add(Screen.TopTracks)
                     },
+                    onClickSettings = {
+                        backStack.add(Screen.Settings)
+                    },
                     isHomeScreen = true
                 )
             }
@@ -90,6 +94,11 @@ fun Navigation() {
             }
             entry<Screen.TopTracks> {
                 TopTracksScreen(
+                    onClickBack = { backStack.removeLastOrNull() }
+                )
+            }
+            entry<Screen.Settings> {
+                SettingsScreen(
                     onClickBack = { backStack.removeLastOrNull() }
                 )
             }

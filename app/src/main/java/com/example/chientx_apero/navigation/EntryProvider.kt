@@ -12,4 +12,5 @@ sealed interface Screen {
     data object TopAlbums : Screen
     data object TopArtists : Screen
     data object TopTracks : Screen
+    data object Settings : Screen
 }

@@ -76,7 +76,7 @@ fun TopTracks(
                     .size(150.dp)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(track.image.first().url),
+                    painter = rememberAsyncImagePainter(track.image.last().url),
                     contentDescription = null,
                     modifier = Modifier.Companion
                         .size(150.dp),

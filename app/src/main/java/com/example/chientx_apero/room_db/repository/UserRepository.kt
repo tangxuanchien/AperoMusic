@@ -10,4 +10,5 @@ class UserRepository(context: Context) {
     val userDao = AppDatabase.getDatabase(context).userDao()
 
     suspend fun checkExistAccount(userId: Long): User? = userDao.getUserByIds(userId)
+    suspend fun getUserByIds(userId: Long): User? = userDao.getUserByIds(userId)
 }

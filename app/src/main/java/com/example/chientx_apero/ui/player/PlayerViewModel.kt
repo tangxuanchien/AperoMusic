@@ -93,7 +93,8 @@ class PlayerViewModel : ViewModel() {
                     Log.d("Play", "true")
                     _state.update {
                         it.copy(
-                            isPlaySong = isPlaySong
+                            isPlaySong = isPlaySong,
+                            duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
                         )
                     }
                 }
@@ -107,7 +108,8 @@ class PlayerViewModel : ViewModel() {
                     context.startService(intent)
                     _state.update {
                         it.copy(
-                            song = AppCache.playingSong
+                            song = AppCache.playingSong,
+                            duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
                         )
                     }
                 }
@@ -121,7 +123,8 @@ class PlayerViewModel : ViewModel() {
                     context.startService(intent)
                     _state.update {
                         it.copy(
-                            song = AppCache.playingSong
+                            song = AppCache.playingSong,
+                            duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
                         )
                     }
                 }
@@ -152,8 +155,23 @@ class PlayerViewModel : ViewModel() {
                         bindService(context)
                     }
                 }
+
+                is PlayerIntent.SeekToProgress -> {
+                    val intent = Intent(context, MusicService::class.java).apply {
+                        action = MusicService.ACTION_SEEK_TO
+                        putExtra("progress", intent.progress)
+                    }
+                    context.startService(intent)
+                }
             }
         }
+    }
+
+    fun parseDurationToMilliseconds(durationStr: String): Long {
+        val parts = durationStr.split(":")
+        val minutes = parts[0].toLongOrNull() ?: 0
+        val seconds = parts[1].toLongOrNull() ?: 0
+        return (minutes * 60 + seconds) * 1000
     }
 
     private fun sendEvent(event: PlayerEvent) {

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.retrofit.APIClient
 import com.example.chientx_apero.retrofit.model.SongRetrofit
@@ -135,49 +136,61 @@ class LibraryViewModel() : ViewModel() {
             is LibraryIntent.HandleSongAction -> {
                 var isPlaySong = current.isPlaySong
                 val isSameSong = intent.song == current.selectedSong
-
-                val intentService = Intent(context, MusicService::class.java).apply {
-                    when {
+                viewModelScope.launch {
+                    val repository = SongRepository(context)
+                    val song = repository.getSongById(intent.song.id)
+                    val intentService = Intent(context, MusicService::class.java).apply {
+                        when {
 //                        Case 1: Play other song (not playing)
-                        !isPlaySong && !isSameSong -> {
-                            action = MusicService.ACTION_PLAY
-                            putExtra("uri", intent.song.data.toString())
-                            isPlaySong = true
-                        }
+                            !isPlaySong && !isSameSong -> {
+                                action = MusicService.ACTION_PLAY
+                                putExtra("uri", intent.song.data.toString())
+                                isPlaySong = true
+                            }
 //                       Case 2: Pause song
-                        isPlaySong && isSameSong -> {
-                            action = MusicService.ACTION_PAUSE
-                            isPlaySong = false
-                        }
+                            isPlaySong && isSameSong -> {
+                                action = MusicService.ACTION_PAUSE
+                                isPlaySong = false
+                            }
 //                        Case 3: Resume song
-                        !isPlaySong && isSameSong -> {
-                            action = MusicService.ACTION_RESUME
-                            isPlaySong = true
-                        }
+                            !isPlaySong && isSameSong -> {
+                                action = MusicService.ACTION_RESUME
+                                isPlaySong = true
+                            }
 //                        Case 4: Play other song (playing)
-                        isPlaySong && !isSameSong -> {
-                            action = MusicService.ACTION_PLAY
-                            putExtra("uri", intent.song.data.toString())
-                            isPlaySong = true
+                            isPlaySong && !isSameSong -> {
+                                action = MusicService.ACTION_PLAY
+                                putExtra("uri", intent.song.data.toString())
+                                isPlaySong = true
+                            }
                         }
                     }
-                }
-                context.startService(intentService)
+                    context.startService(intentService)
 
-                _state.update {
-                    it.copy(
-                        isPlaySong = isPlaySong,
-                        selectedSong = intent.song
-                    )
+                    _state.update {
+                        it.copy(
+                            isPlaySong = isPlaySong,
+                            selectedSong = intent.song,
+                            duration = parseDurationToMilliseconds(song.duration).toFloat()
+                        )
+                    }
                 }
+            }
+
+            LibraryIntent.StopSong -> {
+                val intent = Intent(context, MusicService::class.java).apply {
+                    action = MusicService.ACTION_STOP
+                }
+                context.startService(intent)
             }
         }
     }
 
-    private fun sendEvent(event: LibraryEvent) {
-        viewModelScope.launch {
-            _event.emit(event)
-        }
+    fun parseDurationToMilliseconds(durationStr: String): Long {
+        val parts = durationStr.split(":")
+        val minutes = parts[0].toLongOrNull() ?: 0
+        val seconds = parts[1].toLongOrNull() ?: 0
+        return (minutes * 60 + seconds) * 1000
     }
 
     fun fetchAndStoreSongsFromRemote(context: Context, repository: SongRepository) {
@@ -219,5 +232,12 @@ class LibraryViewModel() : ViewModel() {
                 _state.value.displayedSongs.clear()
             }
         })
+    }
+
+
+    private fun sendEvent(event: LibraryEvent) {
+        viewModelScope.launch {
+            _event.emit(event)
+        }
     }
 }

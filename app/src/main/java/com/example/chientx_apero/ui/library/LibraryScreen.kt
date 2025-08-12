@@ -44,14 +44,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun LibraryScreen(
-    onClickBack: () -> Unit,
-    onClickPlayer: () -> Unit,
-    onClickHome: () -> Unit,
-    onClickPlaylist: () -> Unit,
-    onClickLibrary: () -> Unit,
+    onClickBack: () -> Unit = {},
+    onClickPlayer: () -> Unit = {},
+    onClickHome: () -> Unit = {},
+    onClickPlaylist: () -> Unit = {},
+    onClickLibrary: () -> Unit = {},
     isLibraryScreen: Boolean = false,
     viewModel: LibraryViewModel = viewModel(),
 ) {
@@ -60,6 +59,7 @@ fun LibraryScreen(
     var isShowPopup by remember { mutableStateOf(false) }
     var isLocalLibrary by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(true) }
+    var isExpanded by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadPlaylists, context)
@@ -146,7 +146,6 @@ fun LibraryScreen(
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         } else {
-                            Log.d("LIB", "LibraryScreen: ${AppCache.playingSong}")
                             LazyColumn {
                                 items(state.displayedSongs) { song ->
                                     Log.d("LIB", "LibraryScreen: ${AppCache.playingSong == song}")
@@ -182,6 +181,7 @@ fun LibraryScreen(
                                                 context
                                             )
                                             AppCache.playingSong = song
+                                            isExpanded = true
                                         }
                                     )
                                 }
@@ -190,6 +190,7 @@ fun LibraryScreen(
                     }
                 }
                 if (state.selectedSong != null) {
+                    Log.d("duration", "LibraryScreen: ${state.currentTime}")
                     PlayerBar(
                         song = state.selectedSong!!,
                         isPlaySong = state.isPlaySong,
@@ -199,11 +200,19 @@ fun LibraryScreen(
                                 context
                             )
                         },
+                        onClickStopSong = {
+                            viewModel.processIntent(
+                                LibraryIntent.HandleSongAction(state.selectedSong!!),
+                                context
+                            )
+                            isExpanded = false
+                        },
                         onClickPlayer = {
                             onClickPlayer()
                             AppCache.playingSong = state.selectedSong
                         },
-                        currentTime = { 0f }
+                        currentTime = 0f,
+                        expanded = isExpanded
                     )
                 }
                 NavigationBar(
@@ -239,12 +248,5 @@ fun LibraryScreen(
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    LibraryScreen(
-        onClickPlayer = {},
-        onClickPlaylist = {},
-        isLibraryScreen = true,
-        onClickBack = {},
-        onClickHome = {},
-        onClickLibrary = {}
-    )
+    LibraryScreen()
 }

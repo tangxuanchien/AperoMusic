@@ -1,5 +1,6 @@
 package com.example.chientx_apero.ui.player
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,9 +51,7 @@ fun PlayerScreen(
         colorScheme = currentTheme.color
     ) {
         LaunchedEffect(state.currentTime) {
-            if (!isUserDragging) {
-                sliderPosition = state.currentTime.toFloat()
-            }
+            sliderPosition = state.currentTime.toFloat()
         }
         DisposableEffect(Unit) {
             viewModel.bindService(context)
@@ -88,16 +87,14 @@ fun PlayerScreen(
                             name = state.song?.name!!,
                             artist = state.song?.artist!!
                         )
+                        Log.d("Realtime", "Progress: $sliderPosition")
                         Slider(
                             value = sliderPosition,
                             onValueChange = {
-                                isUserDragging = true
                                 sliderPosition = it
+                                viewModel.processIntent(PlayerIntent.SeekToProgress(it), context)
                             },
-                            onValueChangeFinished = {
-
-                            },
-                            valueRange = 0f..1f,
+                            valueRange = 0f..state.duration.toFloat(),
                             colors = SliderDefaults.colors(
                                 activeTrackColor = MaterialTheme.colorScheme.onPrimaryContainer,
                                 inactiveTrackColor = Color.Companion.DarkGray

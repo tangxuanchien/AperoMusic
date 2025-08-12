@@ -18,3 +18,17 @@ object AppCache {
     var topAlbums: List<AlbumRetrofit>? = null
     var topTracks: List<TrackRetrofit>? = null
 }
+
+// Fake data
+val songs = mutableListOf<Song>(
+    Song(1L, "Anh da on hon", "".toUri(), null, "MCK", "03:36", "Free Fire"),
+    Song(2L, "Soda", "".toUri(), null, "tlinh", "03:36", "local"),
+    Song(3L, "2h", "".toUri(), null, "Obito", "03:36", "local"),
+    Song(4L, "Phong Ly", "".toUri(), null, "MCK", "03:36", "local"),
+    Song(5L, "2323", "".toUri(), null, "MCK", "03:36", "local"),
+    Song(6L, "okok", "".toUri(), null, "MCK", "03:36", "local"),
+    Song(7L, "tutu", "".toUri(), null, "MCK", "03:36", "local"),
+    Song(8L, "no way", "".toUri(), null, "MCK", "03:36", "local"),
+    Song(9L, "no way 2", "".toUri(), null, "MCK", "03:36", "local"),
+    Song(10L, "Huhu", "".toUri(), null, "MCK", "03:36", "local")
+)

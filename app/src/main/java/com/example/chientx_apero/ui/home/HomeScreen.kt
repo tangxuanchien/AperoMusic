@@ -40,25 +40,13 @@ fun HomeScreen(
     isHomeScreen: Boolean = false,
     onClickBack: () -> Unit = {},
     onClickTopAlbums: () -> Unit = {},
+    onClickSettings: () -> Unit = {},
     onClickTopArtists: () -> Unit = {},
     onClickTopTracks: () -> Unit = {},
     viewModel: HomeViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
-    val songs = mutableListOf<Song>(
-        Song(1L, "Anh da on hon", "".toUri(), null, "MCK", "03:36", "Free Fire"),
-        Song(2L, "Soda", "".toUri(), null, "tlinh", "03:36", "local"),
-        Song(3L, "2h", "".toUri(), null, "Obito", "03:36", "local"),
-        Song(4L, "Phong Ly", "".toUri(), null, "MCK", "03:36", "local"),
-        Song(5L, "2323", "".toUri(), null, "MCK", "03:36", "local"),
-        Song(6L, "okok", "".toUri(), null, "MCK", "03:36", "local"),
-        Song(7L, "tutu", "".toUri(), null, "MCK", "03:36", "local"),
-        Song(8L, "no way", "".toUri(), null, "MCK", "03:36", "local"),
-        Song(9L, "no way 2", "".toUri(), null, "MCK", "03:36", "local"),
-        Song(10L, "Huhu", "".toUri(), null, "MCK", "03:36", "local")
-    )
-
     val itemColors = mutableListOf<Color>(
         Color(0xFFFF7777),
         Color(0xFFFFFA77),
@@ -87,7 +75,8 @@ fun HomeScreen(
                 Column {
                     HeaderHome(
                         onClickProfile = onClickProfile,
-                        onClickSetting = {}
+                        onClickSettings = onClickSettings,
+                        user = AppCache.currentUser
                     )
                     Ranking()
                     TopAlbums(
