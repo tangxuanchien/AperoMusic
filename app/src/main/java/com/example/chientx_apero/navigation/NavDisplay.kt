@@ -1,27 +1,27 @@
 package com.example.chientx_apero.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.room_db.repository.UserRepository
+import com.example.chientx_apero.ui.api_screen.TopAlbumsScreen
+import com.example.chientx_apero.ui.api_screen.TopArtistsScreen
+import com.example.chientx_apero.ui.api_screen.TopTracksScreen
 import com.example.chientx_apero.ui.home.HomeScreen
 import com.example.chientx_apero.ui.information.InformationScreen
 import com.example.chientx_apero.ui.library.LibraryScreen
 import com.example.chientx_apero.ui.login.LoginScreen
 import com.example.chientx_apero.ui.my_playlist.MyPlaylistScreen
 import com.example.chientx_apero.ui.player.PlayerScreen
-import com.example.chientx_apero.ui.signup.SignUpScreen
 import com.example.chientx_apero.ui.playlist.PlaylistScreen
-import kotlinx.coroutines.CoroutineScope
+import com.example.chientx_apero.ui.signup.SignUpScreen
 
 @Composable
 fun Navigation() {
@@ -66,7 +66,31 @@ fun Navigation() {
                     onClickBack = {
                         backStack.removeLastOrNull()
                     },
+                    onClickTopAlbums = {
+                        backStack.add(Screen.TopAlbums)
+                    },
+                    onClickTopArtists = {
+                        backStack.add(Screen.TopArtists)
+                    },
+                    onClickTopTracks = {
+                        backStack.add(Screen.TopTracks)
+                    },
                     isHomeScreen = true
+                )
+            }
+            entry<Screen.TopArtists> {
+                TopArtistsScreen(
+                    onClickBack = { backStack.removeLastOrNull() }
+                )
+            }
+            entry<Screen.TopAlbums> {
+                TopAlbumsScreen(
+                    onClickBack = { backStack.removeLastOrNull() }
+                )
+            }
+            entry<Screen.TopTracks> {
+                TopTracksScreen(
+                    onClickBack = { backStack.removeLastOrNull() }
                 )
             }
             entry<Screen.Login> {

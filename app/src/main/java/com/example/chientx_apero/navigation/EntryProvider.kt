@@ -9,4 +9,7 @@ sealed interface Screen {
     data object Library : Screen
     data object MyPlaylist : Screen
     data object Player : Screen
+    data object TopAlbums : Screen
+    data object TopArtists : Screen
+    data object TopTracks : Screen
 }

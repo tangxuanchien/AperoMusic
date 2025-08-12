@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.entity.Song
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.home.components.HeaderHome
@@ -38,6 +39,9 @@ fun HomeScreen(
     onClickHome: () -> Unit = {},
     isHomeScreen: Boolean = false,
     onClickBack: () -> Unit = {},
+    onClickTopAlbums: () -> Unit = {},
+    onClickTopArtists: () -> Unit = {},
+    onClickTopTracks: () -> Unit = {},
     viewModel: HomeViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -69,7 +73,6 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.processIntent(HomeIntent.LoadData, context)
     }
-    Log.d("TopAlbums", "HomeScreen: ${state.topAlbums}")
     MaterialTheme(
         colorScheme = darkTheme.color
     ) {
@@ -83,19 +86,31 @@ fun HomeScreen(
             ) {
                 Column {
                     HeaderHome(
-                        onClickProfile = {},
+                        onClickProfile = onClickProfile,
                         onClickSetting = {}
                     )
                     Ranking()
                     TopAlbums(
-                        albums = state.topAlbums?.take(6) ?: emptyList()
+                        albums = state.topAlbums?.take(6) ?: emptyList(),
+                        onClickTopAlbums = {
+                            AppCache.topAlbums = state.topAlbums
+                            onClickTopAlbums()
+                        }
                     )
                     TopTracks(
                         tracks = state.topTracks?.take(5) ?: emptyList(),
-                        itemColors = itemColors
+                        itemColors = itemColors,
+                        onClickTopTracks = {
+                            AppCache.topTracks = state.topTracks
+                            onClickTopTracks()
+                        }
                     )
                     TopArtists(
-                        artists = state.topArtists?.take(5) ?: emptyList()
+                        artists = state.topArtists?.take(5) ?: emptyList(),
+                        onClickTopArtists = {
+                            AppCache.topArtists = state.topArtists
+                            onClickTopArtists()
+                        }
                     )
                 }
                 NavigationBar(
@@ -114,9 +129,5 @@ fun HomeScreen(
 @Preview(showBackground = true)
 @Composable
 fun Preview() {
-    MaterialTheme(
-        colorScheme = darkTheme.color
-    ) {
-        HomeScreen()
-    }
+    HomeScreen()
 }

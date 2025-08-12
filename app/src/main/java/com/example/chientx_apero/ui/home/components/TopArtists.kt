@@ -1,6 +1,7 @@
 package com.example.chientx_apero.ui.home.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,8 @@ import com.example.chientx_apero.room_db.entity.Song
 @Composable
 fun TopArtists(
     modifier: Modifier = Modifier.Companion,
-    artists: List<ArtistRetrofit>
+    artists: List<ArtistRetrofit>,
+    onClickTopArtists: () -> Unit,
 ) {
     Box(
         modifier = Modifier.Companion
@@ -36,7 +38,7 @@ fun TopArtists(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Top tracks",
+            text = "Top artists",
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Companion.Bold,
@@ -47,7 +49,11 @@ fun TopArtists(
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Companion.Underline,
-            modifier = Modifier.Companion.align(Alignment.Companion.CenterEnd)
+            modifier = Modifier.Companion
+                .align(Alignment.Companion.CenterEnd)
+                .clickable {
+                    onClickTopArtists()
+                }
         )
     }
     LazyRow(
@@ -62,7 +68,7 @@ fun TopArtists(
                     .clip(RoundedCornerShape(6.dp))
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(artist.image.first().url),
+                    painter = rememberAsyncImagePainter(artist.image.last().url),
                     contentDescription = null,
                     modifier = Modifier.Companion
                         .size(180.dp),

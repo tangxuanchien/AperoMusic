@@ -2,6 +2,7 @@ package com.example.chientx_apero.ui.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,8 @@ import com.example.chientx_apero.retrofit.model.AlbumRetrofit
 @Composable
 fun TopAlbums(
     modifier: Modifier = Modifier.Companion,
-    albums: List<AlbumRetrofit>
+    albums: List<AlbumRetrofit>,
+    onClickTopAlbums: () -> Unit,
 ) {
     Box(
         modifier = Modifier.Companion
@@ -50,7 +52,11 @@ fun TopAlbums(
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Underline,
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    onClickTopAlbums()
+                }
         )
     }
     LazyVerticalGrid(
@@ -68,10 +74,8 @@ fun TopAlbums(
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        if (album.image.last().url.isEmpty()) {
+                        album.image.last().url.ifEmpty {
                             R.drawable.avatar
-                        } else {
-                            album.image.last().url
                         }
                     ),
                     contentDescription = null,

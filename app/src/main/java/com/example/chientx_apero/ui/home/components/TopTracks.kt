@@ -2,6 +2,7 @@ package com.example.chientx_apero.ui.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ fun TopTracks(
     modifier: Modifier = Modifier.Companion,
     tracks: List<TrackRetrofit>,
     itemColors: List<Color>,
+    onClickTopTracks: () -> Unit,
 ) {
     Box(
         modifier = Modifier.Companion
@@ -55,7 +57,11 @@ fun TopTracks(
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Companion.Underline,
-            modifier = Modifier.Companion.align(Alignment.Companion.CenterEnd)
+            modifier = Modifier.Companion
+                .align(Alignment.Companion.CenterEnd)
+                .clickable {
+                    onClickTopTracks()
+                }
         )
     }
     LazyRow(
