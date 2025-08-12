@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.room_db.entity.Song
+import com.example.chientx_apero.service.MusicServiceManager
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
 import com.example.chientx_apero.ui.library.components.ItemLibrary
@@ -60,10 +63,22 @@ fun LibraryScreen(
     var isLocalLibrary by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(true) }
     var isExpanded by remember { mutableStateOf(false) }
+    var currentPosition by remember { mutableIntStateOf(0) }
+    val duration = parseDurationToMilliseconds(AppCache.playingSong?.duration ?: "00:00")
+    var progress: Float = currentPosition.toFloat() / duration.toFloat()
+    MusicServiceManager.bindService(context)
 
     LaunchedEffect(Unit) {
+        while (true) {
+            MusicServiceManager.getService()?.let {
+                currentPosition = it.getCurrentPosition()
+            }
+            delay(1000)
+        }
+    }
+    Log.d("Library", "LibraryScreen: ${duration}")
+    LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadPlaylists, context)
-
         launch {
             viewModel.event.collect { event ->
                 when (event) {
@@ -148,7 +163,6 @@ fun LibraryScreen(
                         } else {
                             LazyColumn {
                                 items(state.displayedSongs) { song ->
-                                    Log.d("LIB", "LibraryScreen: ${AppCache.playingSong == song}")
                                     ItemLibrary(
                                         song = song,
                                         expanded = state.expanded && state.selectedSong == song,
@@ -189,8 +203,7 @@ fun LibraryScreen(
                         }
                     }
                 }
-                if (state.selectedSong != null) {
-                    Log.d("duration", "LibraryScreen: ${state.currentTime}")
+                if (AppCache.playingSong != null) {
                     PlayerBar(
                         song = state.selectedSong!!,
                         isPlaySong = state.isPlaySong,
@@ -202,16 +215,17 @@ fun LibraryScreen(
                         },
                         onClickStopSong = {
                             viewModel.processIntent(
-                                LibraryIntent.HandleSongAction(state.selectedSong!!),
+                                LibraryIntent.StopSong,
                                 context
                             )
                             isExpanded = false
+                            AppCache.playingSong = null
                         },
                         onClickPlayer = {
-                            onClickPlayer()
                             AppCache.playingSong = state.selectedSong
+                            onClickPlayer()
                         },
-                        currentTime = 0f,
+                        currentTime = progress,
                         expanded = isExpanded
                     )
                 }
@@ -243,6 +257,13 @@ fun LibraryScreen(
             )
         }
     }
+}
+
+fun parseDurationToMilliseconds(durationStr: String): Long {
+    val parts = durationStr.split(":")
+    val minutes = parts[0].toLongOrNull() ?: 0
+    val seconds = parts[1].toLongOrNull() ?: 0
+    return (minutes * 60 + seconds) * 1000
 }
 
 @Preview(showBackground = true)

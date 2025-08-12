@@ -29,7 +29,7 @@ class PlayerViewModel : ViewModel() {
     val event: SharedFlow<PlayerEvent> = _event.asSharedFlow()
     val current = state.value
 
-    private var mediaPlayerService: WeakReference<MusicService>? = null
+    var mediaPlayerService: MusicService? = null
     private var isServiceBound = false
     private var serviceConnection: ServiceConnection? = null
 
@@ -39,11 +39,11 @@ class PlayerViewModel : ViewModel() {
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 val binder = service as MusicService.MusicBinder
-                mediaPlayerService = WeakReference(binder.getService())
+                mediaPlayerService = binder.getService()
                 isServiceBound = true
 
                 viewModelScope.launch {
-                    mediaPlayerService?.get()?.currentPosition?.collect { pos ->
+                    mediaPlayerService?.currentPosition?.collect { pos ->
                         _state.update { it.copy(currentTime = pos) }
                     }
                 }
@@ -108,6 +108,7 @@ class PlayerViewModel : ViewModel() {
                     context.startService(intent)
                     _state.update {
                         it.copy(
+                            isPlaySong = true,
                             song = AppCache.playingSong,
                             duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
                         )
@@ -123,6 +124,7 @@ class PlayerViewModel : ViewModel() {
                     context.startService(intent)
                     _state.update {
                         it.copy(
+                            isPlaySong = true,
                             song = AppCache.playingSong,
                             duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
                         )
@@ -138,6 +140,7 @@ class PlayerViewModel : ViewModel() {
                     context.startService(intent)
                     _state.update {
                         it.copy(
+                            isPlaySong = true,
                             song = AppCache.playingSong
                         )
                     }

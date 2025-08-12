@@ -45,7 +45,6 @@ fun PlayerScreen(
     val context = LocalContext.current
     var currentTheme by remember { mutableStateOf(darkTheme) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
-    var isUserDragging by remember { mutableStateOf(false) }
 
     MaterialTheme(
         colorScheme = currentTheme.color
@@ -53,6 +52,12 @@ fun PlayerScreen(
         LaunchedEffect(state.currentTime) {
             sliderPosition = state.currentTime.toFloat()
         }
+//        LaunchedEffect(sliderPosition, state.duration) {
+//            if (sliderPosition >= state.duration.toFloat()) {
+//                viewModel.processIntent(PlayerIntent.NextSong, context)
+//                Log.d("Slider", "PlayerScreen: Next Song (auto end)")
+//            }
+//        }
         DisposableEffect(Unit) {
             viewModel.bindService(context)
             onDispose {
@@ -87,7 +92,6 @@ fun PlayerScreen(
                             name = state.song?.name!!,
                             artist = state.song?.artist!!
                         )
-                        Log.d("Realtime", "Progress: $sliderPosition")
                         Slider(
                             value = sliderPosition,
                             onValueChange = {

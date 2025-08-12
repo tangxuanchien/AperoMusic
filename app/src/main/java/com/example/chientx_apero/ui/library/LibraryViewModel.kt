@@ -16,6 +16,7 @@ import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefReposito
 import com.example.chientx_apero.room_db.repository.SongRepository
 import com.example.chientx_apero.service.MusicService
 import com.example.chientx_apero.ui.library.LibraryEvent.ShowMessageLibrary
+import com.example.chientx_apero.ui.player.PlayerViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +32,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.net.URL
 
-class LibraryViewModel() : ViewModel() {
+class LibraryViewModel(
+) : ViewModel() {
     private val _state = MutableStateFlow<LibraryState>(LibraryState())
     val state: StateFlow<LibraryState> = _state
     private val _event = MutableSharedFlow<LibraryEvent>()
@@ -136,44 +138,39 @@ class LibraryViewModel() : ViewModel() {
             is LibraryIntent.HandleSongAction -> {
                 var isPlaySong = current.isPlaySong
                 val isSameSong = intent.song == current.selectedSong
-                viewModelScope.launch {
-                    val repository = SongRepository(context)
-                    val song = repository.getSongById(intent.song.id)
-                    val intentService = Intent(context, MusicService::class.java).apply {
-                        when {
+                val intentService = Intent(context, MusicService::class.java).apply {
+                    when {
 //                        Case 1: Play other song (not playing)
-                            !isPlaySong && !isSameSong -> {
-                                action = MusicService.ACTION_PLAY
-                                putExtra("uri", intent.song.data.toString())
-                                isPlaySong = true
-                            }
+                        !isPlaySong && !isSameSong -> {
+                            action = MusicService.ACTION_PLAY
+                            putExtra("uri", intent.song.data.toString())
+                            isPlaySong = true
+                        }
 //                       Case 2: Pause song
-                            isPlaySong && isSameSong -> {
-                                action = MusicService.ACTION_PAUSE
-                                isPlaySong = false
-                            }
+                        isPlaySong && isSameSong -> {
+                            action = MusicService.ACTION_PAUSE
+                            isPlaySong = false
+                        }
 //                        Case 3: Resume song
-                            !isPlaySong && isSameSong -> {
-                                action = MusicService.ACTION_RESUME
-                                isPlaySong = true
-                            }
+                        !isPlaySong && isSameSong -> {
+                            action = MusicService.ACTION_RESUME
+                            isPlaySong = true
+                        }
 //                        Case 4: Play other song (playing)
-                            isPlaySong && !isSameSong -> {
-                                action = MusicService.ACTION_PLAY
-                                putExtra("uri", intent.song.data.toString())
-                                isPlaySong = true
-                            }
+                        isPlaySong && !isSameSong -> {
+                            action = MusicService.ACTION_PLAY
+                            putExtra("uri", intent.song.data.toString())
+                            isPlaySong = true
                         }
                     }
-                    context.startService(intentService)
+                }
+                context.startService(intentService)
 
-                    _state.update {
-                        it.copy(
-                            isPlaySong = isPlaySong,
-                            selectedSong = intent.song,
-                            duration = parseDurationToMilliseconds(song.duration).toFloat()
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        isPlaySong = isPlaySong,
+                        selectedSong = intent.song
+                    )
                 }
             }
 
@@ -184,13 +181,6 @@ class LibraryViewModel() : ViewModel() {
                 context.startService(intent)
             }
         }
-    }
-
-    fun parseDurationToMilliseconds(durationStr: String): Long {
-        val parts = durationStr.split(":")
-        val minutes = parts[0].toLongOrNull() ?: 0
-        val seconds = parts[1].toLongOrNull() ?: 0
-        return (minutes * 60 + seconds) * 1000
     }
 
     fun fetchAndStoreSongsFromRemote(context: Context, repository: SongRepository) {

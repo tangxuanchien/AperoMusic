@@ -15,9 +15,7 @@ data class LibraryState(
     val currentTheme: ThemeData = darkTheme,
     val expanded: Boolean = false,
     val selectedSong: Song? = null,
-    val isPlaySong: Boolean = false,
-    val duration: Float = 0f,
-    val currentTime: Float = 0f
+    val isPlaySong: Boolean = false
 )
 
 sealed interface LibraryIntent {

@@ -51,6 +51,7 @@ class MusicService : LifecycleService() {
         const val ACTION_RESUME = "ACTION_RESUME"
         const val ACTION_REPLAY = "ACTION_REPLAY"
         const val ACTION_SEEK_TO = "ACTION_SEEK_TO"
+        const val ACTION_GET_POSITION = "ACTION_GET_POSITION"
     }
 
     override fun onCreate() {
@@ -100,8 +101,15 @@ class MusicService : LifecycleService() {
                 val progress = intent.getFloatExtra("progress", 0f)
                 mediaPlayer?.seekTo(progress.toInt())
             }
+            ACTION_GET_POSITION -> {
+                getCurrentPosition()
+            }
         }
         return START_NOT_STICKY
+    }
+
+    fun getCurrentPosition(): Int {
+        return mediaPlayer?.currentPosition ?: 0
     }
 
     private fun createNotification(progress: Int = 0): Notification {
