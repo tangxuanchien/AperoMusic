@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.navigation.Navigation
 import com.example.chientx_apero.room_db.repository.SongRepository
+import com.example.chientx_apero.service.MusicServiceManager
 import com.example.chientx_apero.ui.playlist.components.getAllMp3Files
 import com.example.chientx_apero.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        MusicServiceManager.bindService(this)
         PreferenceManager.init(applicationContext)
 
         val requestPermissionLauncher = registerForActivityResult(
@@ -57,6 +59,11 @@ class MainActivity : ComponentActivity() {
                 Navigation()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MusicServiceManager.unbindService(this)
     }
 
     private fun loadMp3AndSaveDb() {

@@ -58,15 +58,13 @@ fun Navigation() {
                         backStack.add(Screen.Information)
                     },
                     onClickPlaylist = {
-                        backStack.clear()
                         backStack.add(Screen.MyPlaylist)
                     },
                     onClickLibrary = {
-                        backStack.clear()
                         backStack.add(Screen.Library)
                     },
-                    onClickBack = {
-                        backStack.removeLastOrNull()
+                    onClickPlayer = {
+                        backStack.add(Screen.Player)
                     },
                     onClickTopAlbums = {
                         backStack.add(Screen.TopAlbums)
@@ -134,6 +132,9 @@ fun Navigation() {
                     },
                     onClickHome = {
                         backStack.add(Screen.Home)
+                    },
+                    onClickPlayer = {
+                        backStack.add(Screen.Player)
                     }
                 )
             }

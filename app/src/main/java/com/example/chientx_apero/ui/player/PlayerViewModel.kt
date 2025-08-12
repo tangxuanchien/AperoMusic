@@ -29,45 +29,6 @@ class PlayerViewModel : ViewModel() {
     val event: SharedFlow<PlayerEvent> = _event.asSharedFlow()
     val current = state.value
 
-    var mediaPlayerService: MusicService? = null
-    private var isServiceBound = false
-    private var serviceConnection: ServiceConnection? = null
-
-    fun bindService(context: Context) {
-        if (serviceConnection != null) return
-
-        serviceConnection = object : ServiceConnection {
-            override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-                val binder = service as MusicService.MusicBinder
-                mediaPlayerService = binder.getService()
-                isServiceBound = true
-
-                viewModelScope.launch {
-                    mediaPlayerService?.currentPosition?.collect { pos ->
-                        _state.update { it.copy(currentTime = pos) }
-                    }
-                }
-            }
-
-            override fun onServiceDisconnected(name: ComponentName?) {
-                isServiceBound = false
-                mediaPlayerService = null
-            }
-        }
-
-        val intent = Intent(context, MusicService::class.java)
-        context.bindService(intent, serviceConnection!!, Context.BIND_AUTO_CREATE)
-    }
-
-    fun unbindService(context: Context) {
-        serviceConnection?.let {
-            context.unbindService(it)
-            serviceConnection = null
-        }
-        isServiceBound = false
-        mediaPlayerService = null
-    }
-
     fun processIntent(intent: PlayerIntent, context: Context) {
         viewModelScope.launch {
             val repository = SongRepository(context)
@@ -151,12 +112,6 @@ class PlayerViewModel : ViewModel() {
                         action = MusicService.ACTION_REPLAY
                     }
                     context.startService(intent)
-                }
-
-                is PlayerIntent.GetCurrentTimeSong -> {
-                    if (!isServiceBound) {
-                        bindService(context)
-                    }
                 }
 
                 is PlayerIntent.SeekToProgress -> {

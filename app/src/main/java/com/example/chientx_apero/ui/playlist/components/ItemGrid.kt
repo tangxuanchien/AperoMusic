@@ -33,8 +33,9 @@ import com.example.chientx_apero.room_db.entity.Song
 @Composable
 fun ItemGrid(
     song: Song,
-    onOpenMenu: () -> Unit,
-    onClick: () -> Unit,
+    onOpenMenu: () -> Unit = {},
+    onClick: () -> Unit = {},
+    onClickPlaySong: () -> Unit = {},
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
@@ -42,6 +43,9 @@ fun ItemGrid(
         modifier = Modifier.Companion
             .background(MaterialTheme.colorScheme.background)
             .padding(12.dp)
+            .clickable{
+                onClickPlaySong()
+            }
     ) {
         Box(
             modifier = Modifier.Companion
@@ -72,7 +76,7 @@ fun ItemGrid(
                 )
             }
             Image(
-                painter = rememberAsyncImagePainter(song.image),
+                painter = rememberAsyncImagePainter(song.image ?: R.drawable.avatar),
                 contentDescription = null,
                 modifier = Modifier.Companion
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(14.dp))

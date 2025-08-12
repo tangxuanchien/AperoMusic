@@ -37,11 +37,11 @@ fun HomeScreen(
     onClickLibrary: () -> Unit = {},
     onClickHome: () -> Unit = {},
     isHomeScreen: Boolean = false,
-    onClickBack: () -> Unit = {},
     onClickTopAlbums: () -> Unit = {},
     onClickSettings: () -> Unit = {},
     onClickTopArtists: () -> Unit = {},
     onClickTopTracks: () -> Unit = {},
+    onClickPlayer: () -> Unit = {},
     viewModel: HomeViewModel = viewModel(),
     playerBarViewModel: PlayerBarViewModel = viewModel()
 ) {
@@ -109,7 +109,8 @@ fun HomeScreen(
             ) {
                 if (AppCache.playingSong != null) {
                     PlayerBarScreen(
-                        viewModel = playerBarViewModel
+                        viewModel = playerBarViewModel,
+                        onClickPlayer = onClickPlayer
                     )
                 }
                 NavigationBar(

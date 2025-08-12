@@ -30,8 +30,9 @@ import com.example.chientx_apero.room_db.entity.Song
 @Composable
 fun ItemColumn(
     song: Song,
-    onOpenMenu: () -> Unit,
-    onClick: () -> Unit,
+    onOpenMenu: () -> Unit = {},
+    onClick: () -> Unit = {},
+    onClickPlaySong: () -> Unit = {},
     expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
@@ -40,9 +41,12 @@ fun ItemColumn(
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
             .padding(8.dp)
+            .clickable{
+                onClickPlaySong()
+            }
     ) {
         Image(
-            painter = rememberAsyncImagePainter(song.image),
+            painter = rememberAsyncImagePainter(song.image ?: R.drawable.avatar),
             contentDescription = null,
             modifier = Modifier.Companion
                 .clip(RoundedCornerShape(10.dp))

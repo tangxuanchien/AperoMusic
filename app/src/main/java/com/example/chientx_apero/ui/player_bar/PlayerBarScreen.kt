@@ -56,6 +56,7 @@ fun PlayerBarScreen(
             AppCache.playingSong = null
         },
         onClickPlayer = {
+            AppCache.isPlayingSong = state.isPlaySong
             onClickPlayer()
         },
         currentTime = progress

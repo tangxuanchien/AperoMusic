@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.NavigationBar
+import com.example.chientx_apero.ui.player_bar.PlayerBarScreen
+import com.example.chientx_apero.ui.player_bar.PlayerBarViewModel
 import com.example.chientx_apero.ui.playlist.components.HeaderPlaylist
 import com.example.chientx_apero.ui.playlist.components.ItemColumn
 import com.example.chientx_apero.ui.playlist.components.ItemGrid
@@ -37,6 +39,8 @@ fun PlaylistScreen(
     onClickHome: () -> Unit = {},
     onClickLibrary: () -> Unit = {},
     viewModel: PlaylistViewModel = viewModel(),
+    onClickPlayer: () -> Unit = {},
+    playerBarViewModel: PlayerBarViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -94,6 +98,9 @@ fun PlaylistScreen(
                                                 playlistId = playlistId
                                             )
                                         )
+                                    },
+                                    onClickPlaySong = {
+
                                     }
                                 )
                             }
@@ -120,13 +127,21 @@ fun PlaylistScreen(
                                                 playlistId = playlistId
                                             )
                                         )
+                                    },
+                                    onClickPlaySong = {
+
                                     }
                                 )
                             }
                         }
                     }
                 }
-
+                if (AppCache.playingSong != null) {
+                    PlayerBarScreen(
+                        viewModel = playerBarViewModel,
+                        onClickPlayer = onClickPlayer
+                    )
+                }
                 NavigationBar(
                     modifier = Modifier
                         .fillMaxWidth()

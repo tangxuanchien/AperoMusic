@@ -17,6 +17,7 @@ object AppCache {
     var playlist: Playlist? = null
     var currentUser: User? = null
     var playingSong by mutableStateOf<Song?>(null)
+    var isPlayingSong: Boolean = false
     var topArtists: List<ArtistRetrofit>? = null
     var topAlbums: List<AlbumRetrofit>? = null
     var topTracks: List<TrackRetrofit>? = null
