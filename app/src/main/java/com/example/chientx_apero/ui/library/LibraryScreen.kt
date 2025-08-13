@@ -62,7 +62,6 @@ fun LibraryScreen(
     var isShowPopup by remember { mutableStateOf(false) }
     var isLocalLibrary by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(true) }
-    var isExpanded by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         viewModel.processIntent(LibraryIntent.LoadPlaylists, context)
         launch {
@@ -182,7 +181,6 @@ fun LibraryScreen(
                                             )
                                             AppCache.playingSong = song
                                             AppCache.isPlayingSong = true
-                                            isExpanded = true
                                         }
                                     )
                                 }

@@ -41,6 +41,7 @@ fun MyPlaylistScreen(
     onClickLibrary: () -> Unit = {},
     onClickPlaylist: () -> Unit = {},
     onClickHome: () -> Unit = {},
+    onClickPlayer: () -> Unit = {},
     playerBarViewModel: PlayerBarViewModel = viewModel()
 ) {
     var titleMyPlaylist by remember { mutableStateOf("") }
@@ -187,7 +188,8 @@ fun MyPlaylistScreen(
             ) {
                 if (AppCache.playingSong != null) {
                     PlayerBarScreen(
-                        viewModel = playerBarViewModel
+                        viewModel = playerBarViewModel,
+                        onClickPlayer = onClickPlayer
                     )
                 }
                 NavigationBar(

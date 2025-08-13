@@ -51,7 +51,6 @@ class PlayerViewModel : ViewModel() {
                         }
                     }
                     context.startService(intent)
-                    Log.d("Play", "true")
                     _state.update {
                         it.copy(
                             isPlaySong = isPlaySong,
@@ -61,7 +60,12 @@ class PlayerViewModel : ViewModel() {
                 }
 
                 is PlayerIntent.NextSong -> {
-                    AppCache.playingSong = repository.getSongById(song.id + 1L)
+                    val song = repository.getNextSong(
+                        AppCache.playingSong!!.id,
+                        AppCache.playlist!!.id.toLong()
+                    )
+                    AppCache.playingSong =
+                        song ?: repository.getFirstSongInPlaylist(AppCache.playlist!!.id.toLong())
                     val intent = Intent(context, MusicService::class.java).apply {
                         action = MusicService.ACTION_PLAY
                         putExtra("uri", AppCache.playingSong!!.data.toString())
@@ -77,7 +81,12 @@ class PlayerViewModel : ViewModel() {
                 }
 
                 is PlayerIntent.PreviousSong -> {
-                    AppCache.playingSong = repository.getSongById(song.id - 1L)
+                    val song = repository.getPreviousSong(
+                        AppCache.playingSong!!.id,
+                        AppCache.playlist!!.id.toLong()
+                    )
+                    AppCache.playingSong =
+                        song ?: repository.getLastSongInPlaylist(AppCache.playlist!!.id.toLong())
                     val intent = Intent(context, MusicService::class.java).apply {
                         action = MusicService.ACTION_PLAY
                         putExtra("uri", AppCache.playingSong!!.data.toString())
@@ -93,7 +102,10 @@ class PlayerViewModel : ViewModel() {
                 }
 
                 is PlayerIntent.RandomSong -> {
-                    AppCache.playingSong = repository.getSongByIdRandom()
+                    AppCache.playingSong = repository.getSongByIdRandom(
+                        AppCache.playlist!!.id.toLong(),
+                        AppCache.playingSong!!.id
+                    )
                     val intent = Intent(context, MusicService::class.java).apply {
                         action = MusicService.ACTION_PLAY
                         putExtra("uri", AppCache.playingSong!!.data.toString())

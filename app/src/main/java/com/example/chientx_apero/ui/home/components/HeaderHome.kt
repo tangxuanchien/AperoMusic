@@ -88,7 +88,8 @@ fun HeaderHome(
                 .size(28.dp)
                 .clickable(
                     onClick = onClickSettings
-                )
+                ),
+            tint = MaterialTheme.colorScheme.onBackground
         )
     }
 }

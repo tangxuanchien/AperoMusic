@@ -3,6 +3,8 @@ package com.example.chientx_apero.ui.playlist
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.room_db.repository.PlaylistRepository
 import com.example.chientx_apero.room_db.repository.PlaylistSongCrossRefRepository
 import com.example.chientx_apero.room_db.repository.SongRepository
 import com.example.chientx_apero.ui.playlist.components.getAllMp3Files
@@ -76,7 +78,8 @@ class PlaylistViewModel : ViewModel() {
             }
         }
     }
-    private fun loadSongsInPlaylist(context: Context, playlistId: Long){
+
+    private fun loadSongsInPlaylist(context: Context, playlistId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             val repository = SongRepository(context)
             val songsInPlaylist = repository.getAllSongsInPlaylist(playlistId)

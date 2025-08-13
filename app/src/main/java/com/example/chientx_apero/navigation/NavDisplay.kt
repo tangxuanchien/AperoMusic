@@ -124,8 +124,8 @@ fun Navigation() {
             entry<Screen.Playlists> {
                 PlaylistScreen(
                     isPlaylistScreen = true,
-                    onClickPlaylist = {
-                        backStack.add(Screen.Playlists)
+                    onClickMyPlaylist = {
+                        backStack.add(Screen.MyPlaylist)
                     },
                     onClickLibrary = {
                         backStack.add(Screen.Library)

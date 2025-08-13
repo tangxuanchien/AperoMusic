@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.AppCache
+import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.room_db.entity.Song
 import com.example.chientx_apero.service.MusicServiceManager
 import com.example.chientx_apero.ui.library.components.PlayerBar
@@ -22,7 +23,7 @@ fun PlayerBarScreen(
     modifier: Modifier = Modifier,
     viewModel: PlayerBarViewModel = viewModel(),
     onClickPlayer: () -> Unit = {},
-    song: Song? = null,
+    song: Song? = null
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current

@@ -14,6 +14,18 @@ class SongRepository(context: Context) {
     suspend fun insertSongs(songs: List<Song>) = songDao.insertAll(songs)
     suspend fun getAllSongsInPlaylist(playlistId: Long) = songDao.getAllSongsInPlaylist(playlistId)
     suspend fun getSongById(id: Long) = songDao.getSongById(id)
-    suspend fun getSongByIdRandom() = songDao.getSongByIdRandom()
+    suspend fun getNextSong(currentId: Long, playlistId: Long): Song? =
+        songDao.getNextSong(currentId, playlistId)
+
+    suspend fun getPreviousSong(currentId: Long, playlistId: Long): Song? =
+        songDao.getPreviousSong(currentId, playlistId)
+
+    suspend fun getFirstSongInPlaylist(playlistId: Long): Song? =
+        songDao.getFirstSongInPlaylist(playlistId)
+
+    suspend fun getLastSongInPlaylist(playlistId: Long): Song? =
+        songDao.getLastSongInPlaylist(playlistId)
+
+    suspend fun getSongByIdRandom(playlistId: Long, currentId: Long) = songDao.getSongByIdRandom(playlistId, currentId)
 
 }

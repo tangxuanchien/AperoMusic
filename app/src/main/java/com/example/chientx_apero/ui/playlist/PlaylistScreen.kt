@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.NavigationBar
+import com.example.chientx_apero.ui.player_bar.PlayerBarIntent
 import com.example.chientx_apero.ui.player_bar.PlayerBarScreen
 import com.example.chientx_apero.ui.player_bar.PlayerBarViewModel
 import com.example.chientx_apero.ui.playlist.components.HeaderPlaylist
@@ -35,7 +36,7 @@ import com.example.chientx_apero.ui.playlist.components.ItemGrid
 @Composable
 fun PlaylistScreen(
     isPlaylistScreen: Boolean = false,
-    onClickPlaylist: () -> Unit = {},
+    onClickMyPlaylist: () -> Unit = {},
     onClickHome: () -> Unit = {},
     onClickLibrary: () -> Unit = {},
     viewModel: PlaylistViewModel = viewModel(),
@@ -57,7 +58,7 @@ fun PlaylistScreen(
             Column(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(vertical = 18.dp, horizontal = 10.dp)
+                    .padding(vertical = 18.dp)
                     .fillMaxSize()
             ) {
                 HeaderPlaylist(
@@ -129,7 +130,12 @@ fun PlaylistScreen(
                                         )
                                     },
                                     onClickPlaySong = {
-
+                                        playerBarViewModel.processIntent(
+                                            PlayerBarIntent.HandleSongAction(song),
+                                            context
+                                        )
+                                        AppCache.playingSong = song
+                                        AppCache.isPlayingSong = true
                                     }
                                 )
                             }
@@ -146,7 +152,7 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.background),
-                    onClickPlaylist = onClickPlaylist,
+                    onClickPlaylist = onClickMyPlaylist,
                     onClickLibrary = onClickLibrary,
                     onClickHome = onClickHome,
                     isPlaylistScreen = isPlaylistScreen

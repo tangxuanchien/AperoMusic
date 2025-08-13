@@ -16,7 +16,7 @@ data class PlaylistState(
     val expanded: Boolean = false,
     val selectedSong: Song? = null,
     val currentTheme: ThemeData = darkTheme,
-    val checked: Boolean = false,
+    val checked: Boolean = false
 )
 
 sealed interface PlaylistIntent {

@@ -23,16 +23,17 @@ import com.example.chientx_apero.R
 
 @Composable
 fun HeaderPlaylist(
+    modifier: Modifier = Modifier,
     stateMyPlaylist: Boolean = false,
     stateSortView: Boolean = false,
     stateGridView: Boolean = false,
     titlePlaylist: String = "My playlist",
     onToggleSortView: () -> Unit = {},
     onToggleGridView: () -> Unit = {},
-    onClickAddMyPlaylist: () -> Unit = {},
+    onClickAddMyPlaylist: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier.Companion.padding(vertical = 10.dp)
+        modifier = Modifier.Companion.padding(vertical = 10.dp, horizontal = 20.dp)
     ) {
         if (stateSortView) {
             Icon(
