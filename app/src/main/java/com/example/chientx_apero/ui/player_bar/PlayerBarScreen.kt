@@ -22,21 +22,25 @@ fun PlayerBarScreen(
     modifier: Modifier = Modifier,
     viewModel: PlayerBarViewModel = viewModel(),
     onClickPlayer: () -> Unit = {},
-    song: Song? = null
+    song: Song? = null,
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var currentPosition by remember { mutableIntStateOf(0) }
     val duration = parseDurationToMilliseconds(AppCache.playingSong?.duration ?: "00:00")
     var progress: Float = currentPosition.toFloat() / duration.toFloat()
-    MusicServiceManager.bindService(context)
 
     LaunchedEffect(Unit) {
-        while (true) {
-            MusicServiceManager.getService()?.let {
-                currentPosition = it.getCurrentPosition()
+        if (state.isPlaySong) {
+            MusicServiceManager.bindService(context)
+            while (true) {
+                MusicServiceManager.getService()?.let {
+                    currentPosition = it.getCurrentPosition()
+                }
+                delay(1000)
             }
-            delay(1000)
+        } else {
+            MusicServiceManager.unbindService(context)
         }
     }
     PlayerBar(

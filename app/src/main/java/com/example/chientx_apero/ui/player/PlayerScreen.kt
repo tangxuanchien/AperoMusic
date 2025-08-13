@@ -46,27 +46,33 @@ import kotlinx.coroutines.delay
 fun PlayerScreen(
     onClickBack: () -> Unit,
     onClickHome: () -> Unit,
-    viewModel: PlayerViewModel = viewModel()
+    viewModel: PlayerViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     var currentTheme by remember { mutableStateOf(darkTheme) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isServiceBound by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        MusicServiceManager.bindService(context)
-        while (MusicServiceManager.getService() == null) {
-            delay(100)
+
+    LaunchedEffect(state.isPlaySong) {
+        if (state.isPlaySong) {
+            while (MusicServiceManager.getService() == null) {
+                delay(100)
+            }
+            isServiceBound = true
+        } else {
+            isServiceBound = false
         }
-        isServiceBound = true
     }
 
     LaunchedEffect(isServiceBound) {
-        while (true) {
-            MusicServiceManager.getService()?.let {
-                sliderPosition = it.getCurrentPosition().toFloat()
+        if (isServiceBound) {
+            while (true) {
+                MusicServiceManager.getService()?.let {
+                    sliderPosition = it.getCurrentPosition().toFloat()
+                }
+                delay(1000)
             }
-            delay(1000)
         }
     }
 

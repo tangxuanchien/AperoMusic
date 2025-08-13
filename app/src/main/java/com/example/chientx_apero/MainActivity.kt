@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.navigation.Navigation
 import com.example.chientx_apero.room_db.repository.SongRepository
@@ -28,7 +29,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        MusicServiceManager.bindService(this)
         PreferenceManager.init(applicationContext)
 
         val requestPermissionLauncher = registerForActivityResult(

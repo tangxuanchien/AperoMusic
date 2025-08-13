@@ -181,6 +181,7 @@ fun LibraryScreen(
                                                 context
                                             )
                                             AppCache.playingSong = song
+                                            AppCache.isPlayingSong = true
                                             isExpanded = true
                                         }
                                     )
@@ -190,14 +191,11 @@ fun LibraryScreen(
                     }
                 }
                 if (AppCache.playingSong != null) {
-                    Log.d("Library", "LibraryScreen: Show")
                     PlayerBarScreen(
                         viewModel = playerBarViewModel,
                         song = state.selectedSong,
                         onClickPlayer = onClickPlayer
                     )
-                } else {
-                    Log.d("Library", "LibraryScreen: Don't Show")
                 }
                 NavigationBar(
                     onClickPlaylist = onClickPlaylist,

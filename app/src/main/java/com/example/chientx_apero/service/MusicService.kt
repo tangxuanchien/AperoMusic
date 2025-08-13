@@ -3,16 +3,19 @@ package com.example.chientx_apero.service
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.AppCache
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,9 +28,6 @@ class MusicService : LifecycleService() {
     private val binder = MusicBinder()
 
     private var mediaPlayer: MediaPlayer? = null
-    private val _currentPosition = MutableStateFlow(0)
-    val currentPosition = _currentPosition.asStateFlow()
-    private var updateJob: Job? = null
 
     inner class MusicBinder : Binder() {
         fun getService(): MusicService = this@MusicService
@@ -55,7 +55,6 @@ class MusicService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        startForeground(1, createNotification())
 
         when (intent?.action) {
             ACTION_PLAY -> {
@@ -63,28 +62,29 @@ class MusicService : LifecycleService() {
                 uri?.let {
                     mediaPlayer?.reset()
                     mediaPlayer?.setDataSource(applicationContext, it)
-                    mediaPlayer?.prepare()
-                    mediaPlayer?.start()
-                    startUpdatingPosition()
+                    mediaPlayer?.prepareAsync()
+                    mediaPlayer?.setOnPreparedListener {
+                        startForeground(1, createNotification())
+                        mediaPlayer?.start()
+                    }
                 }
             }
 
             ACTION_PAUSE -> {
                 if (mediaPlayer!!.isPlaying) {
                     mediaPlayer?.pause()
-                    stopUpdatingPosition()
                 }
             }
 
             ACTION_STOP -> {
                 mediaPlayer?.stop()
-                stopUpdatingPosition()
+                stopForeground(true)
+                AppCache.playingSong = null
                 stopSelf()
             }
 
             ACTION_RESUME -> {
                 mediaPlayer?.start()
-                startUpdatingPosition()
             }
 
             ACTION_REPLAY -> {
@@ -95,6 +95,7 @@ class MusicService : LifecycleService() {
                 val progress = intent.getFloatExtra("progress", 0f)
                 mediaPlayer?.seekTo(progress.toInt())
             }
+
             ACTION_GET_POSITION -> {
                 getCurrentPosition()
             }
@@ -112,39 +113,54 @@ class MusicService : LifecycleService() {
             val channelName = "Music Service"
             val manager = getSystemService(NotificationManager::class.java)
             val channel = NotificationChannel(
-                channelId, channelName, NotificationManager.IMPORTANCE_LOW
+                channelId, channelName, NotificationManager.IMPORTANCE_HIGH
             )
             manager.createNotificationChannel(channel)
         }
 
         return NotificationCompat.Builder(this, "music_service")
-            .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle("Music Service")
-            .setContentText("Progress: ${progress / 1000}s")
-            .setProgress(mediaPlayer?.duration ?: 0, progress, false)
-            .setOngoing(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0, 1, 2)
+            )
+            .setSmallIcon(R.drawable.logo_app)
+            .setLargeIcon(AppCache.playingSong?.image)
+            .setContentTitle(AppCache.playingSong?.name)
+            .setContentText(AppCache.playingSong?.artist)
+            .addAction(R.drawable.seek_to_back, "", getPendingIntent(ACTION_PLAY))
+            .addAction(
+                if (mediaPlayer?.isPlaying == true) {
+                    R.drawable.pause
+                    Log.d("Service", "isPlaySong: True")
+                } else {
+                    R.drawable.play_fill
+                    Log.d("Service", "isPlaySong: False")
+                }, "", getPendingIntent(
+                    if (mediaPlayer?.isPlaying == true) {
+                        ACTION_PAUSE
+                    } else {
+                        ACTION_RESUME
+                    }
+                )
+            )
+            .addAction(R.drawable.seek_to_next, "", getPendingIntent(ACTION_PLAY))
+            .addAction(R.drawable.tick, "", getPendingIntent(ACTION_STOP))
+            .setDeleteIntent(getPendingIntent(ACTION_STOP))
             .build()
     }
 
-    private fun startUpdatingPosition() {
-        updateJob?.cancel()
-        updateJob = lifecycleScope.launch {
-            while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-                _currentPosition.emit(mediaPlayer?.currentPosition ?: 0)
-                delay(1000)
-            }
+    private fun getPendingIntent(action: String): PendingIntent {
+        val intent = Intent(this, MusicService::class.java).apply {
+            this.action = action
         }
-    }
-
-    private fun stopUpdatingPosition() {
-        updateJob?.cancel()
-        updateJob = null
+        return PendingIntent.getService(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopUpdatingPosition()
         mediaPlayer?.release()
         mediaPlayer = null
     }
