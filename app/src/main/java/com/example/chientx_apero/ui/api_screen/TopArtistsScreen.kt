@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +45,7 @@ import kotlin.collections.first
 @Composable
 fun TopArtistsScreen(
     modifier: Modifier = Modifier,
-    onClickBack: () -> Unit = {}
+    onClickBack: () -> Unit = {},
 ) {
     val artists: List<ArtistRetrofit> = AppCache.topArtists!!
     MaterialTheme(
@@ -73,7 +74,7 @@ fun TopArtistsScreen(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Top Artist",
+                    text = stringResource(R.string.top_artists),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Companion.Bold,
                     modifier = Modifier.padding(start = 10.dp),

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,7 @@ fun HeaderHome(
     modifier: Modifier = Modifier.Companion,
     onClickProfile: () -> Unit,
     onClickSettings: () -> Unit,
-    user: User?
+    user: User?,
 ) {
     Box(
         modifier = Modifier.Companion
@@ -66,7 +67,7 @@ fun HeaderHome(
                 modifier = Modifier.Companion.padding(start = 14.dp)
             ) {
                 Text(
-                    text = "Welcome back!",
+                    text = stringResource(R.string.welcome_back),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Companion.Bold,
                     color = MaterialTheme.colorScheme.onBackground

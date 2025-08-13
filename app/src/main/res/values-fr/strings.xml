@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Apero Musique</string>
+    <string name="welcome_back">Bon retour !</string>
+    <string name="rankings">Classements</string>
+    <string name="see_all">Voir tout</string>
+    <string name="top_albums">Meilleurs albums</string>
+    <string name="top_tracks">Meilleurs titres</string>
+    <string name="top_artists">Meilleurs artistes</string>
+    <string name="home">Accueil</string>
+    <string name="library">Bibliothèque</string>
+    <string name="playlist">Liste de lecture</string>
+    <string name="language">Langue</string>
+    <string name="english">Anglais</string>
+    <string name="vietnamese">Vietnamien</string>
+    <string name="korean">Coréen</string>
+    <string name="french">Français</string>
+    <string name="settings">Paramètres</string>
+    <string name="local">Local</string>
+    <string name="remote">Distant</string>
+    <string name="add_to_playlist">Ajouter à la liste</string>
+    <string name="share">Partager</string>
+    <string name="remove_playlist">Supprimer la liste</string>
+    <string name="rename">Renommer</string>
+    <string name="new_playlist">Nouvelle liste</string>
+    <string name="cancel">Annuler</string>
+    <string name="create">Créer</string>
+    <string name="my_playlist">Ma liste de lecture</string>
+    <string name="songs">chansons</string>
+    <string name="title_login">Connectez-vous à votre compte</string>
+    <string name="username">Nom d’utilisateur</string>
+    <string name="password">Mot de passe</string>
+    <string name="remember_me">Se souvenir de moi</string>
+    <string name="login">Connexion</string>
+    <string name="sign_up">S’inscrire</string>
+    <string name="title_playlist">Donnez un titre à votre liste</string>
+    <string name="not_account">Vous n’avez pas de compte ?</string>
+    <string name="sorting">Tri</string>
+    <string name="confirm_password">Confirmez le mot de passe</string>
+    <string name="email">E-mail</string>
+    <string name="name">Nom</string>
+    <string name="enter_your_name">Entrez votre nom...</string>
+    <string name="phone_number">Numéro de téléphone</string>
+    <string name="your_phone_number">Votre numéro de téléphone...</string>
+    <string name="university_name">Nom de l'université</string>
+    <string name="your_university_number">Votre numéro d'université...</string>
+    <string name="describe_yourself">Décrivez-vous</string>
+    <string name="enter_a_description_about_yourself">Entrez une description de vous-même...</string>
+    <string name="log_out">Se déconnecter</string>
+    <string name="submit">Soumettre</string>
+
+</resources>

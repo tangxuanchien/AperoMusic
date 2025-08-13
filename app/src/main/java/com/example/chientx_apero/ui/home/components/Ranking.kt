@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,7 +30,7 @@ fun Ranking(modifier: Modifier = Modifier.Companion) {
             tint = Color(0XFFFFF500)
         )
         Text(
-            text = "Rankings",
+            text = stringResource(R.string.rankings),
             fontSize = 22.sp,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Companion.Bold,

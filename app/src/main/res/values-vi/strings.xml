@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Apero Music</string>
+    <string name="welcome_back">Chào mừng bạn!</string>
+    <string name="rankings">Xếp hạng</string>
+    <string name="see_all">Xem tất cả</string>
+    <string name="top_albums">Albums hàng đầu</string>
+    <string name="top_tracks">Bài hát hàng đầu</string>
+    <string name="top_artists">Nghệ sĩ hàng đầu</string>
+    <string name="home">Trang chủ</string>
+    <string name="library">Thư viện</string>
+    <string name="playlist">Playlist</string>
+    <string name="french">Tiếng Pháp</string>
+    <string name="settings">Cài đặt</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="english">Tiếng Anh</string>
+    <string name="vietnamese">Tiếng Việt</string>
+    <string name="korean">Tiếng Hàn</string>
+    <string name="local">Cục bộ</string>
+    <string name="remote">Từ xa</string>
+    <string name="add_to_playlist">Thêm vào danh sách phát</string>
+    <string name="share">Chia sẻ</string>
+    <string name="remove_playlist">Xóa danh sách phát</string>
+    <string name="rename">Đổi tên</string>
+    <string name="new_playlist">Danh sách phát mới</string>
+    <string name="my_playlist">Danh sách phát của tôi</string>
+    <string name="cancel">Hủy</string>
+    <string name="create">Tạo</string>
+    <string name="songs">bài hát</string>
+    <string name="sign_up">Đăng kí</string>
+    <string name="title_playlist">Đặt tên danh sách phát của bạn</string>
+    <string name="title_login">Đăng nhập vào tài khoản</string>
+    <string name="username">Tài khoản</string>
+    <string name="password">Mật khẩu</string>
+    <string name="remember_me">Ghi nhớ tôi</string>
+    <string name="login">Đăng nhập</string>
+    <string name="not_account">Không có tài khoản?</string>
+    <string name="sorting">Sắp xếp</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
+    <string name="email">Email</string>
+    <string name="name">Tên</string>
+    <string name="enter_your_name">Nhập tên của bạn...</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="your_phone_number">Số điện thoại của bạn...</string>
+    <string name="university_name">Tên trường đại học</string>
+    <string name="your_university_number">Mã số sinh viên của bạn...</string>
+    <string name="describe_yourself">Giới thiệu bản thân</string>
+    <string name="enter_a_description_about_yourself">Nhập mô tả về bản thân bạn...</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="submit">Gửi</string>
+
+</resources>

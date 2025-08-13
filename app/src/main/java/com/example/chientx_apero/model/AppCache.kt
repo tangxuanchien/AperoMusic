@@ -4,8 +4,10 @@ import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
+import com.example.chientx_apero.R
 import com.example.chientx_apero.retrofit.model.AlbumRetrofit
 import com.example.chientx_apero.retrofit.model.ArtistRetrofit
 import com.example.chientx_apero.retrofit.model.TrackRetrofit
@@ -16,6 +18,8 @@ import com.example.chientx_apero.room_db.entity.User
 object AppCache {
     var playlist: Playlist? = null
     var currentUser: User? = null
+    var locale by mutableStateOf("en")
+    var language: Int = R.string.english
     var playingSong by mutableStateOf<Song?>(null)
     var isPlayingSong: Boolean = false
     var topArtists: List<ArtistRetrofit>? = null

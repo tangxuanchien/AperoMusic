@@ -23,12 +23,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.chientx_apero.R
 import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
@@ -70,7 +72,7 @@ fun PopupAddMyPlaylist(
                         .fillMaxWidth()
                 ) {
                     Text(
-                        text = "New playlist",
+                        text = stringResource(R.string.new_playlist),
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Companion.Center,
                         fontWeight = FontWeight.Companion.Bold,
@@ -80,7 +82,7 @@ fun PopupAddMyPlaylist(
                     )
                     if (playlists.isEmpty()) {
                         TextField(
-                            placeholder = { Text("Give your playlist a title") },
+                            placeholder = { Text(stringResource(R.string.title_playlist)) },
                             value = value,
                             onValueChange = onValueChange,
                             modifier = Modifier.padding(vertical = 20.dp)
@@ -96,7 +98,7 @@ fun PopupAddMyPlaylist(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             Text(
-                                text = "Cancel",
+                                text = stringResource(R.string.cancel),
                                 color = MaterialTheme.colorScheme.onBackground,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
@@ -112,7 +114,7 @@ fun PopupAddMyPlaylist(
                                     .padding(horizontal = 10.dp)
                             )
                             Text(
-                                text = "Create",
+                                text = stringResource(R.string.create),
                                 color = MaterialTheme.colorScheme.primary,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,

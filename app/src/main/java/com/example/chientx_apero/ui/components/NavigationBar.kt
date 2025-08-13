@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.chientx_apero.R
 
@@ -26,19 +27,19 @@ fun NavigationBar(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         NavigationIcon(
-            text = "Home",
+            text = stringResource(R.string.home),
             icon = R.drawable.home,
             onClick = onClickHome,
             isScreen = isHomeScreen
         )
         NavigationIcon(
-            text = "Library",
+            text = stringResource(R.string.library),
             icon = R.drawable.library,
             onClick = onClickLibrary,
             isScreen = isLibraryScreen
         )
         NavigationIcon(
-            text = "Playlist",
+            text = stringResource(R.string.playlist),
             icon = R.drawable.playlist,
             onClick = onClickPlaylist,
             isScreen = isPlaylistScreen

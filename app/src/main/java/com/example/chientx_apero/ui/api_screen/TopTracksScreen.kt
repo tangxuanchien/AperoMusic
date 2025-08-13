@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -92,7 +93,7 @@ fun TopTracksScreen(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Top Tracks",
+                    text = stringResource(R.string.top_tracks),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Companion.Bold,
                     modifier = Modifier.padding(start = 10.dp),

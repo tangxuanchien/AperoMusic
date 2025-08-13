@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.example.chientx_apero.R
@@ -50,7 +51,7 @@ fun DropdownMenuMyPlaylist(
                 },
                 text = {
                     Text(
-                        text = "Remove Playlist",
+                        text = stringResource(R.string.remove_playlist),
                         color = Color.Companion.White
                     )
                 },
@@ -75,7 +76,7 @@ fun DropdownMenuMyPlaylist(
                 },
                 text = {
                     Text(
-                        text = "Rename",
+                        text = stringResource(R.string.rename),
                         color = Color.Companion.White
                     )
                 },

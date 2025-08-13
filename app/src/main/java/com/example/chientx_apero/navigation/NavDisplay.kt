@@ -1,5 +1,6 @@
 package com.example.chientx_apero.navigation
 
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -140,7 +141,12 @@ fun Navigation() {
             }
             entry<Screen.Information> {
                 InformationScreen(
-                    onClickBack = { backStack.removeLastOrNull() }
+                    onClickBack = { backStack.removeLastOrNull() },
+                    onClickLogOut = {
+                        PreferenceManager.clearLoginState()
+                        backStack.clear()
+                        backStack.add(Screen.Login("", ""))
+                    }
                 )
             }
             entry<Screen.Player> {

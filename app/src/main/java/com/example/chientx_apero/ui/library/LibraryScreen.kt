@@ -24,12 +24,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.R
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.NavigationBar
 import com.example.chientx_apero.ui.library.components.ButtonSelectLibrary
@@ -92,7 +94,7 @@ fun LibraryScreen(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = "Library",
+                    text = stringResource(R.string.library),
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Companion.Center,
                     fontWeight = FontWeight.Companion.Bold,
@@ -111,7 +113,7 @@ fun LibraryScreen(
                             }
                         },
                         isLocalLibrary = isLocalLibrary,
-                        text = "Local"
+                        text = stringResource(R.string.local)
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
                     ButtonSelectLibrary(
@@ -122,7 +124,7 @@ fun LibraryScreen(
                             }
                         },
                         isLocalLibrary = !isLocalLibrary,
-                        text = "Remote"
+                        text = stringResource(R.string.remote)
                     )
                 }
                 Box(

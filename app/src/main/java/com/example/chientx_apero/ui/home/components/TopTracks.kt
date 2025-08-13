@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -46,14 +47,14 @@ fun TopTracks(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Top tracks",
+            text = stringResource(R.string.top_tracks),
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Companion.Bold,
             modifier = Modifier.Companion.align(Alignment.Companion.CenterStart)
         )
         Text(
-            text = "See all",
+            text = stringResource(R.string.see_all),
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Companion.Underline,

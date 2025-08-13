@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,14 +42,14 @@ fun TopAlbums(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Top albums",
+            text = stringResource(R.string.top_albums),
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Companion.Bold,
             modifier = Modifier.align(Alignment.CenterStart)
         )
         Text(
-            text = "See all",
+            text = stringResource(R.string.see_all),
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Underline,

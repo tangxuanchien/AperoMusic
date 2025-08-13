@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -38,14 +39,14 @@ fun TopArtists(
             .fillMaxWidth()
     ) {
         Text(
-            text = "Top artists",
+            text = stringResource(R.string.top_artists),
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Companion.Bold,
             modifier = Modifier.Companion.align(Alignment.Companion.CenterStart)
         )
         Text(
-            text = "See all",
+            text = stringResource(R.string.see_all),
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.primary,
             textDecoration = TextDecoration.Companion.Underline,

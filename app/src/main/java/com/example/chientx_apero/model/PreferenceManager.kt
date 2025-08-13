@@ -20,6 +20,14 @@ object PreferenceManager {
         }
     }
 
+    fun clearLoginState() {
+        prefs?.edit {
+            remove(KEY_IS_LOGGED_IN)
+            remove(KEY_USER)
+            remove(KEY_PASSWORD)
+        }
+    }
+
     fun saveLoginState(userId: Long) {
         prefs?.edit {
             putBoolean(KEY_IS_LOGGED_IN, true)

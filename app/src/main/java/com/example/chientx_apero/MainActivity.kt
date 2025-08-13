@@ -1,6 +1,7 @@
 package com.example.chientx_apero
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -22,7 +23,7 @@ import com.example.chientx_apero.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -64,6 +65,14 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         MusicServiceManager.unbindService(this)
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val locale = Locale(AppCache.locale)
+        Locale.setDefault(locale)
+        val config = newBase.resources.configuration
+        config.setLocale(locale)
+        super.attachBaseContext(newBase.createConfigurationContext(config))
     }
 
     private fun loadMp3AndSaveDb() {

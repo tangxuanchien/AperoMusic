@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,7 +28,7 @@ fun HeaderPlaylist(
     stateMyPlaylist: Boolean = false,
     stateSortView: Boolean = false,
     stateGridView: Boolean = false,
-    titlePlaylist: String = "My playlist",
+    titlePlaylist: String = stringResource(R.string.my_playlist),
     onToggleSortView: () -> Unit = {},
     onToggleGridView: () -> Unit = {},
     onClickAddMyPlaylist: () -> Unit = {}
@@ -52,7 +53,7 @@ fun HeaderPlaylist(
             text = if (!stateSortView) {
                 titlePlaylist
             } else {
-                "Sorting"
+                stringResource(R.string.sorting)
             },
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Companion.Center,

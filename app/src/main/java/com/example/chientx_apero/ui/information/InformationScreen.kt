@@ -25,21 +25,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.chientx_apero.R
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.components.Input
 import com.example.chientx_apero.ui.information.components.Avatar
-import com.example.chientx_apero.ui.information.components.ButtonInformation
+import com.example.chientx_apero.ui.information.components.ButtonAction
 import com.example.chientx_apero.ui.information.components.HeaderInformation
 import com.example.chientx_apero.ui.information.components.PopupLayout
 import com.example.chientx_apero.ui.theme.AppTheme
 
 @Composable
 fun InformationScreen(
-    onClickBack: () -> Unit,
+    onClickBack: () -> Unit = {},
+    onClickLogOut: () -> Unit = {},
     viewModel: InformationViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -54,7 +57,6 @@ fun InformationScreen(
     ) { uri ->
         uri?.let {
             try {
-//                Recapture the content:// (it remove permission if you out session)
                 context.contentResolver.takePersistableUriPermission(
                     it,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -112,8 +114,8 @@ fun InformationScreen(
                 Row(
                 ) {
                     Input(
-                        text = "Name",
-                        placeholder = "Enter your name...",
+                        text = stringResource(R.string.name),
+                        placeholder = stringResource(R.string.enter_your_name),
                         modifier = Modifier.weight(1f),
                         value = name,
                         onValueChange = {
@@ -125,8 +127,8 @@ fun InformationScreen(
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Input(
-                        text = "Phone Number",
-                        placeholder = "Your phone number...",
+                        text = stringResource(R.string.phone_number),
+                        placeholder = stringResource(R.string.your_phone_number),
                         modifier = Modifier.weight(1f),
                         value = phone,
                         onValueChange = {
@@ -138,8 +140,8 @@ fun InformationScreen(
                     )
                 }
                 Input(
-                    text = "University Name",
-                    placeholder = "Your university number...",
+                    text = stringResource(R.string.university_name),
+                    placeholder = stringResource(R.string.your_university_number),
                     value = university,
                     onValueChange = {
                         university = it
@@ -149,8 +151,8 @@ fun InformationScreen(
                     keyboardType = KeyboardType.Text
                 )
                 Input(
-                    text = "Describe Yourself",
-                    placeholder = "Enter a description about yourself...",
+                    text = stringResource(R.string.describe_yourself),
+                    placeholder = stringResource(R.string.enter_a_description_about_yourself),
                     modifier = Modifier
                         .fillMaxWidth(),
                     size = 200.dp,
@@ -162,7 +164,7 @@ fun InformationScreen(
                     enabledStatus = state.enabledStatus,
                     keyboardType = KeyboardType.Text
                 )
-                ButtonInformation(
+                ButtonAction(
                     onClickButtonInformation = {
                         viewModel.processIntent(
                             InformationIntent.SubmitInformation(
@@ -173,6 +175,9 @@ fun InformationScreen(
                                 describe = describe
                             )
                         )
+                    },
+                    onClickLogOut = {
+                        onClickLogOut()
                     },
                     editStatus = state.canEditStatus
                 )

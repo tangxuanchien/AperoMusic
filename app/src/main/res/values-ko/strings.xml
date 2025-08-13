@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">아페로 뮤직</string>
+    <string name="welcome_back">다시 오신 것을 환영합니다!</string>
+    <string name="rankings">순위</string>
+    <string name="see_all">모두 보기</string>
+    <string name="top_albums">인기 앨범</string>
+    <string name="top_tracks">인기 트랙</string>
+    <string name="top_artists">인기 아티스트</string>
+    <string name="home">홈</string>
+    <string name="library">라이브러리</string>
+    <string name="playlist">재생 목록</string>
+    <string name="language">언어</string>
+    <string name="english">영어</string>
+    <string name="vietnamese">베트남어</string>
+    <string name="korean">한국어</string>
+    <string name="french">프랑스어</string>
+    <string name="settings">설정</string>
+    <string name="local">로컬</string>
+    <string name="remote">원격</string>
+    <string name="add_to_playlist">재생 목록에 추가</string>
+    <string name="share">공유</string>
+    <string name="remove_playlist">재생 목록 삭제</string>
+    <string name="rename">이름 변경</string>
+    <string name="new_playlist">새 재생 목록</string>
+    <string name="cancel">취소</string>
+    <string name="create">생성</string>
+    <string name="my_playlist">내 재생 목록</string>
+    <string name="songs">곡</string>
+    <string name="title_login">계정에 로그인하세요</string>
+    <string name="username">사용자 이름</string>
+    <string name="password">비밀번호</string>
+    <string name="remember_me">로그인 상태 유지</string>
+    <string name="login">로그인</string>
+    <string name="sign_up">회원가입</string>
+    <string name="title_playlist">재생 목록 제목을 입력하세요</string>
+    <string name="not_account">계정이 없으신가요?</string>
+    <string name="sorting">정렬</string>
+    <string name="confirm_password">비밀번호 확인</string>
+    <string name="email">이메일</string>
+    <string name="name">이름</string>
+    <string name="enter_your_name">이름을 입력하세요...</string>
+    <string name="phone_number">전화번호</string>
+    <string name="your_phone_number">전화번호를 입력하세요...</string>
+    <string name="university_name">대학교 이름</string>
+    <string name="your_university_number">대학교 번호를 입력하세요...</string>
+    <string name="describe_yourself">자기소개</string>
+    <string name="enter_a_description_about_yourself">자신에 대한 설명을 입력하세요...</string>
+    <string name="log_out">로그아웃</string>
+    <string name="submit">제출</string>
+
+</resources>

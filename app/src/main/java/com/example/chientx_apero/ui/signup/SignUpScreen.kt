@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,7 @@ fun SignUpScreen(
                                 .align(Alignment.Center)
                         )
                         Text(
-                            text = "Sign Up",
+                            text = stringResource(R.string.sign_up),
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.Bold,
                             fontSize = 32.sp,
@@ -111,7 +112,7 @@ fun SignUpScreen(
                         )
                     }
                     Input(
-                        placeholder = "Username",
+                        placeholder = stringResource(R.string.username),
                         value = state.username,
                         onValueChange = {
                             viewModel.processIntent(SignUpIntent.UsernameChanged(it))
@@ -120,7 +121,7 @@ fun SignUpScreen(
                         leadingIcon = R.drawable.user
                     )
                     Input(
-                        placeholder = "Password",
+                        placeholder = stringResource(R.string.password),
                         value = state.password,
                         onValueChange = {
                             viewModel.processIntent(SignUpIntent.PasswordChanged(it))
@@ -145,7 +146,7 @@ fun SignUpScreen(
                         visualTransformation = state.visualTransformationPassword
                     )
                     Input(
-                        placeholder = "Confirm Password",
+                        placeholder = stringResource(R.string.confirm_password),
                         value = state.confirmPassword,
                         onValueChange = {
                             viewModel.processIntent(SignUpIntent.ConfirmPasswordChanged(it))
@@ -170,7 +171,7 @@ fun SignUpScreen(
                         visualTransformation = state.visualTransformationConfirmPassword
                     )
                     Input(
-                        placeholder = "Email",
+                        placeholder = stringResource(R.string.email),
                         value = state.email,
                         onValueChange = {
                             viewModel.processIntent(SignUpIntent.EmailChanged(it))
@@ -192,7 +193,7 @@ fun SignUpScreen(
                         .padding(bottom = 35.dp)
                 ) {
                     Text(
-                        text = "Sign Up",
+                        text = stringResource(R.string.sign_up),
                         modifier = Modifier
                             .padding(10.dp)
                             .align(Alignment.CenterVertically),

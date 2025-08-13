@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -98,7 +99,7 @@ fun LoginScreen(
                                 .align(Alignment.Center)
                         )
                         Text(
-                            text = "Login to your account",
+                            text = stringResource(R.string.title_login),
                             color = MaterialTheme.colorScheme.onBackground,
                             fontWeight = FontWeight.Bold,
                             fontSize = 32.sp,
@@ -106,14 +107,14 @@ fun LoginScreen(
                         )
                     }
                     Input(
-                        placeholder = "Username",
+                        placeholder = stringResource(R.string.username),
                         value = username,
                         onValueChange = { username = it },
                         textError = "",
                         leadingIcon = R.drawable.user
                     )
                     Input(
-                        placeholder = "Password",
+                        placeholder = stringResource(R.string.password),
                         value = password,
                         onValueChange = { password = it },
                         textError = "",
@@ -153,7 +154,7 @@ fun LoginScreen(
                         )
 
                         Text(
-                            text = "Remember me",
+                            text = stringResource(R.string.remember_me),
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onBackground
                         )
@@ -174,7 +175,7 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Log in",
+                            text = stringResource(R.string.login),
                             modifier = Modifier
                                 .padding(10.dp)
                                 .align(Alignment.CenterVertically),
@@ -188,12 +189,12 @@ fun LoginScreen(
                         .padding(bottom = 40.dp)
                 ) {
                     Text(
-                        text = "Don't have an account?",
+                        text = stringResource(R.string.not_account),
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Spacer(modifier = Modifier.padding(end = 5.dp))
                     Text(
-                        text = "Sign Up",
+                        text = stringResource(R.string.sign_up),
                         color = MaterialTheme.colorScheme.surfaceTint,
                         modifier = Modifier.clickable(
                             onClick = onClickSignUp
