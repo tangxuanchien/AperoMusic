@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.repository.SongRepository
+import com.example.chientx_apero.service.MusicManager
 import com.example.chientx_apero.service.MusicService
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,6 +38,7 @@ class PlayerViewModel : ViewModel() {
             )
         }
     }
+
     fun processIntent(intent: PlayerIntent, context: Context) {
         viewModelScope.launch {
             val repository = SongRepository(context)
@@ -122,7 +124,8 @@ class PlayerViewModel : ViewModel() {
                     _state.update {
                         it.copy(
                             isPlaySong = true,
-                            song = AppCache.playingSong
+                            song = AppCache.playingSong,
+                            duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
                         )
                     }
                 }

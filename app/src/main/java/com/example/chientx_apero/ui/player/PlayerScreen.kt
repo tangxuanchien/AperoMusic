@@ -50,11 +50,12 @@ fun PlayerScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val isPlaying by AppCache.isPlayingSong.collectAsState()
     var currentTheme by remember { mutableStateOf(darkTheme) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isServiceBound by remember { mutableStateOf(false) }
-    var isRandomSong by remember { mutableStateOf(false) }
-    var isReplaySong by remember { mutableStateOf(false) }
+    var isRandomSong by remember { mutableStateOf(AppCache.isRandomSong) }
+    var isReplaySong by remember { mutableStateOf(AppCache.isReplaySong) }
     var isNextSong by remember { mutableStateOf(AppCache.playlist != null) }
     var isPreviousSong by remember { mutableStateOf(AppCache.playlist != null) }
 
@@ -154,18 +155,14 @@ fun PlayerScreen(
                             },
                             onClickReplay = {
                                 if (AppCache.playlist != null) {
-                                    isReplaySong = !isReplaySong
-                                    if (isReplaySong == true) {
-                                        viewModel.processIntent(PlayerIntent.ReplaySong, context)
-                                    }
+                                    AppCache.isReplaySong = !AppCache.isReplaySong
+                                    isReplaySong = AppCache.isReplaySong
                                 }
                             },
                             onClickRandomSong = {
                                 if (AppCache.playlist != null) {
-                                    isRandomSong = !isRandomSong
-                                    if (isRandomSong == true) {
-                                        viewModel.processIntent(PlayerIntent.RandomSong, context)
-                                    }
+                                    AppCache.isRandomSong = !AppCache.isRandomSong
+                                    isRandomSong = AppCache.isRandomSong
                                 }
                             },
                             onClickPreviousSong = {
@@ -178,7 +175,7 @@ fun PlayerScreen(
                                     viewModel.processIntent(PlayerIntent.NextSong, context)
                                 }
                             },
-                            isPlaySong = state.isPlaySong,
+                            isPlaySong = isPlaying,
                             isRandomSong = isRandomSong,
                             isReplaySong = isReplaySong,
                             isPreviousSong = isPreviousSong,

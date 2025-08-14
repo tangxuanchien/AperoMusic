@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
+import com.example.chientx_apero.MainActivity
 import com.example.chientx_apero.R
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.ui.player.PlayerIntent
@@ -47,6 +48,16 @@ class MusicService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         mediaPlayer = MediaPlayer()
+        mediaPlayer?.setOnCompletionListener {
+            if (AppCache.isReplaySong) {
+                mediaPlayer?.seekTo(0)
+                mediaPlayer?.start()
+            } else if (AppCache.isRandomSong) {
+                MusicManager.processIntent(PlayerIntent.RandomSong, this)
+            } else {
+                MusicManager.processIntent(PlayerIntent.NextSong, this)
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -55,14 +66,12 @@ class MusicService : LifecycleService() {
         when (intent?.action) {
             ACTION_PLAY -> {
                 val uri = Uri.fromFile(File(intent.getStringExtra("uri")!!))
-                uri?.let {
-                    mediaPlayer?.reset()
-                    mediaPlayer?.setDataSource(applicationContext, it)
-                    mediaPlayer?.prepareAsync()
-                    mediaPlayer?.setOnPreparedListener {
-                        mediaPlayer?.start()
-                        startForeground(1, createNotification())
-                    }
+                mediaPlayer?.reset()
+                mediaPlayer?.setDataSource(applicationContext, uri)
+                mediaPlayer?.prepareAsync()
+                mediaPlayer?.setOnPreparedListener {
+                    mediaPlayer?.start()
+                    startForeground(1, createNotification())
                 }
             }
 
@@ -135,6 +144,7 @@ class MusicService : LifecycleService() {
             .setLargeIcon(AppCache.playingSong?.image)
             .setContentTitle(AppCache.playingSong?.name)
             .setContentText(AppCache.playingSong?.artist)
+            .setContentIntent(getActivityPendingIntent())
             .addAction(R.drawable.seek_to_back, "", getPendingIntent(ACTION_PREVIOUS))
             .addAction(
                 if (mediaPlayer?.isPlaying == true) {
@@ -163,6 +173,18 @@ class MusicService : LifecycleService() {
         }
         return PendingIntent.getService(
             this, action.hashCode(), intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun getActivityPendingIntent(): PendingIntent {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            AppCache.openPlayer = true
+        }
+        return PendingIntent.getActivity(
+            this,
+            0,
+            intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }

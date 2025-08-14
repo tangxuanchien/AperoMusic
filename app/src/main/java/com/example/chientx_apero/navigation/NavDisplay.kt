@@ -1,5 +1,6 @@
 package com.example.chientx_apero.navigation
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -10,9 +11,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.example.chientx_apero.MainActivity
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.room_db.repository.UserRepository
+import com.example.chientx_apero.service.MusicService
 import com.example.chientx_apero.ui.api_screen.TopAlbumsScreen
 import com.example.chientx_apero.ui.api_screen.TopArtistsScreen
 import com.example.chientx_apero.ui.api_screen.TopTracksScreen
@@ -30,6 +33,7 @@ import com.example.chientx_apero.ui.signup.SignUpScreen
 @Composable
 fun Navigation() {
     val context = LocalContext.current
+    val openPlayer = AppCache.openPlayer
     LaunchedEffect(Unit) {
         if (PreferenceManager.isLoggedIn()) {
             val repository = UserRepository(context)
@@ -43,7 +47,11 @@ fun Navigation() {
     val backStack = remember {
         mutableStateListOf<Screen>(
             if (PreferenceManager.isLoggedIn()) {
-                Screen.Home
+                if (openPlayer) {
+                    Screen.Player
+                } else {
+                    Screen.Home
+                }
             } else {
                 Screen.Login("", "")
             }

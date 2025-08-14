@@ -27,6 +27,9 @@ object AppCache {
     var topArtists: List<ArtistRetrofit>? = null
     var topAlbums: List<AlbumRetrofit>? = null
     var topTracks: List<TrackRetrofit>? = null
+    var openPlayer: Boolean = false
+    var isRandomSong = false
+    var isReplaySong = false
 }
 
 // Fake data
