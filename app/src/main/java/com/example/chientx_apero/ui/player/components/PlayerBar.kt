@@ -19,7 +19,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chientx_apero.R
-import com.example.chientx_apero.ui.theme.darkTheme
 
 @Composable
 fun PlayerBar(
@@ -28,7 +27,11 @@ fun PlayerBar(
     onClickPreviousSong: () -> Unit,
     onClickNextSong: () -> Unit,
     onClickRandomSong: () -> Unit,
-    isPlaySong: Boolean = false
+    isPlaySong: Boolean = false,
+    isRandomSong: Boolean = false,
+    isReplaySong: Boolean = false,
+    isNextSong: Boolean = false,
+    isPreviousSong: Boolean = false,
 ) {
     Row(
         modifier = Modifier.Companion
@@ -44,7 +47,11 @@ fun PlayerBar(
                 .clickable {
                     onClickRandomSong()
                 },
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = if (isRandomSong) {
+                MaterialTheme.colorScheme.onBackground
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
         )
         Icon(
             imageVector = ImageVector.Companion.vectorResource(R.drawable.seek_to_back),
@@ -54,7 +61,11 @@ fun PlayerBar(
                 .clickable {
                     onClickPreviousSong()
                 },
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = if (isPreviousSong) {
+                MaterialTheme.colorScheme.onBackground
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
         )
         Box(
             modifier = Modifier.Companion
@@ -90,7 +101,11 @@ fun PlayerBar(
                 .clickable {
                     onClickNextSong()
                 },
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = if (isNextSong) {
+                MaterialTheme.colorScheme.onBackground
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
         )
         Icon(
             imageVector = ImageVector.Companion.vectorResource(R.drawable.replay),
@@ -100,7 +115,11 @@ fun PlayerBar(
                 .clickable {
                     onClickReplay()
                 },
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = if (isReplaySong) {
+                MaterialTheme.colorScheme.onBackground
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            }
         )
     }
 }
@@ -108,15 +127,11 @@ fun PlayerBar(
 @Preview(showBackground = true)
 @Composable
 private fun PrevPlayerBar() {
-    MaterialTheme(
-        colorScheme = darkTheme.color
-    ) {
-        PlayerBar(
-            onClickTogglePlayback = {},
-            onClickReplay = {},
-            onClickRandomSong = {},
-            onClickPreviousSong = {},
-            onClickNextSong = {}
-        )
-    }
+    PlayerBar(
+        onClickTogglePlayback = {},
+        onClickReplay = {},
+        onClickRandomSong = {},
+        onClickPreviousSong = {},
+        onClickNextSong = {}
+    )
 }

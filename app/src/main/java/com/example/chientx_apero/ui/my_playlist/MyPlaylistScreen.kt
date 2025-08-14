@@ -42,10 +42,11 @@ fun MyPlaylistScreen(
     onClickPlaylist: () -> Unit = {},
     onClickHome: () -> Unit = {},
     onClickPlayer: () -> Unit = {},
-    playerBarViewModel: PlayerBarViewModel = viewModel()
+    playerBarViewModel: PlayerBarViewModel = viewModel(),
+    showPopup: Boolean = false
 ) {
     var titleMyPlaylist by remember { mutableStateOf("") }
-    var showPopup by remember { mutableStateOf(false) }
+    var showPopup by remember { mutableStateOf(showPopup) }
     var isRename by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current

@@ -10,17 +10,12 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.lifecycleScope
 import com.example.chientx_apero.R
 import com.example.chientx_apero.model.AppCache
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import com.example.chientx_apero.ui.player.PlayerIntent
 import java.io.File
 
 class MusicService : LifecycleService() {
@@ -46,6 +41,8 @@ class MusicService : LifecycleService() {
         const val ACTION_REPLAY = "ACTION_REPLAY"
         const val ACTION_SEEK_TO = "ACTION_SEEK_TO"
         const val ACTION_GET_POSITION = "ACTION_GET_POSITION"
+        const val ACTION_NEXT = "ACTION_NEXT"
+        const val ACTION_PREVIOUS = "ACTION_PREVIOUS"
     }
 
     override fun onCreate() {
@@ -64,8 +61,8 @@ class MusicService : LifecycleService() {
                     mediaPlayer?.setDataSource(applicationContext, it)
                     mediaPlayer?.prepareAsync()
                     mediaPlayer?.setOnPreparedListener {
-                        startForeground(1, createNotification())
                         mediaPlayer?.start()
+                        startForeground(1, createNotification())
                     }
                 }
             }
@@ -99,6 +96,14 @@ class MusicService : LifecycleService() {
             ACTION_GET_POSITION -> {
                 getCurrentPosition()
             }
+
+            ACTION_NEXT -> {
+                MusicManager.processIntent(PlayerIntent.NextSong, this)
+            }
+
+            ACTION_PREVIOUS -> {
+                MusicManager.processIntent(PlayerIntent.PreviousSong, this)
+            }
         }
         return START_NOT_STICKY
     }
@@ -127,23 +132,9 @@ class MusicService : LifecycleService() {
             .setLargeIcon(AppCache.playingSong?.image)
             .setContentTitle(AppCache.playingSong?.name)
             .setContentText(AppCache.playingSong?.artist)
-            .addAction(R.drawable.seek_to_back, "", getPendingIntent(ACTION_PLAY))
-            .addAction(
-                if (mediaPlayer?.isPlaying == true) {
-                    R.drawable.pause
-                    Log.d("Service", "isPlaySong: True")
-                } else {
-                    R.drawable.play_fill
-                    Log.d("Service", "isPlaySong: False")
-                }, "", getPendingIntent(
-                    if (mediaPlayer?.isPlaying == true) {
-                        ACTION_PAUSE
-                    } else {
-                        ACTION_RESUME
-                    }
-                )
-            )
-            .addAction(R.drawable.seek_to_next, "", getPendingIntent(ACTION_PLAY))
+            .addAction(R.drawable.seek_to_back, "", getPendingIntent(ACTION_PREVIOUS))
+            .addAction(R.drawable.settings, "", getPendingIntent(ACTION_PAUSE))
+            .addAction(R.drawable.seek_to_next, "", getPendingIntent(ACTION_NEXT))
             .addAction(R.drawable.tick, "", getPendingIntent(ACTION_STOP))
             .setDeleteIntent(getPendingIntent(ACTION_STOP))
             .build()
@@ -154,7 +145,7 @@ class MusicService : LifecycleService() {
             this.action = action
         }
         return PendingIntent.getService(
-            this, 0, intent,
+            this, action.hashCode(), intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }

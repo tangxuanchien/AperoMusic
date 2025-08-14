@@ -1,5 +1,6 @@
 package com.example.chientx_apero.navigation
 
+import android.util.Log
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,7 +60,7 @@ fun Navigation() {
                         backStack.add(Screen.Information)
                     },
                     onClickPlaylist = {
-                        backStack.add(Screen.MyPlaylist)
+                        backStack.add(Screen.MyPlaylist())
                     },
                     onClickLibrary = {
                         backStack.add(Screen.Library)
@@ -126,7 +127,7 @@ fun Navigation() {
                 PlaylistScreen(
                     isPlaylistScreen = true,
                     onClickMyPlaylist = {
-                        backStack.add(Screen.MyPlaylist)
+                        backStack.add(Screen.MyPlaylist())
                     },
                     onClickLibrary = {
                         backStack.add(Screen.Library)
@@ -161,7 +162,7 @@ fun Navigation() {
                 LibraryScreen(
                     onClickBack = { backStack.removeLastOrNull() },
                     onClickPlaylist = {
-                        backStack.add(Screen.MyPlaylist)
+                        backStack.add(Screen.MyPlaylist(true))
                     },
                     onClickPlayer = {
                         backStack.add(Screen.Player)
@@ -178,6 +179,7 @@ fun Navigation() {
             entry<Screen.MyPlaylist> {
                 MyPlaylistScreen(
                     isPlaylistScreen = true,
+                    showPopup = it.showPopup,
                     onClickLibrary = {
                         backStack.clear()
                         backStack.add(Screen.Library)

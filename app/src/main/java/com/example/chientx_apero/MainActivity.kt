@@ -13,10 +13,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.model.PreferenceManager
 import com.example.chientx_apero.navigation.Navigation
 import com.example.chientx_apero.room_db.repository.SongRepository
+import com.example.chientx_apero.service.MusicManager
 import com.example.chientx_apero.service.MusicServiceManager
 import com.example.chientx_apero.ui.playlist.components.getAllMp3Files
 import com.example.chientx_apero.ui.theme.AppTheme
@@ -31,7 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         PreferenceManager.init(applicationContext)
-
+        MusicManager.init(lifecycleScope)
         val requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
@@ -50,9 +52,16 @@ class MainActivity : ComponentActivity() {
             requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_AUDIO)
         }
 
-//        Bug not send notification in first time allow permission
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 100)
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                100
+            )
         }
 
         setContent {

@@ -16,7 +16,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.util.Logger
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.service.MusicServiceManager
 import com.example.chientx_apero.ui.player.components.HeaderPlayer
@@ -53,6 +53,10 @@ fun PlayerScreen(
     var currentTheme by remember { mutableStateOf(darkTheme) }
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isServiceBound by remember { mutableStateOf(false) }
+    var isRandomSong by remember { mutableStateOf(false) }
+    var isReplaySong by remember { mutableStateOf(false) }
+    var isNextSong by remember { mutableStateOf(AppCache.playlist != null) }
+    var isPreviousSong by remember { mutableStateOf(AppCache.playlist != null) }
 
     LaunchedEffect(state.isPlaySong) {
         if (state.isPlaySong) {
@@ -75,6 +79,7 @@ fun PlayerScreen(
             }
         }
     }
+
 
     MaterialTheme(
         colorScheme = currentTheme.color
@@ -148,18 +153,36 @@ fun PlayerScreen(
                                 viewModel.processIntent(PlayerIntent.TogglePlayback, context)
                             },
                             onClickReplay = {
-                                viewModel.processIntent(PlayerIntent.ReplaySong, context)
+                                if (AppCache.playlist != null) {
+                                    isReplaySong = !isReplaySong
+                                    if (isReplaySong == true) {
+                                        viewModel.processIntent(PlayerIntent.ReplaySong, context)
+                                    }
+                                }
                             },
                             onClickRandomSong = {
-                                viewModel.processIntent(PlayerIntent.RandomSong, context)
+                                if (AppCache.playlist != null) {
+                                    isRandomSong = !isRandomSong
+                                    if (isRandomSong == true) {
+                                        viewModel.processIntent(PlayerIntent.RandomSong, context)
+                                    }
+                                }
                             },
                             onClickPreviousSong = {
-                                viewModel.processIntent(PlayerIntent.PreviousSong, context)
+                                if (isPreviousSong == true) {
+                                    viewModel.processIntent(PlayerIntent.PreviousSong, context)
+                                }
                             },
                             onClickNextSong = {
-                                viewModel.processIntent(PlayerIntent.NextSong, context)
+                                if (isNextSong == true) {
+                                    viewModel.processIntent(PlayerIntent.NextSong, context)
+                                }
                             },
-                            isPlaySong = state.isPlaySong
+                            isPlaySong = state.isPlaySong,
+                            isRandomSong = isRandomSong,
+                            isReplaySong = isReplaySong,
+                            isPreviousSong = isPreviousSong,
+                            isNextSong = isNextSong,
                         )
                     }
                 }

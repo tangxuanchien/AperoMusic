@@ -1,19 +1,13 @@
-package com.example.chientx_apero.ui.player
+package com.example.chientx_apero.service
 
-
-import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
-import android.os.IBinder
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.repository.SongRepository
-import com.example.chientx_apero.service.MusicService
-import kotlinx.coroutines.Job
+import com.example.chientx_apero.ui.player.PlayerEvent
+import com.example.chientx_apero.ui.player.PlayerIntent
+import com.example.chientx_apero.ui.player.PlayerState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,26 +15,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.ref.WeakReference
 
-class PlayerViewModel : ViewModel() {
+object MusicManager {
     private val _state = MutableStateFlow<PlayerState>(PlayerState())
     val state: StateFlow<PlayerState> = _state
     private val _event = MutableSharedFlow<PlayerEvent>()
     val event: SharedFlow<PlayerEvent> = _event.asSharedFlow()
     val current = state.value
 
-    init {
-        _state.update {
-            it.copy(
-                duration = parseDurationToMilliseconds(AppCache.playingSong!!.duration)
-            )
-        }
+    private var scope: CoroutineScope? = null
+    fun init(appScope: CoroutineScope) {
+        scope = appScope
     }
+
     fun processIntent(intent: PlayerIntent, context: Context) {
-        viewModelScope.launch {
+        scope?.launch {
             val repository = SongRepository(context)
-            val song = repository.getSongById(AppCache.playingSong!!.id)
 
             when (intent) {
                 is PlayerIntent.TogglePlayback -> {
@@ -150,11 +140,5 @@ class PlayerViewModel : ViewModel() {
         val minutes = parts[0].toLongOrNull() ?: 0
         val seconds = parts[1].toLongOrNull() ?: 0
         return (minutes * 60 + seconds) * 1000
-    }
-
-    private fun sendEvent(event: PlayerEvent) {
-        viewModelScope.launch {
-            _event.emit(event)
-        }
     }
 }

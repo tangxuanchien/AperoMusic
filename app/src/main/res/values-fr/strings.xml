@@ -42,8 +42,8 @@
     <string name="enter_your_name">Entrez votre nom...</string>
     <string name="phone_number">Numéro de téléphone</string>
     <string name="your_phone_number">Votre numéro de téléphone...</string>
-    <string name="university_name">Nom de l'université</string>
-    <string name="your_university_number">Votre numéro d'université...</string>
+    <string name="university_name">Nom de l\'université</string>
+    <string name="your_university_number">Votre numéro d\'université...</string>
     <string name="describe_yourself">Décrivez-vous</string>
     <string name="enter_a_description_about_yourself">Entrez une description de vous-même...</string>
     <string name="log_out">Se déconnecter</string>

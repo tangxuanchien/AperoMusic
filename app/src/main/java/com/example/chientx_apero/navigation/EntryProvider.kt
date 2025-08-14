@@ -7,7 +7,7 @@ sealed interface Screen {
     data object Home : Screen
     data object Information : Screen
     data object Library : Screen
-    data object MyPlaylist : Screen
+    data class MyPlaylist(val showPopup: Boolean = false) : Screen
     data object Player : Screen
     data object TopAlbums : Screen
     data object TopArtists : Screen
