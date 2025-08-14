@@ -85,6 +85,7 @@ fun MyPlaylistScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     if (!state.displayedMyPlaylists.isEmpty()) {
+                        AppCache.isShowPopup = false
                         LazyColumn {
                             items(state.displayedMyPlaylists) { playlist ->
                                 val isExpanded =
@@ -134,7 +135,8 @@ fun MyPlaylistScreen(
                 }
                 if (AppCache.playingSong != null) {
                     PlayerBarScreen(
-                        viewModel = playerBarViewModel
+                        viewModel = playerBarViewModel,
+                        onClickPlayer = onClickPlayer
                     )
                 }
                 if (showPopup) {
@@ -190,6 +192,7 @@ fun MyPlaylistScreen(
                 if (AppCache.playingSong != null) {
                     PlayerBarScreen(
                         viewModel = playerBarViewModel,
+                        song = AppCache.playingSong,
                         onClickPlayer = onClickPlayer
                     )
                 }

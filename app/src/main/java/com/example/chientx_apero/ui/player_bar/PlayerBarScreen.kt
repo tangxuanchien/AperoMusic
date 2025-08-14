@@ -26,13 +26,14 @@ fun PlayerBarScreen(
     song: Song? = null
 ) {
     val state by viewModel.state.collectAsState()
+    val isPlaying by AppCache.isPlayingSong.collectAsState()
     val context = LocalContext.current
     var currentPosition by remember { mutableIntStateOf(0) }
     val duration = parseDurationToMilliseconds(AppCache.playingSong?.duration ?: "00:00")
-    var progress: Float = currentPosition.toFloat() / duration.toFloat()
+    val progress: Float = currentPosition.toFloat() / duration.toFloat()
 
-    LaunchedEffect(Unit) {
-        if (state.isPlaySong) {
+    LaunchedEffect(AppCache.playingSong, isPlaying) {
+        if (isPlaying) {
             MusicServiceManager.bindService(context)
             while (true) {
                 MusicServiceManager.getService()?.let {
@@ -46,7 +47,7 @@ fun PlayerBarScreen(
     }
     PlayerBar(
         song = AppCache.playingSong!!,
-        isPlaySong = state.isPlaySong,
+        isPlaySong = isPlaying,
         onClickPlaySong = {
             viewModel.processIntent(
                 PlayerBarIntent.HandleSongAction(song ?: AppCache.playingSong!!),
@@ -61,7 +62,7 @@ fun PlayerBarScreen(
             AppCache.playingSong = null
         },
         onClickPlayer = {
-            AppCache.isPlayingSong = state.isPlaySong
+            AppCache.isPlayingSong.value = isPlaying
             onClickPlayer()
         },
         currentTime = progress

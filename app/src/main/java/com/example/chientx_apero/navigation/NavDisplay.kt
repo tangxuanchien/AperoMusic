@@ -162,7 +162,7 @@ fun Navigation() {
                 LibraryScreen(
                     onClickBack = { backStack.removeLastOrNull() },
                     onClickPlaylist = {
-                        backStack.add(Screen.MyPlaylist(true))
+                        backStack.add(Screen.MyPlaylist(AppCache.isShowPopup))
                     },
                     onClickPlayer = {
                         backStack.add(Screen.Player)
@@ -187,6 +187,9 @@ fun Navigation() {
                     onClickPlaylist = {
                         backStack.clear()
                         backStack.add(Screen.Playlists)
+                    },
+                    onClickPlayer = {
+                        backStack.add(Screen.Player)
                     },
                     onClickHome = {
                         backStack.clear()

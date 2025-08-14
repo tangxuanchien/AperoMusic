@@ -182,7 +182,8 @@ fun LibraryScreen(
                                                 context
                                             )
                                             AppCache.playingSong = song
-                                            AppCache.isPlayingSong = true
+                                            AppCache.isPlayingSong.value = true
+                                            AppCache.playlist = null
                                         }
                                     )
                                 }
@@ -193,7 +194,7 @@ fun LibraryScreen(
                 if (AppCache.playingSong != null) {
                     PlayerBarScreen(
                         viewModel = playerBarViewModel,
-                        song = state.selectedSong,
+                        song = AppCache.playingSong,
                         onClickPlayer = onClickPlayer
                     )
                 }
@@ -207,7 +208,10 @@ fun LibraryScreen(
         }
         if (isShowPopup) {
             PopupAddToPlaylist(
-                onClickCreatePlaylist = onClickPlaylist,
+                onClickCreatePlaylist = {
+                    AppCache.isShowPopup = true
+                    onClickPlaylist()
+                },
                 onClickAddToPlaylist = { playlist ->
                     viewModel.processIntent(
                         LibraryIntent.AddSongToPlaylist(

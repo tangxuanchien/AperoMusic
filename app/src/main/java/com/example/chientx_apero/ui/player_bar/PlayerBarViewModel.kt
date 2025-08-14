@@ -20,10 +20,8 @@ class PlayerBarViewModel(
         val current = _state.value
         when (intent) {
             is PlayerBarIntent.HandleSongAction -> {
-                var isPlaySong = current.isPlaySong
+                var isPlaySong = AppCache.isPlayingSong.value
                 val isSameSong = intent.song == AppCache.playingSong
-                Log.d("Bar", "${intent.song.name} and ${AppCache.playingSong?.name}")
-                Log.d("Bar", "$isPlaySong")
                 val intentService = Intent(context, MusicService::class.java).apply {
                     when {
 //                        Case 1: Play other song (not playing)
@@ -31,36 +29,28 @@ class PlayerBarViewModel(
                             action = MusicService.ACTION_PLAY
                             putExtra("uri", intent.song.data.toString())
                             isPlaySong = true
-                            Log.d("Bar", "Play other song (not playing)")
                         }
 //                       Case 2: Pause song
                         isPlaySong && isSameSong -> {
                             action = MusicService.ACTION_PAUSE
                             isPlaySong = false
-                            Log.d("Bar", "Pause song")
                         }
 //                        Case 3: Resume song
                         !isPlaySong && isSameSong -> {
                             action = MusicService.ACTION_RESUME
                             isPlaySong = true
-                            Log.d("Bar", "Resume song")
                         }
 //                        Case 4: Play other song (playing)
                         isPlaySong && !isSameSong -> {
                             action = MusicService.ACTION_PLAY
                             putExtra("uri", intent.song.data.toString())
                             isPlaySong = true
-                            Log.d("Bar", "Play other song (playing)")
                         }
                     }
                 }
                 context.startService(intentService)
-
-                _state.update {
-                    it.copy(
-                        isPlaySong = isPlaySong
-                    )
-                }
+                AppCache.isPlayingSong.value = isPlaySong
+                AppCache.playingSong = intent.song
             }
 
             PlayerBarIntent.StopSong -> {
@@ -68,6 +58,8 @@ class PlayerBarViewModel(
                     action = MusicService.ACTION_STOP
                 }
                 context.startService(intent)
+                AppCache.playingSong = null
+                AppCache.isPlayingSong.value = false
             }
         }
     }

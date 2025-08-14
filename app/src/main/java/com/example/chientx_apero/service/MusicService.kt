@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import com.example.chientx_apero.R
@@ -70,7 +69,9 @@ class MusicService : LifecycleService() {
             ACTION_PAUSE -> {
                 if (mediaPlayer!!.isPlaying) {
                     mediaPlayer?.pause()
+                    updateNotification()
                 }
+                AppCache.isPlayingSong.value = false
             }
 
             ACTION_STOP -> {
@@ -82,6 +83,8 @@ class MusicService : LifecycleService() {
 
             ACTION_RESUME -> {
                 mediaPlayer?.start()
+                updateNotification()
+                AppCache.isPlayingSong.value = true
             }
 
             ACTION_REPLAY -> {
@@ -133,7 +136,21 @@ class MusicService : LifecycleService() {
             .setContentTitle(AppCache.playingSong?.name)
             .setContentText(AppCache.playingSong?.artist)
             .addAction(R.drawable.seek_to_back, "", getPendingIntent(ACTION_PREVIOUS))
-            .addAction(R.drawable.settings, "", getPendingIntent(ACTION_PAUSE))
+            .addAction(
+                if (mediaPlayer?.isPlaying == true) {
+                    R.drawable.pause_fill
+                } else {
+                    R.drawable.play_fill
+                },
+                "",
+                getPendingIntent(
+                    if (mediaPlayer?.isPlaying == true) {
+                        ACTION_PAUSE
+                    } else {
+                        ACTION_RESUME
+                    }
+                )
+            )
             .addAction(R.drawable.seek_to_next, "", getPendingIntent(ACTION_NEXT))
             .addAction(R.drawable.tick, "", getPendingIntent(ACTION_STOP))
             .setDeleteIntent(getPendingIntent(ACTION_STOP))
@@ -148,6 +165,12 @@ class MusicService : LifecycleService() {
             this, action.hashCode(), intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+    }
+
+    private fun updateNotification() {
+        val notification = createNotification()
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.notify(1, notification)
     }
 
     override fun onDestroy() {

@@ -95,11 +95,11 @@ fun PlayerScreen(
             ) {
                 HeaderPlayer(
                     onClickBackUnSelected = {
-                        AppCache.isPlayingSong = state.isPlaySong
+                        AppCache.isPlayingSong.value = state.isPlaySong
                         onClickBack()
                     },
                     onClickBackSelected = {
-                        AppCache.isPlayingSong = state.isPlaySong
+                        AppCache.isPlayingSong.value = state.isPlaySong
                         onClickHome()
                     },
                 )

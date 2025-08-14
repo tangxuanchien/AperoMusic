@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
@@ -34,12 +35,19 @@ fun ItemColumn(
     onClick: () -> Unit = {},
     onClickPlaySong: () -> Unit = {},
     expanded: Boolean,
+    isPlaySong: Boolean = false,
     onDismissRequest: () -> Unit
 ) {
     Row(
         modifier = Modifier.Companion
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
+            .background(
+                if (!isPlaySong) {
+                    MaterialTheme.colorScheme.background
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                }
+            )
             .padding(8.dp)
             .clickable{
                 onClickPlaySong()

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.rememberAsyncImagePainter
 import com.example.chientx_apero.R
+import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.entity.Song
 
 @Composable
@@ -37,15 +38,24 @@ fun ItemGrid(
     onClick: () -> Unit = {},
     onClickPlaySong: () -> Unit = {},
     expanded: Boolean,
+    isPlaySong: Boolean = false,
     onDismissRequest: () -> Unit
 ) {
     Column(
         modifier = Modifier.Companion
-            .background(MaterialTheme.colorScheme.background)
+            .background(
+                if (!isPlaySong) {
+                    MaterialTheme.colorScheme.background
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
+                RoundedCornerShape(10.dp)
+            )
             .padding(12.dp)
             .clickable{
                 onClickPlaySong()
-            }
+            },
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = Modifier.Companion

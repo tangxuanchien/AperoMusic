@@ -10,7 +10,7 @@ import com.example.chientx_apero.ui.theme.ThemeData
 import com.example.chientx_apero.ui.theme.darkTheme
 
 data class PlayerBarState(
-    val isPlaySong: Boolean = AppCache.isPlayingSong
+    val isPlaySong: Boolean = AppCache.isPlayingSong.value
 )
 
 sealed interface PlayerBarIntent {

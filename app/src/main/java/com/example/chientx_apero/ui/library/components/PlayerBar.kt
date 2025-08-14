@@ -81,7 +81,7 @@ fun PlayerBar(
                     Icon(
                         imageVector = ImageVector.Companion.vectorResource(
                             if (isPlaySong) {
-                                R.drawable.pause
+                                R.drawable.pause_fill
                             } else {
                                 R.drawable.play
                             }

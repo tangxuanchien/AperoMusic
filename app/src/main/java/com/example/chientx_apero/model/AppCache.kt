@@ -14,6 +14,7 @@ import com.example.chientx_apero.retrofit.model.TrackRetrofit
 import com.example.chientx_apero.room_db.entity.Playlist
 import com.example.chientx_apero.room_db.entity.Song
 import com.example.chientx_apero.room_db.entity.User
+import kotlinx.coroutines.flow.MutableStateFlow
 
 object AppCache {
     var playlist: Playlist? = null
@@ -21,7 +22,8 @@ object AppCache {
     var locale by mutableStateOf("en")
     var language: Int = R.string.english
     var playingSong by mutableStateOf<Song?>(null)
-    var isPlayingSong: Boolean = false
+    val isPlayingSong = MutableStateFlow(false)
+    var isShowPopup = false
     var topArtists: List<ArtistRetrofit>? = null
     var topAlbums: List<AlbumRetrofit>? = null
     var topTracks: List<TrackRetrofit>? = null

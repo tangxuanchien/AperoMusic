@@ -45,6 +45,7 @@ fun PlaylistScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+    val isPlaying by AppCache.isPlayingSong.collectAsState()
     val playlistId by remember { mutableLongStateOf(AppCache.playlist?.id!!.toLong()) }
     val playlistName by remember { mutableStateOf(AppCache.playlist?.name!!) }
     LaunchedEffect(Unit) {
@@ -85,35 +86,7 @@ fun PlaylistScreen(
                                 ItemGrid(
                                     song = song,
                                     expanded = isExpanded,
-                                    onOpenMenu = {
-                                        viewModel.processIntent(PlaylistIntent.OpenMenu(song))
-                                    },
-                                    onDismissRequest = {
-                                        viewModel.processIntent(PlaylistIntent.CloseMenu)
-                                    },
-                                    onClick = {
-                                        viewModel.processIntent(
-                                            PlaylistIntent.RemoveSong(
-                                                context = context,
-                                                songId = song.id,
-                                                playlistId = playlistId
-                                            )
-                                        )
-                                    },
-                                    onClickPlaySong = {
-
-                                    }
-                                )
-                            }
-                        }
-
-                    } else {
-                        LazyColumn {
-                            items(state.songs) { song ->
-                                val isExpanded = state.expanded && state.selectedSong == song
-                                ItemColumn(
-                                    song = song,
-                                    expanded = isExpanded,
+                                    isPlaySong = AppCache.playingSong?.id == song.id,
                                     onOpenMenu = {
                                         viewModel.processIntent(PlaylistIntent.OpenMenu(song))
                                     },
@@ -135,7 +108,41 @@ fun PlaylistScreen(
                                             context
                                         )
                                         AppCache.playingSong = song
-                                        AppCache.isPlayingSong = true
+                                    }
+                                )
+                            }
+                        }
+
+                    } else {
+                        LazyColumn {
+                            items(state.songs) { song ->
+                                val isExpanded = state.expanded && state.selectedSong == song
+                                ItemColumn(
+                                    song = song,
+                                    expanded = isExpanded,
+                                    isPlaySong = AppCache.playingSong?.id == song.id,
+                                    onOpenMenu = {
+                                        viewModel.processIntent(PlaylistIntent.OpenMenu(song))
+                                    },
+                                    onDismissRequest = {
+                                        viewModel.processIntent(PlaylistIntent.CloseMenu)
+                                    },
+                                    onClick = {
+                                        viewModel.processIntent(
+                                            PlaylistIntent.RemoveSong(
+                                                context = context,
+                                                songId = song.id,
+                                                playlistId = playlistId
+                                            )
+                                        )
+                                    },
+                                    onClickPlaySong = {
+                                        playerBarViewModel.processIntent(
+                                            PlayerBarIntent.HandleSongAction(song),
+                                            context
+                                        )
+                                        AppCache.playingSong = song
+                                        AppCache.isPlayingSong.value = true
                                     }
                                 )
                             }
@@ -145,6 +152,7 @@ fun PlaylistScreen(
                 if (AppCache.playingSong != null) {
                     PlayerBarScreen(
                         viewModel = playerBarViewModel,
+                        song = AppCache.playingSong,
                         onClickPlayer = onClickPlayer
                     )
                 }

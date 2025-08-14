@@ -8,7 +8,7 @@ import com.example.chientx_apero.model.AppCache
 import com.example.chientx_apero.room_db.entity.Song
 
 data class PlayerState(
-    val isPlaySong: Boolean = AppCache.isPlayingSong,
+    val isPlaySong: Boolean = AppCache.isPlayingSong.value,
     val song: Song? = AppCache.playingSong,
     val currentTime: Int = 0,
     val duration: Long = 0
