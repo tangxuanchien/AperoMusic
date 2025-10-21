@@ -2,7 +2,7 @@
 
 > Ứng dụng nghe nhạc đơn giản & hiện đại được xây dựng bằng **Kotlin + Jetpack Compose**.  
 > Mục tiêu: Trải nghiệm mượt mà, giao diện tối giản và dễ mở rộng.
-
+> Demo: https://youtu.be/NztJ_9pV5NA
 ---
 
 ## 📱 Giao diện
